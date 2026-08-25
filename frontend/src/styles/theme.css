@@ -39,6 +39,30 @@
   --duration-med: 0.45s;
 }
 
+/* Dark mode — same tokens, redefined values. Because nearly every color in
+   the app is expressed through these variables, this cascades app-wide
+   without needing per-component dark rules. */
+:root[data-theme="dark"] {
+  --cream: #1b1714;
+  --charcoal: #f3ede4;
+  --charcoal-soft: #b9ac9f;
+
+  --lavender: #b3a5ec;
+  --lavender-light: #2e2a45;
+  --lavender-deep: #c9befa;
+  --butter: #f5d76e;
+  --butter-light: #3a2f18;
+  --powder-blue: #a8c8e8;
+  --powder-blue-light: #1e2c3a;
+  --mint: #9ed6b7;
+  --mint-light: #1c3327;
+  --coral: #f08b74;
+  --coral-light: #3d2420;
+  --soft-pink: #f4c4d4;
+  --soft-pink-light: #3a232d;
+}
+
+
 @keyframes fade-up {
   from {
     opacity: 0;

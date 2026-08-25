@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext.jsx";
 import { WishlistProvider } from "./context/WishlistContext.jsx";
+import { ThemeProvider } from "./context/ThemeContext.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import Home from "./pages/Home.jsx";
@@ -29,53 +30,55 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 export default function App() {
   return (
-    <CartProvider>
-      <WishlistProvider>
-        <Navbar />
+    <ThemeProvider>
+      <CartProvider>
+        <WishlistProvider>
+          <Navbar />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
+          <Routes>
+            <Route path="/" element={<Home />} />
 
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/shop/:category" element={<Shop />} />
-          <Route path="/collections" element={<Collections />} />
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/shop/:category" element={<Shop />} />
+            <Route path="/collections" element={<Collections />} />
 
-          <Route path="/product/:id" element={<ProductPage />} />
+            <Route path="/product/:id" element={<ProductPage />} />
 
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
-          <Route path="/order-tracking" element={<OrderTracking />} />
-          <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
+            <Route path="/order-tracking" element={<OrderTracking />} />
+            <Route path="/wishlist" element={<Wishlist />} />
 
-          <Route path="/custom-orders" element={<CustomOrders />} />
-          <Route path="/lookbook" element={<Lookbook />} />
-          <Route path="/our-story" element={<OurStory />} />
-          <Route path="/the-process" element={<TheProcess />} />
-          <Route path="/reviews" element={<Reviews />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/shipping" element={<Shipping />} />
-          <Route path="/returns" element={<Returns />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<Terms />} />
+            <Route path="/custom-orders" element={<CustomOrders />} />
+            <Route path="/lookbook" element={<Lookbook />} />
+            <Route path="/our-story" element={<OurStory />} />
+            <Route path="/the-process" element={<TheProcess />} />
+            <Route path="/reviews" element={<Reviews />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/shipping" element={<Shipping />} />
+            <Route path="/returns" element={<Returns />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<Terms />} />
 
-          {/* Admin login page - public */}
-          <Route path="/admin/login" element={<AdminLogin />} />
+            {/* Admin login page - public */}
+            <Route path="/admin/login" element={<AdminLogin />} />
 
-          {/* Admin dashboard - protected */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <Admin />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+            {/* Admin dashboard - protected */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <Admin />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
 
-        <Footer />
-      </WishlistProvider>
-    </CartProvider>
+          <Footer />
+        </WishlistProvider>
+      </CartProvider>
+    </ThemeProvider>
   );
 }

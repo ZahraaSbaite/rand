@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
 import { useWishlist } from "../context/WishlistContext.jsx";
+import { useTheme } from "../context/ThemeContext.jsx";
 import "./Navbar.css";
 
 const SHOP_CATEGORIES = [
@@ -31,6 +32,7 @@ export default function Navbar() {
     const [shopExpanded, setShopExpanded] = useState(false);
     const { cartRefs } = useCart();
     const { wishlistIds } = useWishlist();
+    const { theme, toggleTheme } = useTheme();
     const cartCount = cartRefs.reduce((sum, r) => sum + r.quantity, 0);
     const wishlistCount = wishlistIds.length;
 
@@ -105,6 +107,35 @@ export default function Navbar() {
                 </form>
 
                 <nav className="navbar__icons">
+                    <button
+                        type="button"
+                        className="navbar__icon-link"
+                        aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                        onClick={toggleTheme}
+                    >
+                        {theme === "dark" ? (
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" strokeWidth="2" />
+                                <path
+                                    d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                />
+                            </svg>
+                        ) : (
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path
+                                    d="M20.5 14.5A8.5 8.5 0 019.5 3.5a8.5 8.5 0 1011 11z"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+                        )}
+                    </button>
+
                     <NavLink to="/wishlist" className="navbar__icon-link" aria-label="Wishlist">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path
@@ -226,6 +257,14 @@ export default function Navbar() {
                     <NavLink to="/cart" className="navbar__drawer-link">
                         Cart {cartCount > 0 && `(${cartCount})`}
                     </NavLink>
+
+                    <button
+                        type="button"
+                        className="navbar__drawer-link navbar__drawer-theme"
+                        onClick={toggleTheme}
+                    >
+                        Switch to {theme === "dark" ? "light" : "dark"} mode
+                    </button>
                 </nav>
         </aside>
         </>
