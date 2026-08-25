@@ -1,0 +1,480 @@
+/* Shared layout for the content pages: Custom Orders, Lookbook, Our Story,
+   The Process, Reviews, FAQ, Contact. */
+
+.info-page {
+  background: var(--cream);
+  color: var(--charcoal);
+  font-family: var(--font-body);
+  animation: fade-up 0.6s var(--ease-out) both;
+  min-height: 60vh;
+}
+
+.info-page__header {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem) 1rem;
+}
+
+.info-page__eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lavender-deep);
+  margin: 0 0 0.5rem;
+}
+
+.info-page__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+  color: var(--charcoal);
+}
+
+.info-page__intro {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--charcoal-soft);
+  max-width: 62ch;
+}
+
+.info-page__section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem clamp(1.5rem, 4vw, 3rem) 3rem;
+}
+
+.info-page__section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  margin: 0 0 1rem;
+}
+
+.info-page__section p {
+  line-height: 1.65;
+  color: var(--charcoal-soft);
+}
+
+/* ── Our Story: two-column narrative ── */
+.our-story__block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: center;
+}
+
+.our-story__block img {
+  width: 100%;
+  border-radius: 18px;
+  object-fit: cover;
+  aspect-ratio: 4 / 3;
+}
+
+.our-story__block:nth-child(even) .our-story__text {
+  order: 2;
+}
+
+@media (max-width: 800px) {
+  .our-story__block {
+    grid-template-columns: 1fr;
+  }
+  .our-story__block:nth-child(even) .our-story__text {
+    order: 0;
+  }
+}
+
+/* ── The Process: numbered steps ── */
+.process__steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.process__step {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  background: var(--lavender-light);
+  border-radius: 18px;
+  padding: 1.75rem;
+  box-shadow: 0 2px 8px rgba(42, 36, 32, 0.05);
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition: transform 0.15s ease-out, box-shadow var(--duration-fast) ease;
+}
+
+.process__step:hover {
+  transform: perspective(900px) translateY(-4px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  box-shadow: 0 16px 28px rgba(42, 36, 32, 0.14);
+}
+
+.process__step-number {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--lavender-deep);
+  margin: 0 0 0.5rem;
+}
+
+.process__step h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem;
+}
+
+.process__step p {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Lookbook: image grid ── */
+.lookbook__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.lookbook__item {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  box-shadow: 0 2px 8px rgba(42, 36, 32, 0.05);
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition: transform 0.15s ease-out, box-shadow var(--duration-fast) ease;
+}
+
+.lookbook__item:hover {
+  transform: perspective(900px) scale3d(1.02, 1.02, 1.02) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  box-shadow: 0 18px 32px rgba(42, 36, 32, 0.2);
+}
+
+.lookbook__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lookbook__caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background: linear-gradient(180deg, transparent, rgba(42, 36, 32, 0.65));
+  color: var(--cream);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* ── Reviews ── */
+.reviews__summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2rem;
+  background: var(--lavender-light);
+  border-radius: 18px;
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.reviews__average {
+  text-align: center;
+  min-width: 100px;
+}
+
+.reviews__average-number {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.5rem;
+  margin: 0;
+  line-height: 1;
+}
+
+.reviews__average-count {
+  font-size: 0.8rem;
+  color: var(--charcoal-soft);
+  margin: 0.35rem 0 0;
+}
+
+.reviews__breakdown {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.reviews__breakdown-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 24px;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--charcoal-soft);
+}
+
+.reviews__breakdown-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--charcoal) 10%, transparent);
+  overflow: hidden;
+}
+
+.reviews__breakdown-fill {
+  height: 100%;
+  background: var(--coral);
+  border-radius: 999px;
+}
+
+.reviews__share-cta {
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  background: var(--charcoal);
+  color: var(--cream);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  transition: background var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+
+.reviews__share-cta:hover {
+  background: var(--coral);
+  transform: translateY(-2px);
+}
+
+.reviews__product-date {
+  font-size: 0.76rem;
+  color: color-mix(in srgb, var(--charcoal) 45%, transparent);
+  margin: 0.5rem 0 0;
+}
+
+.reviews__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.reviews__card {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  background: var(--soft-pink-light);
+  border-radius: 18px;
+  padding: 1.75rem;
+  box-shadow: 0 2px 8px rgba(42, 36, 32, 0.05);
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition: transform 0.15s ease-out, box-shadow var(--duration-fast) ease;
+}
+
+.reviews__card:hover {
+  transform: perspective(900px) translateY(-4px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  box-shadow: 0 16px 28px rgba(42, 36, 32, 0.14);
+}
+
+.reviews__stars {
+  color: var(--coral);
+  letter-spacing: 0.15em;
+  margin: 0 0 0.75rem;
+}
+
+.reviews__quote {
+  font-style: italic;
+  color: var(--charcoal-soft);
+  margin: 0 0 1rem;
+  line-height: 1.6;
+}
+
+.reviews__author {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ── FAQ accordion ── */
+.faq__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 760px;
+}
+
+.faq__item {
+  border: 1px solid color-mix(in srgb, var(--lavender) 30%, transparent);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+}
+
+.faq__question {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: var(--charcoal);
+  cursor: pointer;
+}
+
+.faq__chevron {
+  transition: transform var(--duration-fast) ease;
+  flex-shrink: 0;
+}
+
+.faq__chevron--open {
+  transform: rotate(180deg);
+}
+
+.faq__answer {
+  margin-top: 0.75rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--charcoal-soft);
+}
+
+/* ── Forms (Custom Orders / Contact) ── */
+.info-form {
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.info-form input,
+.info-form textarea,
+.info-form select {
+  border: 1.5px solid color-mix(in srgb, var(--lavender) 35%, transparent);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--charcoal);
+  background: var(--cream);
+}
+
+.info-form input:focus,
+.info-form textarea:focus,
+.info-form select:focus {
+  outline: none;
+  border-color: var(--lavender);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--lavender) 18%, transparent);
+}
+
+.info-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.info-form button {
+  align-self: flex-start;
+  padding: 0.8rem 1.75rem;
+  border-radius: 999px;
+  background: var(--charcoal);
+  color: var(--cream);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+
+.info-form button:hover {
+  background: var(--coral);
+  transform: translateY(-2px);
+}
+
+.info-form button:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.info-form__status {
+  font-size: 0.88rem;
+  color: var(--mint);
+  font-weight: 600;
+}
+
+.info-form__error {
+  font-size: 0.88rem;
+  color: var(--coral);
+  font-weight: 600;
+}
+
+.info-form__optional {
+  font-weight: 400;
+  color: var(--charcoal-soft);
+}
+
+.info-form input[type="file"] {
+  border: 1.5px dashed color-mix(in srgb, var(--lavender) 45%, transparent);
+  background: var(--cream);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+/* ── Contact details ── */
+.contact__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.contact__details a {
+  color: var(--lavender-deep);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.contact__socials {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.contact__socials a {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--charcoal);
+  color: var(--cream);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  transition: background var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+
+.contact__socials a:hover {
+  background: var(--coral);
+  transform: translateY(-2px);
+}
+
+.contact__whatsapp {
+  width: auto;
+  height: 40px;
+  border-radius: 999px;
+  padding: 0 1.1rem;
+  background: var(--mint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .info-page {
+    animation: none;
+  }
+}

@@ -1,0 +1,60 @@
+.admin {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 5rem;
+    font-family: "Inter", system-ui, sans-serif;
+    color: var(--ink);
+}
+
+.admin__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0 0 1.5rem;
+}
+
+.admin__title {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 500;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.admin__logout {
+    background: none;
+    border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: var(--ink);
+}
+
+.admin__logout:hover {
+    border-color: var(--wool);
+    color: var(--wool);
+}
+
+.admin__tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+}
+
+.admin__tab {
+    background: none;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: color-mix(in srgb, var(--ink) 60%, transparent);
+    border-bottom: 2px solid transparent;
+}
+
+.admin__tab--active {
+    color: var(--wool);
+    border-bottom-color: var(--wool);
+    font-weight: 500;
+}

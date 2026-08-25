@@ -1,0 +1,83 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 780px;
+  margin: 0.5rem auto 3.5rem;
+  padding: 1.75rem clamp(1.5rem, 4vw, 3rem) 0;
+  border-top: 1px solid color-mix(in srgb, var(--lavender) 30%, transparent);
+  font-family: var(--font-body);
+}
+
+.pagination__side-btn {
+  padding: 0.65rem 1.25rem;
+  border: 1.5px solid color-mix(in srgb, var(--charcoal) 18%, transparent);
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  color: var(--charcoal);
+  transition:
+    background var(--duration-fast) ease,
+    border-color var(--duration-fast) ease,
+    color var(--duration-fast) ease;
+}
+
+.pagination__side-btn:hover:not(:disabled) {
+  border-color: var(--lavender);
+  background: var(--lavender-light);
+}
+
+.pagination__side-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.pagination__next {
+  background: var(--charcoal);
+  color: var(--cream);
+  border-color: var(--charcoal);
+}
+
+.pagination__next:hover:not(:disabled) {
+  background: var(--lavender-deep);
+  border-color: var(--lavender-deep);
+  color: var(--cream);
+}
+
+.pagination__center {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.88rem;
+  color: var(--charcoal-soft);
+}
+
+.pagination__center select {
+  padding: 0.35rem 0.6rem;
+  border: 1.5px solid color-mix(in srgb, var(--charcoal) 18%, transparent);
+  background: var(--cream);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--charcoal);
+}
+
+.pagination__center select:focus {
+  outline: none;
+  border-color: var(--lavender);
+}
+
+@media (max-width: 520px) {
+  .pagination {
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .pagination__center {
+    order: -1;
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}

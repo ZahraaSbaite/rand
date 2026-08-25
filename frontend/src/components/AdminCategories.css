@@ -1,0 +1,86 @@
+.admin-categories {
+    background: color-mix(in srgb, var(--ink) 4%, var(--linen));
+    border-radius: 8px;
+    padding: 1.25rem;
+}
+
+.admin-categories h3 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 500;
+    font-size: 1rem;
+    margin: 0 0 1rem;
+}
+
+.admin-categories__add {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.admin-categories__add input {
+    flex: 1;
+    padding: 0.5rem 0.65rem;
+    border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+.admin-categories__add button {
+    background: var(--wool);
+    color: var(--linen);
+    border: none;
+    padding: 0.5rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.admin-categories__error {
+    color: #a32d2d;
+    font-size: 0.8rem;
+    margin: 0 0 0.75rem;
+}
+
+.admin-categories__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.admin-categories__list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+}
+
+.admin-categories__list li span {
+    flex: 1;
+}
+
+.admin-categories__list li input {
+    flex: 1;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.admin-categories__list button {
+    background: none;
+    border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.admin-categories__delete {
+    color: #a32d2d;
+    border-color: color-mix(in srgb, #a32d2d 30%, transparent);
+}

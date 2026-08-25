@@ -1,0 +1,326 @@
+/* ============================================================
+   AdminOrders — design tokens
+   Built on the app's existing --ink / --wool variables (with
+   fallbacks below in case this file loads standalone). Status
+   columns get their own quiet accent so the board reads at a
+   glance without shouting.
+   ============================================================ */
+
+.admin-orders-board {
+    --ink: #2b2620;
+    --wool: #b5602f;
+    --page: #f3ede3;
+    --paper: #fbf8f3;
+    --status-not-started: color-mix(in srgb, var(--ink) 55%, transparent);
+    --status-in-progress: #c08a2e;
+    --status-done: #5f7a52;
+
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background: var(--page);
+    min-height: 100vh;
+    align-items: flex-start;
+    overflow-x: auto;
+    font-family: "Inter", "Helvetica Neue", system-ui, sans-serif;
+    color: var(--ink);
+    box-sizing: border-box;
+}
+
+/* ============================================================
+   Column
+   ============================================================ */
+
+.admin-orders-column {
+    flex: 1 1 300px;
+    min-width: 280px;
+    max-width: 380px;
+    background: var(--paper);
+    border-radius: 10px;
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 8%, transparent),
+        0 8px 24px color-mix(in srgb, var(--ink) 6%, transparent);
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 3rem);
+}
+
+.admin-orders-column__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.1rem 0.85rem;
+    border-bottom: 2px solid color-mix(in srgb, var(--ink) 10%, transparent);
+}
+
+.admin-orders-column__header span:first-child {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.admin-orders-column__header--not_started {
+    box-shadow: inset 0 2px 0 0 var(--status-not-started);
+}
+
+.admin-orders-column__header--in_progress {
+    box-shadow: inset 0 2px 0 0 var(--status-in-progress);
+}
+
+.admin-orders-column__header--done {
+    box-shadow: inset 0 2px 0 0 var(--status-done);
+}
+
+.admin-orders-column__count {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: color-mix(in srgb, var(--ink) 8%, transparent);
+    color: var(--ink);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    min-width: 1.6rem;
+    text-align: center;
+}
+
+/* ============================================================
+   Filters
+   ============================================================ */
+
+.admin-orders-column__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.admin-orders-column__filters input[type="search"] {
+    width: 100%;
+    padding: 0.45rem 0.65rem;
+    border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+    border-radius: 7px;
+    font-size: 0.8rem;
+    font-family: inherit;
+    background: var(--paper);
+    color: var(--ink);
+    box-sizing: border-box;
+    transition: border-color 0.15s ease;
+}
+
+.admin-orders-column__filters input[type="search"]:focus-visible {
+    outline: none;
+    border-color: var(--wool);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--wool) 18%, transparent);
+}
+
+.admin-orders-column__date-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.admin-orders-column__date-row input[type="date"] {
+    flex: 1;
+    min-width: 0;
+    padding: 0.35rem 0.4rem;
+    border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+    border-radius: 7px;
+    font-size: 0.72rem;
+    font-family: inherit;
+    background: var(--paper);
+    color: var(--ink);
+}
+
+.admin-orders-column__date-row input[type="date"]:focus-visible {
+    outline: none;
+    border-color: var(--wool);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--wool) 18%, transparent);
+}
+
+.admin-orders-column__date-row span {
+    color: color-mix(in srgb, var(--ink) 40%, transparent);
+    font-size: 0.75rem;
+}
+
+.admin-orders-column__clear {
+    align-self: flex-start;
+    background: none;
+    border: none;
+    color: var(--wool);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+}
+
+.admin-orders-column__clear:hover {
+    text-decoration: underline;
+}
+
+/* ============================================================
+   Card list
+   ============================================================ */
+
+.admin-orders-column__list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.9rem 1.1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.admin-orders-column__list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.admin-orders-column__list::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--ink) 15%, transparent);
+    border-radius: 999px;
+}
+
+.admin-orders-column__empty {
+    text-align: center;
+    color: color-mix(in srgb, var(--ink) 45%, transparent);
+    font-size: 0.85rem;
+    font-style: italic;
+    padding: 2rem 0.5rem;
+}
+
+/* ============================================================
+   Order card — a quiet nod to a printed ticket: a torn line
+   under the header, a receipt-style rule above the total.
+   ============================================================ */
+
+.admin-orders__card {
+    background: #fff;
+    border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+    border-radius: 8px;
+    padding: 0.85rem 0.9rem;
+}
+
+.admin-orders__card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px dashed color-mix(in srgb, var(--ink) 18%, transparent);
+}
+
+.admin-orders__customer {
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--ink);
+}
+
+.admin-orders__overdue {
+    flex-shrink: 0;
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #fff;
+    background: #b3462c;
+    padding: 0.15rem 0.4rem;
+    border-radius: 5px;
+}
+
+.admin-orders__meta {
+    margin: 0 0 0.35rem;
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-size: 0.72rem;
+    color: color-mix(in srgb, var(--ink) 62%, transparent);
+}
+
+.admin-orders__address {
+    margin: 0 0 0.6rem;
+    font-size: 0.78rem;
+    color: color-mix(in srgb, var(--ink) 70%, transparent);
+    line-height: 1.35;
+}
+
+.admin-orders__items {
+    list-style: none;
+    margin: 0 0 0.65rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.admin-orders__items li {
+    font-size: 0.8rem;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-orders__total {
+    margin: 0 0 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed color-mix(in srgb, var(--ink) 18%, transparent);
+    text-align: right;
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--ink);
+}
+
+.admin-orders__move {
+    width: 100%;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+    border-radius: 7px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 0.8rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    cursor: pointer;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+        linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+    background-position: calc(100% - 16px) center, calc(100% - 11px) center;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+}
+
+.admin-orders__move:focus-visible {
+    outline: none;
+    border-color: var(--wool);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--wool) 18%, transparent);
+}
+
+/* ============================================================
+   Responsive: stack columns on narrow screens
+   ============================================================ */
+
+@media (max-width: 720px) {
+    .admin-orders-board {
+        flex-direction: column;
+        overflow-x: visible;
+        padding: 1rem;
+    }
+
+    .admin-orders-column {
+        max-width: none;
+        max-height: none;
+        width: 100%;
+    }
+
+    .admin-orders-column__list {
+        overflow-y: visible;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .admin-orders-column__filters input,
+    .admin-orders__move {
+        transition: none;
+    }
+}

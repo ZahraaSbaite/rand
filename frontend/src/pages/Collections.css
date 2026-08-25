@@ -1,0 +1,120 @@
+.collections-page {
+  background: var(--cream);
+  color: var(--charcoal);
+  font-family: var(--font-body);
+  animation: fade-up 0.6s var(--ease-out) both;
+}
+
+.collections-page__header {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem) 1.5rem;
+}
+
+.collections-page__eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lavender-deep);
+  margin: 0 0 0.5rem;
+}
+
+.collections-page__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+  color: var(--charcoal);
+}
+
+.collections-page__intro {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--charcoal-soft);
+  max-width: 60ch;
+}
+
+.collections-page__grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  padding: 0 clamp(1.5rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem);
+}
+
+.collection-card {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  position: relative;
+  display: block;
+  min-height: 420px;
+  border-radius: 20px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  text-decoration: none;
+  color: var(--cream);
+  transform: perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition: transform 0.15s ease-out, box-shadow var(--duration-med) ease;
+  box-shadow: 0 4px 16px rgba(42, 36, 32, 0.08);
+}
+
+.collection-card:hover {
+  transform: perspective(1200px) translateY(-4px) scale3d(1.01, 1.01, 1.01) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  box-shadow: 0 24px 48px rgba(42, 36, 32, 0.22);
+}
+
+.collection-card__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(42, 36, 32, 0) 40%, rgba(42, 36, 32, 0.78) 100%);
+}
+
+.collection-card__content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2rem;
+}
+
+.collection-card__content h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+}
+
+.collection-card__content p {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+  color: color-mix(in srgb, var(--cream) 85%, transparent);
+  max-width: 32ch;
+}
+
+.collection-card__cta {
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 800px) {
+  .collections-page__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .collection-card {
+    min-height: 320px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collections-page {
+    animation: none;
+  }
+}
