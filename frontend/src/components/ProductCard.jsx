@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useTilt from "../hooks/useTilt.js";
 import { useWishlist } from "../context/WishlistContext.jsx";
+import { getImageUrl, getPrimaryImage } from "../utils/imageUrl.js";
 import "./ProductCard.css";
 
 const CARD_TONES = [
@@ -18,6 +19,8 @@ export default function ProductCard({ product, colorIndex = 0 }) {
   const tilt = useTilt();
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(product.id);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <Link
@@ -35,7 +38,8 @@ export default function ProductCard({ product, colorIndex = 0 }) {
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          toggleWishlist(product.id);
+          const ok = toggleWishlist(product.id);
+          if (!ok) navigate("/login", { state: { from: location.pathname } });
         }}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -51,7 +55,7 @@ export default function ProductCard({ product, colorIndex = 0 }) {
 
       <div className="product-card__image">
         <img
-          src={product.image_url || fallback}
+          src={getImageUrl(getPrimaryImage(product)) || fallback}
           alt={product.name}
           onError={(e) => {
             e.currentTarget.onerror = null;

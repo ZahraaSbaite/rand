@@ -1,8 +1,26 @@
 import "./InfoPage.css";
-import heroHands from "../assets/hero-crochet-hands.jpg";
-import heroGranny from "../assets/hero-granny-square.jpg";
+import { useEffect, useState } from "react";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const FALLBACK_IMAGE = "https://placehold.co/800x600/e8e2f8/2a2420?text=RRAND";
 
 export default function OurStory() {
+  const [blocks, setBlocks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/story-blocks`)
+      .then((res) => res.json())
+      .then((data) => {
+        setBlocks(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <main className="info-page">
       <header className="info-page__header">
@@ -15,31 +33,21 @@ export default function OurStory() {
       </header>
 
       <section className="info-page__section">
-        <div className="our-story__block">
-          <div className="our-story__text">
-            <h2>How it began</h2>
-            <p>
-              What started as a way to unwind after long days turned into something bigger —
-              friends asking where a beanie or a plushie came from, then asking to buy one for
-              themselves. RRAND was born out of that word-of-mouth, one stitch at a time.
-            </p>
+        {loading ? (
+          <p className="info-page__intro">Loading…</p>
+        ) : (
+          <div className="our-story__list">
+            {blocks.map((block) => (
+              <div className="our-story__block" key={block.id}>
+                <div className="our-story__text">
+                  <h2>{block.heading}</h2>
+                  <p>{block.body}</p>
+                </div>
+                <img src={block.image_url || FALLBACK_IMAGE} alt={block.heading} />
+              </div>
+            ))}
           </div>
-          <img src={heroHands} alt="Hands crocheting" />
-        </div>
-      </section>
-
-      <section className="info-page__section">
-        <div className="our-story__block">
-          <img src={heroGranny} alt="Granny square blanket in progress" />
-          <div className="our-story__text">
-            <h2>Small-batch, on purpose</h2>
-            <p>
-              Every piece is made in limited quantities and sold as it's finished — no
-              mass production, no overseas factories. Just yarn, hooks, and time. That's why
-              some pieces sell out and don't always come back the same way twice.
-            </p>
-          </div>
-        </div>
+        )}
       </section>
     </main>
   );

@@ -1,6 +1,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import AdminCategories from "./AdminCategories.jsx";
+import { getImageUrl, getPrimaryImage } from "../utils/imageUrl.js";
 import "./AdminProducts.css";
 
 const API_URL =
@@ -24,6 +25,7 @@ export default function AdminProducts() {
     const [editingId, setEditingId] = useState(null);
     const [saving, setSaving] = useState(false);
     const [search, setSearch] = useState("");
+    const [uploading, setUploading] = useState(false);
 
     const loadProducts = () => {
         setLoading(true);
@@ -79,7 +81,7 @@ export default function AdminProducts() {
             name: product.name || "",
             description: product.description || "",
             price_cents: product.price_cents ?? "",
-            image_url: product.image_url || "",
+            image_url: getPrimaryImage(product) || "",
             yarn_color: product.yarn_color || "",
             category: product.category || "",
             stock_quantity: product.stock_quantity ?? "",
@@ -136,6 +138,37 @@ export default function AdminProducts() {
             );
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploading(true);
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+            const res = await fetch(`${API_URL}/api/upload`, {
+                method: "POST",
+                credentials: "include",
+                body: formData,
+            });
+
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.error || "Upload failed");
+            }
+
+            const data = await res.json();
+            setForm((prev) => ({ ...prev, image_url: data.url }));
+        } catch (err) {
+            console.error(err);
+            alert("Couldn't upload that image.");
+        } finally {
+            setUploading(false);
         }
     };
 
@@ -263,13 +296,24 @@ export default function AdminProducts() {
                             </label>
 
                             <label>
-                                Image URL
+                                Product image
 
                                 <input
-                                    name="image_url"
-                                    value={form.image_url}
-                                    onChange={handleChange}
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp,image/gif"
+                                    onChange={handleImageUpload}
+                                    disabled={uploading}
                                 />
+
+                                {uploading && <span className="admin-products__upload-status">Uploading…</span>}
+
+                                {form.image_url && (
+                                    <img
+                                        src={getImageUrl(form.image_url)}
+                                        alt="Preview"
+                                        className="admin-products__image-preview"
+                                    />
+                                )}
                             </label>
                         </div>
 
@@ -334,6 +378,7 @@ export default function AdminProducts() {
                         <table className="admin-products__table">
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th>Name</th>
                                     <th>Category</th>
                                     <th>Price</th>
@@ -345,6 +390,18 @@ export default function AdminProducts() {
                             <tbody>
                                 {filteredProducts.map((p) => (
                                     <tr key={p.id}>
+                                        <td>
+                                            {getPrimaryImage(p) ? (
+                                                <img
+                                                    src={getImageUrl(getPrimaryImage(p))}
+                                                    alt=""
+                                                    className="admin-products__thumb"
+                                                />
+                                            ) : (
+                                                <span className="admin-products__thumb admin-products__thumb--empty" />
+                                            )}
+                                        </td>
+
                                         <td>{p.name}</td>
 
                                         <td>{p.category}</td>

@@ -1,30 +1,26 @@
 import "./InfoPage.css";
+import { useEffect, useState } from "react";
 import TiltCard from "../components/TiltCard.jsx";
 
-const STEPS = [
-  {
-    title: "Sourcing yarn",
-    copy: "Every project starts with choosing fiber and colorway — quality yarn, sourced thoughtfully.",
-  },
-  {
-    title: "Design & swatch",
-    copy: "New pieces begin as a swatch, testing stitch patterns and proportions before committing.",
-  },
-  {
-    title: "Hand crochet",
-    copy: "Each piece is worked entirely by hand, stitch by stitch — no machines involved.",
-  },
-  {
-    title: "Finishing & QC",
-    copy: "Ends woven in, seams checked, and every piece inspected before it's listed.",
-  },
-  {
-    title: "Packaging & shipping",
-    copy: "Wrapped with care and shipped out, ready for its new home.",
-  },
-];
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 export default function TheProcess() {
+  const [steps, setSteps] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/process-steps`)
+      .then((res) => res.json())
+      .then((data) => {
+        setSteps(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <main className="info-page">
       <header className="info-page__header">
@@ -36,15 +32,19 @@ export default function TheProcess() {
       </header>
 
       <section className="info-page__section">
-        <div className="process__steps">
-          {STEPS.map((step, index) => (
-            <TiltCard className="process__step" key={step.title} max={6}>
-              <p className="process__step-number">{String(index + 1).padStart(2, "0")}</p>
-              <h3>{step.title}</h3>
-              <p>{step.copy}</p>
-            </TiltCard>
-          ))}
-        </div>
+        {loading ? (
+          <p className="info-page__intro">Loading…</p>
+        ) : (
+          <div className="process__steps">
+            {steps.map((step, index) => (
+              <TiltCard className="process__step" key={step.id} max={6}>
+                <p className="process__step-number">{String(index + 1).padStart(2, "0")}</p>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </TiltCard>
+            ))}
+          </div>
+        )}
       </section>
     </main>
   );

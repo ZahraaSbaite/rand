@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext.jsx";
 import { WishlistProvider } from "./context/WishlistContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
+import { CustomerAuthProvider } from "./context/CustomerAuthContext.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import Home from "./pages/Home.jsx";
@@ -14,7 +15,7 @@ import OrderConfirmation from "./pages/OrderConfirmation.jsx";
 import OrderTracking from "./pages/OrderTracking.jsx";
 import Wishlist from "./pages/Wishlist.jsx";
 import CustomOrders from "./pages/CustomOrders.jsx";
-import Lookbook from "./pages/Lookbook.jsx";
+import Journal from "./pages/Journal.jsx";
 import OurStory from "./pages/OurStory.jsx";
 import TheProcess from "./pages/TheProcess.jsx";
 import Reviews from "./pages/Reviews.jsx";
@@ -27,10 +28,13 @@ import Terms from "./pages/Terms.jsx";
 import AdminLogin from "./pages/AdminLogin.jsx";
 import Admin from "./pages/Admin.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import Login from "./pages/Login.jsx";
+import Signup from "./pages/Signup.jsx";
 
 export default function App() {
   return (
     <ThemeProvider>
+      <CustomerAuthProvider>
       <CartProvider>
         <WishlistProvider>
           <Navbar />
@@ -49,9 +53,11 @@ export default function App() {
             <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
             <Route path="/order-tracking" element={<OrderTracking />} />
             <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
 
             <Route path="/custom-orders" element={<CustomOrders />} />
-            <Route path="/lookbook" element={<Lookbook />} />
+            <Route path="/journal" element={<Journal />} />
             <Route path="/our-story" element={<OurStory />} />
             <Route path="/the-process" element={<TheProcess />} />
             <Route path="/reviews" element={<Reviews />} />
@@ -79,6 +85,7 @@ export default function App() {
           <Footer />
         </WishlistProvider>
       </CartProvider>
+      </CustomerAuthProvider>
     </ThemeProvider>
   );
 }

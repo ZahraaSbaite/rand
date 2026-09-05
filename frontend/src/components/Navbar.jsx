@@ -3,21 +3,19 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
 import { useWishlist } from "../context/WishlistContext.jsx";
 import { useTheme } from "../context/ThemeContext.jsx";
+import { useCustomerAuth } from "../context/CustomerAuthContext.jsx";
 import "./Navbar.css";
 
 const SHOP_CATEGORIES = [
     { slug: "bags", label: "Bags" },
     { slug: "flowers", label: "Flowers" },
     { slug: "plushies", label: "Plushies" },
-    { slug: "accessories", label: "Accessories" },
-    { slug: "home", label: "Home" },
-    { slug: "collections", label: "Collections" },
 ];
 
 const MENU_LINKS = [
     { to: "/collections", label: "Collections" },
     { to: "/custom-orders", label: "Custom Orders" },
-    { to: "/lookbook", label: "Lookbook" },
+    { to: "/journal", label: "Journal" },
     { to: "/our-story", label: "Our Story" },
     { to: "/the-process", label: "The Process" },
     { to: "/reviews", label: "Reviews" },
@@ -33,6 +31,7 @@ export default function Navbar() {
     const { cartRefs } = useCart();
     const { wishlistIds } = useWishlist();
     const { theme, toggleTheme } = useTheme();
+    const { customer, logout } = useCustomerAuth();
     const cartCount = cartRefs.reduce((sum, r) => sum + r.quantity, 0);
     const wishlistCount = wishlistIds.length;
 
@@ -87,6 +86,35 @@ export default function Navbar() {
                     </svg>
                 </button>
 
+                <button
+                    type="button"
+                    className="navbar__icon-link navbar__theme-toggle"
+                    aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                    onClick={toggleTheme}
+                >
+                    {theme === "dark" ? (
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" strokeWidth="2" />
+                            <path
+                                d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                            />
+                        </svg>
+                    ) : (
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                                d="M20.5 14.5A8.5 8.5 0 019.5 3.5a8.5 8.5 0 1011 11z"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    )}
+                </button>
+
                 <NavLink to="/" className="navbar__logo">
                     <span className="navbar__logo-mark">RRAND</span>
                     <span className="navbar__logo-sub">archive</span>
@@ -107,35 +135,6 @@ export default function Navbar() {
                 </form>
 
                 <nav className="navbar__icons">
-                    <button
-                        type="button"
-                        className="navbar__icon-link"
-                        aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                        onClick={toggleTheme}
-                    >
-                        {theme === "dark" ? (
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" strokeWidth="2" />
-                                <path
-                                    d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                            </svg>
-                        ) : (
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path
-                                    d="M20.5 14.5A8.5 8.5 0 019.5 3.5a8.5 8.5 0 1011 11z"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinejoin="round"
-                                />
-                            </svg>
-                        )}
-                    </button>
-
                     <NavLink to="/wishlist" className="navbar__icon-link" aria-label="Wishlist">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path
@@ -148,6 +147,42 @@ export default function Navbar() {
                         </svg>
                         {wishlistCount > 0 && <span className="navbar__badge">{wishlistCount}</span>}
                     </NavLink>
+
+                    {customer ? (
+                        <button
+                            type="button"
+                            className="navbar__icon-link"
+                            aria-label={`Log out (${customer.name})`}
+                            onClick={async () => {
+                                await logout();
+                                navigate("/");
+                            }}
+                        >
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" strokeWidth="2" />
+                                <path
+                                    d="M4.5 20c1.4-4 5-6.5 7.5-6.5s6.1 2.5 7.5 6.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                />
+                            </svg>
+                        </button>
+                    ) : (
+                        <NavLink to="/login" className="navbar__icon-link" aria-label="Log in">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" strokeWidth="2" />
+                                <path
+                                    d="M4.5 20c1.4-4 5-6.5 7.5-6.5s6.1 2.5 7.5 6.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                />
+                            </svg>
+                        </NavLink>
+                    )}
 
                     <NavLink to="/cart" className="navbar__icon-link" aria-label="Cart">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -253,6 +288,23 @@ export default function Navbar() {
                     <NavLink to="/wishlist" className="navbar__drawer-link">
                         Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
                     </NavLink>
+
+                    {customer ? (
+                        <button
+                            type="button"
+                            className="navbar__drawer-link"
+                            onClick={async () => {
+                                await logout();
+                                navigate("/");
+                            }}
+                        >
+                            Log out ({customer.name})
+                        </button>
+                    ) : (
+                        <NavLink to="/login" className="navbar__drawer-link">
+                            Log in
+                        </NavLink>
+                    )}
 
                     <NavLink to="/cart" className="navbar__drawer-link">
                         Cart {cartCount > 0 && `(${cartCount})`}

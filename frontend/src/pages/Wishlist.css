@@ -1,4 +1,5 @@
 .wishlist-page {
+  width: 100%;
   max-width: 1280px;
   margin: 0 auto;
   padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem);
@@ -32,12 +33,6 @@
   color: var(--charcoal-soft);
   font-weight: 500;
   font-size: 0.55em;
-}
-
-.wishlist-page__status {
-  color: var(--charcoal-soft);
-  padding: 3rem 0;
-  text-align: center;
 }
 
 .wishlist-page__empty {

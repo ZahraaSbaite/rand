@@ -1,0 +1,39 @@
+databases:
+  - name: crochet-shop-db
+    plan: free
+    databaseName: crochet_shop
+    user: crochet_shop
+
+services:
+  - type: web
+    name: crochet-shop-backend
+    runtime: node
+    rootDir: backend
+    # Disks require a paid instance plan - Render's free web service plan
+    # cannot attach a persistent disk, so uploaded images would be wiped
+    # on every deploy/restart on the free plan.
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    disk:
+      name: uploads
+      mountPath: /var/data/uploads
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: crochet-shop-db
+          property: connectionString
+      - key: UPLOADS_DIR
+        value: /var/data/uploads
+      - key: FRONTEND_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false

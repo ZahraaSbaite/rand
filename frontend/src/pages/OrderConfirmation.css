@@ -1,4 +1,5 @@
 .order-confirmation {
+  width: 100%;
   max-width: 640px;
   margin: 0 auto;
   padding: clamp(3rem, 8vw, 5rem) clamp(1.5rem, 4vw, 2rem) clamp(4rem, 8vw, 6rem);

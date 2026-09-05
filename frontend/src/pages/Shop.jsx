@@ -4,7 +4,10 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import ProductList from "../components/ProductList.jsx";
 import CategoryStrip from "../components/CategoryStrip.jsx";
 import Pagination from "../components/Pagination.jsx";
+import { SkeletonProductGrid } from "../components/Skeleton.jsx";
+import EmptyState from "../components/EmptyState.jsx";
 import useReveal from "../hooks/useReveal.js";
+import { getImageUrl, getPrimaryImage } from "../utils/imageUrl.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 const PAGE_SIZE = 5;
@@ -66,7 +69,7 @@ export default function Shop() {
         map.set(key, {
           name: key,
           label: p.category.trim().replace(/^./, (c) => c.toUpperCase()),
-          image: p.image_url || "https://placehold.co/200x200?text=" + key,
+          image: getImageUrl(getPrimaryImage(p)) || "https://placehold.co/200x200?text=" + key,
         });
       }
     }
@@ -196,9 +199,21 @@ export default function Shop() {
         </div>
 
         {loading ? (
-          <p className="shop-page__status">Winding the yarn — loading products…</p>
+          <SkeletonProductGrid count={PAGE_SIZE} />
         ) : filteredProducts.length === 0 ? (
-          <p className="shop-page__status">{emptyMessage}</p>
+          <EmptyState
+            icon={
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="7" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" strokeLinecap="round" />
+              </svg>
+            }
+            title="No pieces found"
+            subtitle={emptyMessage}
+            ctaText={hasActiveFilters ? "Clear filters" : "Browse all pieces"}
+            ctaTo={hasActiveFilters ? undefined : "/shop"}
+            onCtaClick={hasActiveFilters ? clearFilters : undefined}
+          />
         ) : (
           <>
             <ProductList products={visibleProducts} />

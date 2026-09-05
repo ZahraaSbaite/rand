@@ -79,6 +79,7 @@
 
 .footer__socials a:hover {
   background: var(--coral);
+  color: var(--cream);
   transform: translateY(-2px);
 }
 

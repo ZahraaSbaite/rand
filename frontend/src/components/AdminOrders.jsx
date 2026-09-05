@@ -150,6 +150,33 @@ export default function AdminOrders() {
         }
     };
 
+    const handleDelete = async (orderId) => {
+        if (!confirm("Delete this order? This can't be undone.")) {
+            return;
+        }
+
+        const previousOrders = orders;
+        setOrders((prev) => prev.filter((o) => o.id !== orderId));
+
+        try {
+            const res = await fetch(
+                `${API_URL}/api/orders/${orderId}`,
+                {
+                    method: "DELETE",
+                    credentials: "include",
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error("Delete failed");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Couldn't delete that order. Reloading.");
+            setOrders(previousOrders);
+        }
+    };
+
     const daysWaiting = (createdAt) => {
         const diff =
             Date.now() - new Date(createdAt).getTime();
@@ -291,12 +318,25 @@ export default function AdminOrders() {
                                                     }
                                                 </p>
 
-                                                {col.key !== "done" &&
-                                                    waiting >= 2 && (
-                                                        <span className="admin-orders__overdue">
-                                                            {waiting}d
-                                                        </span>
-                                                    )}
+                                                <div className="admin-orders__card-top-actions">
+                                                    {col.key !== "done" &&
+                                                        waiting >= 2 && (
+                                                            <span className="admin-orders__overdue">
+                                                                {waiting}d
+                                                            </span>
+                                                        )}
+
+                                                    <button
+                                                        type="button"
+                                                        className="admin-orders__delete"
+                                                        onClick={() =>
+                                                            handleDelete(order.id)
+                                                        }
+                                                        aria-label="Delete order"
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                </div>
                                             </div>
 
                                             <p className="admin-orders__meta">

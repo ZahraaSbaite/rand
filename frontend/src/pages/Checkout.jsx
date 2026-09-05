@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
+import { SkeletonCheckout } from "../components/Skeleton.jsx";
 import "./Checkout.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
@@ -98,7 +99,14 @@ export default function Checkout() {
     }
   };
 
-  if (loading) return <main className="checkout"><p className="checkout__status">Loading…</p></main>;
+  if (loading) {
+    return (
+      <main className="checkout">
+        <h1 className="checkout__title">Checkout</h1>
+        <SkeletonCheckout />
+      </main>
+    );
+  }
 
   if (items.length === 0) {
     return (

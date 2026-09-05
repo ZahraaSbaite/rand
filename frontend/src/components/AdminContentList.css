@@ -1,0 +1,151 @@
+.admin-content {
+    margin-bottom: 2rem;
+}
+
+.admin-content__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.admin-content__header h2 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 500;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.admin-content__header button {
+    background: var(--wool);
+    color: var(--linen);
+    border: none;
+    padding: 0.55rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.admin-content__form {
+    background: color-mix(in srgb, var(--ink) 4%, var(--linen));
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-content__form h3 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 500;
+    font-size: 1rem;
+    margin: 0 0 1rem;
+}
+
+.admin-content__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.admin-content__field--wide {
+    grid-column: 1 / -1;
+}
+
+.admin-content__form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: color-mix(in srgb, var(--ink) 65%, transparent);
+}
+
+.admin-content__form input,
+.admin-content__form textarea {
+    padding: 0.55rem 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+    border-radius: 6px;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 0.9rem;
+    resize: vertical;
+}
+
+.admin-content__error {
+    color: #a32d2d;
+    font-size: 0.85rem;
+    margin: 0.75rem 0 0;
+}
+
+.admin-content__form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+}
+
+.admin-content__form-actions button[type="submit"] {
+    background: var(--wool);
+    color: var(--linen);
+    border: none;
+    padding: 0.65rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.admin-content__cancel {
+    background: none;
+    border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+    padding: 0.65rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.admin-content__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.admin-content__table th {
+    text-align: left;
+    padding: 0.6rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+    color: color-mix(in srgb, var(--ink) 60%, transparent);
+    font-weight: 500;
+}
+
+.admin-content__table td {
+    padding: 0.6rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+    vertical-align: top;
+}
+
+.admin-content__actions {
+    display: flex;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.admin-content__actions button {
+    background: none;
+    border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+    padding: 0.35rem 0.7rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.admin-content__delete {
+    color: #a32d2d;
+    border-color: color-mix(in srgb, #a32d2d 30%, transparent);
+}
+
+.admin-content__approve {
+    color: #2f6b3e;
+    border-color: color-mix(in srgb, #2f6b3e 30%, transparent);
+}
+
+@media (max-width: 600px) {
+    .admin-content__grid {
+        grid-template-columns: 1fr;
+    }
+}

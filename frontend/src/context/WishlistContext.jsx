@@ -1,34 +1,54 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { useCustomerAuth } from "./CustomerAuthContext.jsx";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 const WishlistContext = createContext(null);
-const STORAGE_KEY = "rrand_wishlist";
 
 export function WishlistProvider({ children }) {
-    const [wishlistIds, setWishlistIds] = useState(() => {
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            return saved ? JSON.parse(saved) : [];
-        } catch {
-            return [];
+    const { customer } = useCustomerAuth();
+    const [wishlistIds, setWishlistIds] = useState([]);
+
+    const refresh = useCallback(() => {
+        if (!customer) {
+            setWishlistIds([]);
+            return;
         }
-    });
+        fetch(`${API_URL}/api/wishlist`, { credentials: "include" })
+            .then((res) => (res.ok ? res.json() : []))
+            .then((items) => setWishlistIds(items.map((p) => p.id)))
+            .catch(() => setWishlistIds([]));
+    }, [customer]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(wishlistIds));
-    }, [wishlistIds]);
+        refresh();
+    }, [refresh]);
 
     const isWishlisted = (productId) => wishlistIds.includes(productId);
 
-    const toggleWishlist = (productId) => {
-        setWishlistIds((prev) =>
-            prev.includes(productId)
-                ? prev.filter((id) => id !== productId)
-                : [...prev, productId]
-        );
-    };
-
     const removeFromWishlist = (productId) => {
         setWishlistIds((prev) => prev.filter((id) => id !== productId));
+        fetch(`${API_URL}/api/wishlist/${productId}`, {
+            method: "DELETE",
+            credentials: "include",
+        }).catch(() => refresh());
+    };
+
+    // Returns false when the caller isn't logged in, so the UI can redirect to /login.
+    const toggleWishlist = (productId) => {
+        if (!customer) return false;
+
+        if (wishlistIds.includes(productId)) {
+            removeFromWishlist(productId);
+        } else {
+            setWishlistIds((prev) => [...prev, productId]);
+            fetch(`${API_URL}/api/wishlist`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ product_id: productId }),
+            }).catch(() => refresh());
+        }
+        return true;
     };
 
     return (
