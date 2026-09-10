@@ -4,7 +4,7 @@ import { useCart } from "../context/CartContext.jsx";
 import { SkeletonCheckout } from "../components/Skeleton.jsx";
 import "./Checkout.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 const STEPS = ["Customer Info", "Shipping", "Review"];
 
 export default function Checkout() {

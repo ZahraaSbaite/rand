@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./AdminLogin.css";
 
 const API_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:4000";
+    import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 export default function AdminLogin() {
     const [password, setPassword] = useState("");

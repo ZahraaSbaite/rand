@@ -4,6 +4,8 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
 import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 import productsRouter from "./routes/products.js";
 import ordersRouter from "./routes/orders.js";
 import categoriesRouter from "./routes/categories.js";
@@ -111,6 +113,18 @@ app.use("/api/story-blocks", storyBlocksRouter);
 app.use("/api/process-steps", processStepsRouter);
 app.use("/api/faqs", faqsRouter);
 app.use("/api/collections", collectionsRouter);
+
+// Serve the built frontend so the app can run as a single service. The dist
+// folder only exists after `npm run build` in frontend/, so this is a no-op
+// during local backend-only development.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const frontendDistDir = path.join(__dirname, "..", "frontend", "dist");
+if (fs.existsSync(frontendDistDir)) {
+  app.use(express.static(frontendDistDir));
+  app.get(/^(?!\/api|\/uploads).*/, (req, res) => {
+    res.sendFile(path.join(frontendDistDir, "index.html"));
+  });
+}
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

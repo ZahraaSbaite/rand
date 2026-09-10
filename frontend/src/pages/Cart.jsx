@@ -5,7 +5,7 @@ import { SkeletonCart } from "../components/Skeleton.jsx";
 import { getImageUrl, getPrimaryImage } from "../utils/imageUrl.js";
 import "./Cart.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 export default function Cart() {
   const { cartRefs, removeFromCart, updateCartQuantity } = useCart();

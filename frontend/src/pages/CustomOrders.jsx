@@ -2,7 +2,7 @@ import "./CustomOrders.css";
 import { useState } from "react";
 import heroHands from "../assets/hero-crochet-hands.jpg";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 const PROCESS_STEPS = [
   { title: "Tell Us Your Idea", copy: "Share the piece you're picturing — item, colors, inspiration.", tone: "lavender" },

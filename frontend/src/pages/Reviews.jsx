@@ -5,7 +5,7 @@ import TiltCard from "../components/TiltCard.jsx";
 import { SkeletonReviews } from "../components/Skeleton.jsx";
 import EmptyState from "../components/EmptyState.jsx";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 export default function Reviews() {
   const [reviews, setReviews] = useState([]);

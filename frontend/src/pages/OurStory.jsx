@@ -1,7 +1,7 @@
 import "./InfoPage.css";
 import { useEffect, useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 const FALLBACK_IMAGE = "https://placehold.co/800x600/e8e2f8/2a2420?text=RRAND";
 
 export default function OurStory() {

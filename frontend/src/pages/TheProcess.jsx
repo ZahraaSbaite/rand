@@ -2,7 +2,7 @@ import "./InfoPage.css";
 import { useEffect, useState } from "react";
 import TiltCard from "../components/TiltCard.jsx";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 export default function TheProcess() {
   const [steps, setSteps] = useState([]);

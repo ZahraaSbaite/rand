@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./AdminContentList.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 export default function AdminReviews() {
     const [reviews, setReviews] = useState([]);

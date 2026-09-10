@@ -9,7 +9,7 @@ import EmptyState from "../components/EmptyState.jsx";
 import useReveal from "../hooks/useReveal.js";
 import { getImageUrl, getPrimaryImage } from "../utils/imageUrl.js";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 const PAGE_SIZE = 5;
 
 const SORTS = [

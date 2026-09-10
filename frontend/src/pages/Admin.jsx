@@ -7,7 +7,7 @@ import AdminContentList from "../components/AdminContentList.jsx";
 import "./Admin.css";
 
 const API_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:4000";
+    import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 const TABS = [
     { key: "products", label: "Products" },

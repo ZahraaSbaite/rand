@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TiltCard from "../components/TiltCard.jsx";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 const FALLBACK_IMAGE = "https://placehold.co/900x1100/e8e2f8/e8e2f8";
 
 export default function Collections() {

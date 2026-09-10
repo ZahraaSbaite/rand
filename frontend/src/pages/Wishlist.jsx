@@ -8,7 +8,7 @@ import { SkeletonWishlistGrid } from "../components/Skeleton.jsx";
 import EmptyState from "../components/EmptyState.jsx";
 import { getImageUrl, getPrimaryImage } from "../utils/imageUrl.js";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 export default function Wishlist() {
   const { wishlistIds, removeFromWishlist } = useWishlist();

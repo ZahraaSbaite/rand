@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 // Uploaded images are stored as paths relative to the backend (e.g. "/uploads/xxx.jpg").
 // Seed/placeholder images are already absolute URLs — leave those untouched.

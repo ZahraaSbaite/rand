@@ -1,7 +1,7 @@
 import "./InfoPage.css";
 import { useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
