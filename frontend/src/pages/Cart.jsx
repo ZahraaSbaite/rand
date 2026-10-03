@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
 import { SkeletonCart } from "../components/Skeleton.jsx";
 import { getImageUrl, getPrimaryImage } from "../utils/imageUrl.js";
-import "./Cart.css";
+import "./cart.css";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
