@@ -3,8 +3,8 @@
   display: grid;
   place-items: center;
   padding: 1.5rem;
-  background: var(--ink-marigold);
-  color: #2a1912;
+  background: var(--stock);
+  color: var(--ink-navy);
 }
 
 .admin-login__form {
@@ -13,11 +13,11 @@
   gap: 0.9rem;
   width: min(100%, 340px);
   padding: 2rem 1.75rem;
-  border: 2px solid #2a1912;
+  border: 2px solid var(--ink-navy);
   border-radius: 26px;
-  background: var(--stock);
-  color: var(--ink-chocolate);
-  box-shadow: 0 24px 40px -20px rgba(42, 25, 18, 0.5);
+  background: var(--stock-deep);
+  color: var(--ink-navy);
+  box-shadow: 0 24px 40px -20px color-mix(in srgb, var(--strand-navy) 50%, transparent);
 }
 
 .admin-login__mark {
@@ -42,12 +42,12 @@
   border: 1.5px solid var(--rule);
   border-radius: 12px;
   background: var(--stock);
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   font: inherit;
 }
 
 .admin-login__form input:focus {
-  border-color: var(--ink-chocolate);
+  border-color: var(--ink-navy);
   outline: none;
 }
 
@@ -68,7 +68,7 @@
 
 .admin-login__error {
   margin: 0;
-  color: #a3301c;
+  color: var(--strand-burgundy);
   font-size: 0.9rem;
   font-weight: 600;
   text-align: center;

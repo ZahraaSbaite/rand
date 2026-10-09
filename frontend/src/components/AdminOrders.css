@@ -90,7 +90,7 @@
   padding: 0.2rem;
   border: 0;
   background: none;
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   font: inherit;
   font-size: 0.82rem;
   font-weight: 600;
@@ -148,7 +148,7 @@
   padding: 0 0.5rem;
   border-radius: var(--radius-pill);
   background: var(--coral-light);
-  color: var(--admin-danger, #a3301c);
+  color: var(--admin-danger, var(--strand-burgundy));
   font-size: 0.74rem;
   font-weight: 700;
   line-height: 22px;
@@ -159,7 +159,7 @@
   border: 0;
   border-radius: 6px;
   background: none;
-  color: var(--admin-danger, #a3301c);
+  color: var(--admin-danger, var(--strand-burgundy));
   font: inherit;
   font-size: 0.8rem;
   font-weight: 600;

@@ -1,8 +1,8 @@
-/* The leaflet's back cover. */
+/* The back cover. */
 .footer {
-  background: var(--ink-marigold);
-  color: var(--band);
-  border-top: 2px solid var(--band);
+  background: var(--band);
+  color: var(--on-band);
+  border-top: 0;
 }
 
 .footer__inner {
@@ -19,7 +19,7 @@
   font-family: var(--font-display);
   font-size: clamp(3rem, 6vw, 4.5rem);
   line-height: 0.9;
-  color: var(--band);
+  color: var(--on-band);
 }
 
 .footer__tag {
@@ -43,7 +43,7 @@
 
 .footer__col a {
   width: fit-content;
-  color: var(--band);
+  color: var(--on-band);
   text-decoration: none;
   background: linear-gradient(currentColor, currentColor) left bottom / 0 2px no-repeat;
   transition: background-size var(--duration-med) var(--ease-out);
@@ -66,9 +66,9 @@
   display: flex;
   gap: 0.5rem;
   padding: 5px;
-  border: 2px solid var(--band);
+  border: 2px solid var(--on-band);
   border-radius: var(--radius-pill);
-  background: var(--stock);
+  background: var(--strand-cream);
 }
 
 .footer__form input {
@@ -77,13 +77,13 @@
   padding: 0 0.85rem;
   border: 0;
   background: transparent;
-  color: var(--ink-chocolate);
+  color: var(--strand-navy);
   font-size: 0.95rem;
   outline: none;
 }
 
 .footer__form input::placeholder {
-  color: var(--charcoal-soft);
+  color: var(--strand-slate);
 }
 
 .footer__form button {
@@ -91,8 +91,8 @@
   padding: 0 1.2rem;
   border: 0;
   border-radius: var(--radius-pill);
-  background: var(--band);
-  color: var(--ink-marigold);
+  background: var(--ink-marigold);
+  color: var(--strand-navy);
   font-weight: 700;
   cursor: pointer;
   transition: transform 0.3s var(--ease-spring);
@@ -109,7 +109,7 @@
 .footer__thanks {
   margin: 0;
   padding: 0.85rem 1.1rem;
-  border: 2px dashed var(--band);
+  border: 2px dashed var(--on-band);
   border-radius: 18px;
   font-weight: 600;
   animation: fade-up 0.5s var(--ease-out);
@@ -118,7 +118,7 @@
 .footer__email {
   display: inline-block;
   margin-top: 1rem;
-  color: var(--band);
+  color: var(--on-band);
   font-weight: 700;
 }
 
@@ -133,7 +133,7 @@
   height: 44px;
   display: grid;
   place-items: center;
-  border: 2px solid var(--band);
+  border: 2px solid var(--on-band);
   border-radius: 50%;
   background: none;
   transition:
@@ -143,8 +143,8 @@
 }
 
 .footer__socials a:hover {
-  background: var(--band);
-  color: var(--ink-marigold);
+  background: var(--ink-marigold);
+  color: var(--strand-navy);
   transform: rotate(-10deg);
 }
 
@@ -165,7 +165,7 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 1.1rem clamp(1rem, 4vw, 3rem) 1.5rem;
-  border-top: 2px dashed color-mix(in srgb, var(--band) 40%, transparent);
+  border-top: 2px dashed color-mix(in srgb, var(--on-band) 40%, transparent);
   font-family: var(--font-mono);
   font-size: 0.82rem;
 }

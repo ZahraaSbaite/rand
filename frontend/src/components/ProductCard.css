@@ -13,7 +13,7 @@
   color: var(--charcoal-soft);
 }
 
-/* ---------- Leaflet card ---------- */
+/* ---------- Product card ---------- */
 .product-card {
   --tone: var(--ink-marigold);
   --tone-soft: var(--butter-light);
@@ -21,7 +21,7 @@
   flex-direction: column;
   gap: 0.85rem;
   position: relative;
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   text-decoration: none;
 }
 
@@ -31,13 +31,13 @@
 }
 
 .product-card--oat {
-  --tone: var(--ink-chocolate);
+  --tone: var(--ink-navy);
   --tone-soft: var(--stock-deep);
 }
 
-.product-card--kraft {
-  --tone: var(--powder-blue);
-  --tone-soft: var(--powder-blue-light);
+.product-card--burgundy {
+  --tone: var(--field-burgundy);
+  --tone-soft: var(--stock-deep);
 }
 
 .product-card__frame {
@@ -76,7 +76,7 @@
   transform: scale(1.06);
 }
 
-/* The leaflet number, printed as a round stamp over the photo corner. */
+/* The piece number, printed as a round stamp over the photo corner. */
 .product-card__stamp {
   position: absolute;
   top: -8px;
@@ -121,7 +121,7 @@
   border: 0;
   border-radius: 50%;
   background: var(--stock);
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   cursor: pointer;
   box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--band) 35%, transparent);
   transition:
@@ -143,7 +143,7 @@
 }
 
 .product-card__wishlist.is-active {
-  color: var(--ink-tomato);
+  color: var(--ink-burgundy);
 }
 
 .product-card__wishlist.is-active svg {
@@ -195,7 +195,7 @@
   font-weight: 600;
 }
 
-/* The buy action: tomato, and only the buy action is tomato. */
+/* The buy action: burgundy, and only the buy action is burgundy. */
 .product-card__add {
   display: inline-flex;
   align-items: center;
@@ -204,7 +204,7 @@
   padding: 0 0.9rem 0 1.05rem;
   border: 0;
   border-radius: var(--radius-pill);
-  background: var(--ink-tomato);
+  background: var(--ink-burgundy);
   color: var(--on-ink);
   font-size: 0.9rem;
   font-weight: 700;
@@ -220,7 +220,7 @@
 }
 
 .product-card__add:hover {
-  background: var(--ink-tomato-deep);
+  background: var(--ink-burgundy-deep);
   transform: translateY(-2px);
 }
 

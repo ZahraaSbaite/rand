@@ -28,6 +28,7 @@ import Terms from "./pages/Terms.jsx";
 import AdminLogin from "./pages/AdminLogin.jsx";
 import Admin from "./pages/Admin.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 
 export default function App() {
   const isAdmin = useLocation().pathname.startsWith("/admin");
@@ -37,6 +38,7 @@ export default function App() {
       <SiteProvider>
       <CartProvider>
         <WishlistProvider>
+          <ScrollToTop />
           {!isAdmin && <Navbar />}
 
           <Routes>

@@ -146,7 +146,7 @@
 
 .faq-item:has(.faq-item__question[aria-expanded="true"]) {
   border-color: transparent;
-  box-shadow: 0 8px 24px rgba(42, 36, 32, 0.08);
+  box-shadow: 0 8px 24px rgb(50 32 27 / 0.08);
 }
 
 .faq-item--lavender:has(.faq-item__question[aria-expanded="true"]) { background: var(--lavender-light); }

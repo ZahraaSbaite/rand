@@ -60,18 +60,18 @@
   color: var(--cream);
   transform: perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
   transition: transform 0.15s ease-out, box-shadow var(--duration-med) ease;
-  box-shadow: 0 4px 16px rgba(42, 36, 32, 0.08);
+  box-shadow: 0 4px 16px rgb(50 32 27 / 0.08);
 }
 
 .collection-card:hover {
   transform: perspective(1200px) translateY(-4px) scale3d(1.01, 1.01, 1.01) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-  box-shadow: 0 24px 48px rgba(42, 36, 32, 0.22);
+  box-shadow: 0 24px 48px rgb(50 32 27 / 0.22);
 }
 
 .collection-card__scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(42, 36, 32, 0) 40%, rgba(42, 36, 32, 0.78) 100%);
+  background: linear-gradient(180deg, rgb(50 32 27 / 0) 40%, rgb(50 32 27 / 0.78) 100%);
 }
 
 .collection-card__content {

@@ -97,7 +97,7 @@ export default function Navbar() {
 
                 <NavLink to="/" className="navbar__logo">
                     <span className="navbar__logo-mark">strand</span>
-                    <span className="navbar__logo-sub">pattern leaflets</span>
+                    <span className="navbar__logo-sub">handmade crochet</span>
                 </NavLink>
 
                 <form className="navbar__search" onSubmit={(e) => e.preventDefault()}>

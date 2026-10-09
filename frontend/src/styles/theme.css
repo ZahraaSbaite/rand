@@ -1,41 +1,56 @@
-/* Strand — Pattern Leaflets.
-   Four offset inks on uncoated stock: tomato (the buy action, nothing else),
-   marigold, avocado, chocolate. Every colour on the site is one of them or a
-   tint of one. */
+/* Strand — vintage print look.
+   Seven brand colours. Navy is the text, wordmark and dark grounds; burgundy is
+   the buy action (and destructive actions in admin); marigold and avocado are
+   accents; slate is small label text. Pages sit on sand, lighter panels on
+   cream. Every colour on the site is one of them or a tint of one. */
 :root {
+  /* Brand palette */
+  --strand-navy:      #1F2A44;
+  --strand-marigold:  #F0A31A;
+  --strand-burgundy:  #7A1F2E;
+  --strand-avocado:   #5E762E;
+  --strand-cream:     #FBF0D8;
+  --strand-sand:      #F3E3B5;
+  --strand-slate:     #3D4766;
+
   /* Inks */
-  --ink-tomato: #c8381f;
-  --ink-tomato-deep: #a92e19;
-  --ink-marigold: #f2a516;
-  --ink-avocado: #5d7629;
-  --ink-chocolate: #34201a;
+  --ink-burgundy: var(--strand-burgundy);
+  /* Burgundy as a printed field (bands, stamps, book spines): fixed in both
+     modes so cream text on it always holds contrast. */
+  --field-burgundy: var(--strand-burgundy);
+  --on-field-burgundy: var(--strand-cream);
+  --ink-burgundy-deep: color-mix(in srgb, var(--strand-burgundy) 82%, var(--strand-navy));
+  --ink-marigold: var(--strand-marigold);
+  --ink-avocado: var(--strand-avocado);
+  --ink-navy: var(--strand-navy);
+  --ink-slate: var(--strand-slate);
 
   /* Stock + text */
-  --stock: #fbf0d6;
-  --stock-deep: #f4e2b8;
-  --on-ink: #fff8ea;
-  --rule: color-mix(in srgb, var(--ink-chocolate) 22%, transparent);
-  --band: #34201a;
-  --on-band: #fbf0d6;
+  --stock: var(--strand-sand);
+  --stock-deep: var(--strand-cream);
+  --on-ink: var(--strand-cream);
+  --rule: color-mix(in srgb, var(--ink-navy) 22%, transparent);
+  --band: var(--strand-navy);
+  --on-band: var(--strand-cream);
 
   /* Legacy names, remapped onto the inks so every page inherits the world */
   --cream: var(--stock);
-  --charcoal: var(--ink-chocolate);
-  --charcoal-soft: #6b4b3b;
+  --charcoal: var(--ink-navy);
+  --charcoal-soft: var(--strand-slate);
 
   --lavender: var(--ink-avocado);
-  --lavender-light: #e9e7c4;
-  --lavender-deep: #46601c;
+  --lavender-light: color-mix(in srgb, var(--strand-avocado) 18%, var(--strand-cream));
+  --lavender-deep: color-mix(in srgb, var(--strand-avocado) 80%, var(--strand-navy));
   --butter: var(--ink-marigold);
-  --butter-light: #fde0a0;
-  --powder-blue: #c79a6b;
-  --powder-blue-light: #f2dcbc;
-  --mint: #8aa24a;
-  --mint-light: #e3e8c3;
-  --coral: var(--ink-tomato);
-  --coral-light: #f8cdb9;
-  --soft-pink: #ef9f86;
-  --soft-pink-light: #f9d9c6;
+  --butter-light: color-mix(in srgb, var(--strand-marigold) 35%, var(--strand-cream));
+  --powder-blue: color-mix(in srgb, var(--strand-slate) 55%, var(--strand-sand));
+  --powder-blue-light: color-mix(in srgb, var(--strand-slate) 12%, var(--strand-sand));
+  --mint: color-mix(in srgb, var(--strand-avocado) 75%, var(--strand-sand));
+  --mint-light: color-mix(in srgb, var(--strand-avocado) 15%, var(--strand-sand));
+  --coral: var(--ink-burgundy);
+  --coral-light: color-mix(in srgb, var(--strand-burgundy) 18%, var(--strand-cream));
+  --soft-pink: color-mix(in srgb, var(--strand-burgundy) 45%, var(--strand-cream));
+  --soft-pink-light: color-mix(in srgb, var(--strand-burgundy) 12%, var(--strand-cream));
 
   --linen: var(--cream);
   --ink: var(--charcoal);
@@ -59,35 +74,43 @@
   --duration-fast: 0.2s;
   --duration-med: 0.45s;
 
+  /* Page-level copies, for components that re-tint the inks locally (the
+     burgundy navbar) and need to hand the page colours back to a child. */
+  --page-ink: var(--ink-navy);
+  --page-ink-soft: var(--charcoal-soft);
+  --page-stock: var(--stock);
+
   color-scheme: light;
 }
 
-/* Night print: the same four inks on chocolate stock. */
+/* Night print: the same palette on navy stock. Inks are lifted toward
+   cream so they hold contrast on the dark ground; the --strand-* values stay
+   fixed for text that sits on a marigold or cream field in both modes. */
 :root[data-theme="dark"] {
-  --ink-tomato: #ef6748;
-  --ink-tomato-deep: #d24c2f;
-  --ink-marigold: #f5b43a;
-  --ink-avocado: #a3bb5b;
-  --ink-chocolate: #f6e6c8;
+  --ink-burgundy: color-mix(in srgb, var(--strand-burgundy) 45%, var(--strand-cream));
+  --ink-burgundy-deep: color-mix(in srgb, var(--strand-burgundy) 60%, var(--strand-cream));
+  --ink-avocado: color-mix(in srgb, var(--strand-avocado) 65%, var(--strand-cream));
+  --ink-navy: var(--strand-cream);
+  --ink-slate: var(--strand-sand);
 
-  --stock: #22140e;
-  --stock-deep: #2f1d15;
-  --on-ink: #22140e;
-  --rule: color-mix(in srgb, #f6e6c8 20%, transparent);
-  --band: #120a06;
-  --on-band: #f6e6c8;
+  --stock: var(--strand-navy);
+  --stock-deep: color-mix(in srgb, var(--strand-slate) 45%, var(--strand-navy));
+  --on-ink: var(--strand-navy);
+  --rule: color-mix(in srgb, var(--strand-cream) 20%, transparent);
+  --band: color-mix(in srgb, var(--strand-navy) 70%, black);
+  --on-band: var(--strand-cream);
 
-  --charcoal-soft: #cdb08c;
-  --lavender-light: #2c2d17;
-  --lavender-deep: #c3d77f;
-  --butter-light: #3d2a0e;
-  --powder-blue: #c79a6b;
-  --powder-blue-light: #33231a;
-  --mint: #a3bb5b;
-  --mint-light: #262b15;
-  --coral-light: #43201a;
-  --soft-pink: #ef9f86;
-  --soft-pink-light: #3a1f19;
+  --charcoal-soft: color-mix(in srgb, var(--strand-sand) 70%, var(--strand-slate));
+  --lavender-light: color-mix(in srgb, var(--strand-avocado) 25%, var(--strand-navy));
+  --lavender-deep: color-mix(in srgb, var(--strand-avocado) 45%, var(--strand-cream));
+  --butter-light: color-mix(in srgb, var(--strand-marigold) 22%, var(--strand-navy));
+  --powder-blue: color-mix(in srgb, var(--strand-slate) 55%, var(--strand-sand));
+  --powder-blue-light: color-mix(in srgb, var(--strand-slate) 50%, var(--strand-navy));
+  --mint: color-mix(in srgb, var(--strand-avocado) 65%, var(--strand-cream));
+  --mint-light: color-mix(in srgb, var(--strand-avocado) 22%, var(--strand-navy));
+  --coral-light: color-mix(in srgb, var(--strand-burgundy) 40%, var(--strand-navy));
+  --soft-pink: color-mix(in srgb, var(--strand-burgundy) 45%, var(--strand-cream));
+  --soft-pink-light: color-mix(in srgb, var(--strand-burgundy) 30%, var(--strand-navy));
 
   color-scheme: dark;
 }

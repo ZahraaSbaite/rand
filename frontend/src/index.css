@@ -56,14 +56,14 @@ textarea {
 }
 
 body {
-  caret-color: var(--ink-tomato);
+  caret-color: var(--ink-burgundy);
   font-size: 1rem;
   line-height: 1.55;
-  scrollbar-color: color-mix(in srgb, var(--ink-chocolate) 45%, transparent) var(--stock);
+  scrollbar-color: color-mix(in srgb, var(--ink-navy) 45%, transparent) var(--stock);
 }
 
 :focus-visible {
-  outline: 2.5px dashed var(--ink-tomato);
+  outline: 2.5px dashed var(--ink-burgundy);
   outline-offset: 3px;
   border-radius: 4px;
 }

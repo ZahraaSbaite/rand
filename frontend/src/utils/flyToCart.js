@@ -14,7 +14,7 @@ const YARN_BALL_SVG = `
  * ([data-cart-target]) along an arc, then jolts the basket.
  * Purely decorative: the cart update itself happens regardless.
  */
-export default function flyToCart(fromEl, color = "var(--ink-tomato)") {
+export default function flyToCart(fromEl, color = "var(--ink-burgundy)") {
   if (typeof window === "undefined" || !fromEl) return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 

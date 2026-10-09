@@ -16,7 +16,7 @@ import heroGranny from "../assets/hero-granny-square.jpg";
 const API_URL = import.meta.env.VITE_API_URL || "";
 const RACK_SIZE = 8;
 
-const BOOK_TONES = ["marigold", "avocado", "band", "kraft", "oat", "sage"];
+const BOOK_TONES = ["band", "oat", "burgundy", "avocado"];
 
 
 // Fallback when the API is unreachable; the admin edits these as Process steps.
@@ -103,7 +103,7 @@ function CoverPiece({ piece, loading }) {
         />
       </Link>
       <span className="cover__stamp" aria-hidden="true">
-        <small>Leaflet</small>
+        <small>Piece</small>
         No. {piece.id}
       </span>
       <figcaption className="cover__caption">
@@ -241,9 +241,9 @@ export default function Home() {
         onMouseLeave={parallax.onMouseLeave}
       >
         <div className="cover__strip">
-          <span>Strand Pattern Leaflets</span>
+          <span>Strand</span>
           <span className="cover__strip-mid">Crochet, made by hand</span>
-          <span>{coverPiece ? `Leaflet No. ${coverPiece.id}` : "Small batches"}</span>
+          <span>{coverPiece ? `Piece No. ${coverPiece.id}` : "Small batches"}</span>
         </div>
 
         <div className="cover__layout">
@@ -393,28 +393,6 @@ export default function Home() {
             </p>
           </header>
           <ColorwayBuilder />
-        </div>
-      </section>
-
-      {/* ---------- Close ---------- */}
-      <section className="close" aria-label="More from Strand">
-        <figure className="close__photo">
-          <img src={heroGranny} alt="A granny square blanket in progress" loading="lazy" />
-        </figure>
-        <div className="close__text">
-          <h2 className="home__h2">Started between projects, grown one skein at a time.</h2>
-          <p>
-            Strand began as a way to unwind after long days. Friends asked where a bag or a
-            scarf came from, then asked to buy one. It's still that small.
-          </p>
-          <div className="close__links">
-            <Link to="/our-story" className="home__more">
-              Meet the maker
-            </Link>
-            <Link to="/reviews" className="home__more">
-              Read reviews
-            </Link>
-          </div>
         </div>
       </section>
     </main>

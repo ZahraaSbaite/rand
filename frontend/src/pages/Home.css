@@ -1,11 +1,11 @@
-/* Home — a stack of pattern leaflets: a marigold cover, the rack of pieces,
-   the making rounds on avocado, the pattern-book shelf, and the commission
-   band in chocolate. */
+/* Home — a printed booklet: a marigold cover, the rack of pieces,
+   the making rounds on navy, the pattern-book shelf, and the commission
+   band in burgundy. */
 .home {
   position: relative;
   overflow-x: clip;
   background: var(--stock);
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
 }
 
 .home__h2 {
@@ -40,19 +40,22 @@
   --px: 0;
   --py: 0;
   position: relative;
-  background: var(--ink-marigold);
-  color: var(--band);
+  background: var(--stock);
+  color: var(--ink-navy);
   padding: 0 clamp(1rem, 4vw, 2.5rem) clamp(3rem, 7vw, 5.5rem);
 }
 
+/* Third band of the header: a full-width burgundy strip under the navbar,
+   split from it by a hairline of cream. */
 .cover__strip {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0.85rem 0;
-  border-bottom: 2px solid var(--band);
+  margin: 0 calc(-1 * clamp(1rem, 4vw, 2.5rem));
+  padding: 0.85rem calc(clamp(1rem, 4vw, 2.5rem) + max(0px, (100% - 1280px) / 2));
+  background: var(--field-burgundy);
+  color: var(--on-field-burgundy);
+  border-top: 1px solid color-mix(in srgb, var(--on-field-burgundy) 28%, transparent);
   font-family: var(--font-mono);
   font-size: 0.82rem;
   font-weight: 700;
@@ -75,7 +78,7 @@
   font-weight: 400;
   font-size: clamp(4.25rem, 13vw, 6rem);
   line-height: 0.9;
-  color: var(--band);
+  color: var(--ink-navy);
 }
 
 /* Each letter is set like a stamp on the cover, then bobs when touched. */
@@ -126,8 +129,8 @@
   height: 54px;
   padding: 0 1.6rem;
   border-radius: var(--radius-pill);
-  background: var(--band);
-  color: var(--ink-marigold);
+  background: var(--field-burgundy);
+  color: var(--on-field-burgundy);
   font-weight: 700;
   font-size: 1.02rem;
   text-decoration: none;
@@ -153,7 +156,7 @@
 }
 
 .cover__link {
-  color: var(--band);
+  color: var(--ink-navy);
   font-weight: 700;
   text-decoration: underline;
   text-decoration-style: dashed;
@@ -187,7 +190,7 @@
 
 .cover__ring circle {
   fill: none;
-  stroke: var(--band);
+  stroke: var(--ink-navy);
   stroke-width: 1.4;
   stroke-dasharray: 5 6;
   stroke-linecap: round;
@@ -213,7 +216,7 @@
   display: block;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  border: 3px solid var(--band);
+  border: 3px solid var(--ink-navy);
   border-radius: 999px 999px var(--radius-frame) var(--radius-frame);
   background: var(--butter-light);
 }
@@ -255,8 +258,8 @@
   display: grid;
   place-content: center;
   border-radius: 50%;
-  background: var(--band);
-  color: var(--ink-marigold);
+  background: var(--field-burgundy);
+  color: var(--on-field-burgundy);
   font-family: var(--font-display);
   font-size: 1.3rem;
   line-height: 1;
@@ -270,7 +273,7 @@
   margin-bottom: 0.2rem;
   font-family: var(--font-mono);
   font-size: 0.68rem;
-  color: var(--on-band);
+  color: var(--on-field-burgundy);
 }
 
 .cover__caption {
@@ -281,11 +284,11 @@
   gap: 0.25rem 1rem;
   margin: -2.25rem 1rem 0;
   padding: 1rem 1.1rem 1rem 1.25rem;
-  border: 2px solid var(--band);
+  border: 2px solid var(--ink-navy);
   border-radius: 22px;
-  background: var(--stock);
-  color: var(--ink-chocolate);
-  box-shadow: 0 16px 30px -14px rgba(52, 32, 26, 0.45);
+  background: var(--stock-deep);
+  color: var(--ink-navy);
+  box-shadow: 0 16px 30px -14px rgb(50 32 27 / 0.45);
 }
 
 .cover__caption-name {
@@ -321,7 +324,7 @@ a.cover__caption-name:hover {
   padding: 0 1.3rem;
   border: 0;
   border-radius: var(--radius-pill);
-  background: var(--ink-tomato);
+  background: var(--ink-burgundy);
   color: var(--on-ink);
   font-size: 0.98rem;
   font-weight: 700;
@@ -332,7 +335,7 @@ a.cover__caption-name:hover {
 }
 
 .cover__add:hover {
-  background: var(--ink-tomato-deep);
+  background: var(--ink-burgundy-deep);
   transform: translateY(-2px);
 }
 
@@ -375,10 +378,10 @@ a.cover__caption-name:hover {
   flex-shrink: 0;
   height: 40px;
   padding: 0 1.1rem;
-  border: 1.5px dashed color-mix(in srgb, var(--ink-chocolate) 50%, transparent);
+  border: 1.5px dashed color-mix(in srgb, var(--ink-navy) 50%, transparent);
   border-radius: var(--radius-pill);
   background: transparent;
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   font-size: 0.92rem;
   font-weight: 600;
   text-transform: capitalize;
@@ -389,7 +392,7 @@ a.cover__caption-name:hover {
 }
 
 .rack__chip:hover {
-  border-color: var(--ink-chocolate);
+  border-color: var(--ink-navy);
 }
 
 .rack__chip.is-active {
@@ -435,8 +438,8 @@ a.cover__caption-name:hover {
 /* ================= Making ================= */
 .making {
   position: relative;
-  background: var(--ink-avocado);
-  color: var(--on-ink);
+  background: var(--band);
+  color: var(--on-band);
   padding: clamp(4rem, 9vw, 7rem) clamp(1rem, 4vw, 3rem);
 }
 
@@ -486,8 +489,8 @@ a.cover__caption-name:hover {
   place-content: center;
   margin: 0;
   border-radius: 50%;
-  background: var(--ink-marigold);
-  color: var(--band);
+  background: var(--field-burgundy);
+  color: var(--on-field-burgundy);
   text-align: center;
   font-family: var(--font-mono);
   font-size: 0.8rem;
@@ -582,7 +585,7 @@ a.cover__caption-name:hover {
   width: fit-content;
   max-width: 1280px;
   margin: 2.5rem auto 0;
-  color: var(--on-ink);
+  color: var(--on-band);
 }
 
 .making > .making__more {
@@ -644,7 +647,7 @@ a.cover__caption-name:hover {
 
 .shelf__book:hover {
   transform: translateY(-8px) rotate(var(--tilt));
-  box-shadow: 0 24px 36px -18px rgba(52, 32, 26, 0.55);
+  box-shadow: 0 24px 36px -18px rgb(50 32 27 / 0.55);
 }
 
 .shelf__book:active {
@@ -693,43 +696,43 @@ a.cover__caption-name:hover {
   --book-text: var(--on-band);
 }
 
-.shelf__book--kraft {
-  --book: var(--powder-blue);
-  --book-text: #2a1912;
+.shelf__book--burgundy {
+  --book: var(--field-burgundy);
+  --book-text: var(--on-field-burgundy);
 }
 
 .shelf__book--oat {
   --book: var(--stock-deep);
-  --book-text: var(--ink-chocolate);
+  --book-text: var(--ink-navy);
 }
 
 .shelf__book--sage {
   --book: var(--mint-light);
-  --book-text: var(--ink-chocolate);
+  --book-text: var(--ink-navy);
 }
 
 /* Night print: every book stays a printed ink field against the stock. */
 :root[data-theme="dark"] .shelf__book--band {
-  --book: #3a2419;
-  --book-text: #f6e6c8;
-  box-shadow: inset 0 0 0 2px #f6e6c8;
+  --book: var(--strand-slate);
+  --book-text: var(--strand-cream);
+  box-shadow: inset 0 0 0 2px var(--strand-cream);
 }
 
 :root[data-theme="dark"] .shelf__book--oat {
-  --book: #f6e6c8;
-  --book-text: #22140e;
+  --book: var(--strand-cream);
+  --book-text: var(--strand-navy);
 }
 
 :root[data-theme="dark"] .shelf__book--sage {
-  --book: #a3bb5b;
-  --book-text: #22140e;
+  --book: var(--ink-avocado);
+  --book-text: var(--strand-navy);
 }
 
 /* ================= Commission ================= */
 .commission {
   position: relative;
-  background: var(--band);
-  color: var(--on-band);
+  background: var(--field-burgundy);
+  color: var(--on-field-burgundy);
   padding: clamp(4rem, 9vw, 7rem) clamp(1rem, 4vw, 3rem);
 }
 
@@ -751,48 +754,6 @@ a.cover__caption-name:hover {
   margin: 1rem 0 0;
   font-size: 1.1rem;
   line-height: 1.6;
-}
-
-/* ================= Close ================= */
-.close {
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: clamp(2rem, 6vw, 5rem);
-  align-items: center;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: clamp(4rem, 9vw, 7rem) clamp(1rem, 4vw, 3rem);
-}
-
-.close__photo {
-  margin: 0;
-  transform: rotate(-2deg);
-}
-
-.close__photo img {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 3px solid var(--ink-chocolate);
-}
-
-.close__text .home__h2 {
-  font-size: clamp(1.8rem, 3.6vw, 2.8rem);
-}
-
-.close__text p {
-  max-width: 36rem;
-  margin: 1rem 0 0;
-  font-size: 1.1rem;
-  line-height: 1.6;
-}
-
-.close__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem 2rem;
-  margin-top: 1.5rem;
 }
 
 /* ================= Responsive ================= */
@@ -817,14 +778,6 @@ a.cover__caption-name:hover {
 
   .shelf__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .close {
-    grid-template-columns: 1fr;
-  }
-
-  .close__photo {
-    max-width: 320px;
   }
 }
 

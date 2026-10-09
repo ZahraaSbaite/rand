@@ -1,4 +1,5 @@
 import "./InfoPage.css";
+import { Link } from "react-router-dom";
 import heroHands from "../assets/hero-crochet-hands.jpg";
 import heroGranny from "../assets/hero-granny-square.jpg";
 import { useContentList } from "../context/SiteContext.jsx";
@@ -25,12 +26,22 @@ export default function OurStory() {
 
   return (
     <main className="info-page">
-      <header className="info-page__header">
-        <h1 className="info-page__title">A World of Color + Thread</h1>
-        <p className="info-page__intro">
-          Strand started as a hobby between projects and grew, one skein at a time, into a
-          small studio built around slow, deliberate making.
-        </p>
+      <header className="our-story__hero">
+        <figure className="our-story__hero-photo">
+          <img src={heroGranny} alt="A basket of yarn and works in progress" />
+        </figure>
+        <div className="our-story__hero-text">
+          <p className="info-page__eyebrow">A World of Color + Thread</p>
+          <h1 className="our-story__hero-title">Started between projects, grown one skein at a time.</h1>
+          <p>
+            Strand began as a way to unwind after long days. Friends asked where a bag or a
+            scarf came from, then asked to buy one. It's still that small: a studio built around
+            slow, deliberate making.
+          </p>
+          <Link to="/reviews" className="our-story__hero-link">
+            Read reviews
+          </Link>
+        </div>
       </header>
 
       {blocks.map((block, i) => {

@@ -6,9 +6,9 @@ import { getImageUrl } from "../utils/imageUrl.js";
 import flyToCart from "../utils/flyToCart.js";
 import "./ProductCard.css";
 
-// Leaflet grounds rotate through the inks so a grid reads like a rack of
+// Card grounds rotate through the inks so a grid reads like a rack of
 // pattern booklets.
-const CARD_TONES = ["marigold", "avocado", "oat", "kraft"];
+const CARD_TONES = ["burgundy"];
 
 export default function ProductCard({ product, colorIndex = 0 }) {
   const price = (product.price_cents / 100).toFixed(2);

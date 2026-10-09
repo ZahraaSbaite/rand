@@ -1,20 +1,20 @@
-/* Strand Studio — the admin. Same inks as the shop, set quietly: chocolate
-   sidebar, stock work surface, marigold for "you are here", chocolate
+/* Strand Studio — the admin. Same inks as the shop, set quietly: navy
+   sidebar, stock work surface, marigold for "you are here", navy
    buttons, red only for destructive actions. */
 
 .admin-shell {
-  --admin-danger: #a3301c;
+  --admin-danger: var(--strand-burgundy);
   --admin-surface: color-mix(in srgb, var(--stock-deep) 45%, var(--stock));
   display: grid;
   grid-template-columns: 248px minmax(0, 1fr);
   min-height: 100vh;
   background: var(--stock);
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   font-family: var(--font-body);
 }
 
 :root[data-theme="dark"] .admin-shell {
-  --admin-danger: #f08b74;
+  --admin-danger: color-mix(in srgb, var(--strand-burgundy) 45%, var(--strand-cream));
 }
 
 /* ---------- Sidebar ---------- */
@@ -100,7 +100,7 @@
 
 .admin-nav__item.is-active {
   background: var(--ink-marigold);
-  color: #2a1912;
+  color: var(--strand-navy);
   font-weight: 700;
 }
 
@@ -109,8 +109,8 @@
   height: 20px;
   padding: 0 6px;
   border-radius: var(--radius-pill);
-  background: var(--ink-tomato);
-  color: #fff8ea;
+  background: var(--ink-burgundy);
+  color: var(--strand-cream);
   font-size: 0.72rem;
   font-weight: 700;
   line-height: 20px;
@@ -119,7 +119,7 @@
 }
 
 .admin-nav__item.is-active .admin-nav__count {
-  background: #2a1912;
+  background: var(--strand-navy);
   color: var(--ink-marigold);
 }
 
@@ -234,12 +234,12 @@
 
 .admin-btn--ghost {
   background: transparent;
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   border-color: var(--rule);
 }
 
 .admin-btn--ghost:hover {
-  border-color: var(--ink-chocolate);
+  border-color: var(--ink-navy);
 }
 
 .admin-btn--small {
@@ -252,7 +252,7 @@
   padding: 0.3rem 0.2rem;
   border: 0;
   background: none;
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   font: inherit;
   font-size: 0.88rem;
   font-weight: 600;
@@ -283,7 +283,7 @@
   font-weight: 700;
   white-space: nowrap;
   background: var(--stock-deep);
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
 }
 
 .admin-pill--ok {
@@ -293,12 +293,12 @@
 
 .admin-pill--warn {
   background: var(--butter-light);
-  color: #7a4a00;
+  color: var(--strand-slate);
 }
 
 .admin-pill--info {
   background: var(--powder-blue-light);
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
 }
 
 .admin-pill--bad {
@@ -388,7 +388,7 @@
   border: 1.5px solid var(--rule);
   border-radius: 12px;
   background: var(--stock);
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   font: inherit;
   font-size: 0.95rem;
   transition: border-color var(--duration-fast) var(--ease-out);
@@ -402,7 +402,7 @@
 .admin-shell input:focus,
 .admin-shell select:focus,
 .admin-shell textarea:focus {
-  border-color: var(--ink-chocolate);
+  border-color: var(--ink-navy);
   outline: none;
 }
 
@@ -498,7 +498,7 @@
 
 .admin-image-field__upload:focus-within,
 .admin-gallery__add:focus-within {
-  outline: 2.5px dashed var(--ink-tomato);
+  outline: 2.5px dashed var(--ink-burgundy);
   outline-offset: 2px;
 }
 
@@ -537,7 +537,7 @@
   min-height: 28px;
   border: 0;
   background: none;
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   font: inherit;
   font-size: 0.75rem;
   cursor: pointer;
@@ -563,7 +563,7 @@
 }
 
 .admin-gallery__add:hover {
-  border-color: var(--ink-chocolate);
+  border-color: var(--ink-navy);
 }
 
 /* ---------- Toolbar, tabs ---------- */
@@ -601,7 +601,7 @@
   border: 1.5px solid var(--rule);
   border-radius: var(--radius-pill);
   background: transparent;
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   font: inherit;
   font-size: 0.88rem;
   font-weight: 600;
@@ -644,7 +644,7 @@
 
 .admin-table td {
   padding: 0.65rem 0.9rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--ink-chocolate) 10%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--ink-navy) 10%, transparent);
   vertical-align: middle;
 }
 
@@ -801,7 +801,7 @@
   border: 0;
   border-radius: 6px;
   background: none;
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   font-size: 0.85rem;
   cursor: pointer;
 }
@@ -866,7 +866,7 @@
 .admin-stat:first-child {
   background: var(--ink-marigold);
   border-color: var(--ink-marigold);
-  color: #2a1912;
+  color: var(--strand-navy);
 }
 
 .admin-stat__label {
@@ -936,7 +936,7 @@
   border: 0;
   border-bottom: 1px dashed var(--rule);
   background: none;
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   font: inherit;
   text-align: left;
   cursor: pointer;
@@ -1121,7 +1121,7 @@
   padding: 0.85rem 1rem;
   border: 0;
   background: none;
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
   font: inherit;
   font-size: 0.92rem;
   text-align: left;
@@ -1151,7 +1151,7 @@
   height: 8px;
   margin-right: 0.45rem;
   border-radius: 50%;
-  background: var(--ink-tomato);
+  background: var(--ink-burgundy);
   vertical-align: middle;
 }
 
@@ -1203,7 +1203,7 @@
 .admin-empty__title {
   margin: 0 0 0.35rem;
   font-weight: 700;
-  color: var(--ink-chocolate);
+  color: var(--ink-navy);
 }
 
 .admin-empty p {
@@ -1236,7 +1236,7 @@
 
 .admin-toast--bad {
   background: var(--admin-danger);
-  color: #fff8ea;
+  color: var(--strand-cream);
 }
 
 @keyframes admin-toast-in {
