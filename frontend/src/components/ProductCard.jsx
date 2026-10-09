@@ -12,7 +12,7 @@ const CARD_TONES = ["marigold", "avocado", "oat", "kraft"];
 
 export default function ProductCard({ product, colorIndex = 0 }) {
   const price = (product.price_cents / 100).toFixed(2);
-  const fallback = "https://placehold.co/600x800/f4e2b8/34201a?text=RRAND";
+  const fallback = "https://placehold.co/600x800/f4e2b8/34201a?text=strand";
   const tone = CARD_TONES[colorIndex % CARD_TONES.length];
   const soldOut = product.stock_quantity !== undefined && Number(product.stock_quantity) <= 0;
   const { addToCart } = useCart();

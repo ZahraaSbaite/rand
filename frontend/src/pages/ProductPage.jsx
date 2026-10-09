@@ -8,7 +8,7 @@ import { getImageUrl } from "../utils/imageUrl.js";
 import ProductReviews from "../components/ProductReviews.jsx";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
-const FALLBACK_IMAGE = "https://placehold.co/700x700/e8e2f8/2a2420?text=RRAND";
+const FALLBACK_IMAGE = "https://placehold.co/700x700/e8e2f8/2a2420?text=strand";
 
 const TABS = ["Description", "Materials", "Dimensions", "Care", "Production Time", "Shipping"];
 

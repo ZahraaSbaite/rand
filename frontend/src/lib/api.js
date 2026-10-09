@@ -1,7 +1,7 @@
 export const API_URL = import.meta.env.VITE_API_URL || "";
 
 /**
- * fetch wrapper for the RRAND API: sends cookies, encodes JSON bodies,
+ * fetch wrapper for the Strand API: sends cookies, encodes JSON bodies,
  * and throws an Error carrying the server's message on failure.
  */
 export async function api(path, { method = "GET", body, signal } = {}) {

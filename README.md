@@ -1,4 +1,4 @@
-# rrand.archive
+# strand
 
 A handmade crochet shop: React (frontend) + Node/Express (backend) + PostgreSQL (database).
 

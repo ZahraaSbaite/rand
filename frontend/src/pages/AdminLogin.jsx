@@ -38,7 +38,7 @@ export default function AdminLogin() {
     return (
         <main className="admin-login">
             <form className="admin-login__form" onSubmit={handleSubmit}>
-                <p className="admin-login__mark">RRAND</p>
+                <p className="admin-login__mark">strand</p>
                 <h1>Studio login</h1>
                 <input
                     type="password"

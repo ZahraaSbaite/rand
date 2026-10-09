@@ -96,7 +96,7 @@ export default function MessagesInbox() {
                                     <div className="admin-row">
                                         <a
                                             className="admin-btn admin-btn--small"
-                                            href={`mailto:${m.email}?subject=${encodeURIComponent("Re: " + (m.subject || "Your message to RRAND"))}`}
+                                            href={`mailto:${m.email}?subject=${encodeURIComponent("Re: " + (m.subject || "Your message to Strand"))}`}
                                         >
                                             Reply by email
                                         </a>

@@ -66,7 +66,7 @@ export default function Wishlist() {
             <div className="wishlist-card" key={item.id}>
               <Link to={`/product/${item.id}`} className="wishlist-card__image-wrap">
                 <img
-                  src={item.image_url || "https://placehold.co/400x400/e8e2f8/2a2420?text=RRAND"}
+                  src={item.image_url || "https://placehold.co/400x400/e8e2f8/2a2420?text=strand"}
                   alt={item.name}
                 />
               </Link>

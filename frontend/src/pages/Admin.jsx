@@ -135,7 +135,7 @@ export default function Admin() {
                 <aside className="admin-nav" aria-label="Admin sections">
                     <div className="admin-nav__brand">
                         <Link to="/" className="admin-nav__logo">
-                            RRAND
+                            strand
                         </Link>
                         <span className="admin-nav__tag">Studio</span>
                     </div>

@@ -10,7 +10,7 @@ web
 A mixed audience with no single dominant group (confirmed): trend-led younger shoppers buying bags and totes for style; gift buyers of all ages looking for scarves, gloves, cardigans and commissions; and craft lovers who value the handmade process. Most arrive browsing, not searching for a specific SKU.
 
 ## Product Purpose
-RRAND is an online shop for a small crochet studio. It sells finished, small-batch handmade bags, tote bags, scarves, cardigans and gloves (confirmed product range) and takes custom commissions. Success is a visitor finding a piece they love, trusting that it is genuinely handmade, and either buying it or starting a custom order.
+Strand is an online shop for a small crochet studio. It sells finished, small-batch handmade bags, tote bags, scarves, cardigans and gloves (confirmed product range) and takes custom commissions. Success is a visitor finding a piece they love, trusting that it is genuinely handmade, and either buying it or starting a custom order.
 
 ## Positioning
 Every piece is crocheted by hand in small batches and sold as it is finished; pieces sell out and don't always return the same way twice. No mass production, no factories.
@@ -27,7 +27,7 @@ Every piece is crocheted by hand in small batches and sold as it is finished; pi
 - No animation library is installed; motion today is CSS plus small hooks (`useReveal`, `useTilt`, `useParallax`).
 
 ## Brand Commitments
-- Name: **RRAND** (confirmed). Tagline in use: "A World of Color + Thread".
+- Name: **Strand** (confirmed). Tagline in use: "A World of Color + Thread".
 - Voice: warm, unhurried, maker-first ("one skein at a time", "slow, deliberate making").
 - Everything else visual (palette, type, layout) is open to replacement (confirmed).
 

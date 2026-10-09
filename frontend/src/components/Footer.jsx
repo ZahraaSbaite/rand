@@ -35,12 +35,12 @@ export default function Footer() {
         <footer className="footer">
             <div className="footer__inner">
                 <div className="footer__brand">
-                    <p className="footer__mark">RRAND</p>
+                    <p className="footer__mark">strand</p>
                     <p className="footer__tag">{settings.hero_tagline}. Made by hand, in small batches.</p>
                 </div>
 
-                <nav className="footer__col" aria-label="RRAND">
-                    <h4>RRAND</h4>
+                <nav className="footer__col" aria-label="Strand">
+                    <h4>strand</h4>
                     <Link to="/our-story">About us</Link>
                     <Link to="/contact">Contact us</Link>
                     <Link to="/faq">FAQ</Link>
@@ -79,7 +79,7 @@ export default function Footer() {
             </div>
 
             <div className="footer__credit">
-                <span>© RRAND</span>
+                <span>© Strand</span>
                 <span>
                     Done by{" "}
                     <a

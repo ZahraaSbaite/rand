@@ -25,7 +25,7 @@ export default function Collections() {
       <header className="collections-page__header">
         <h1 className="collections-page__title">Collections</h1>
         <p className="collections-page__intro">
-          A closer look at the pieces that define RRAND, grouped by the feeling they bring
+          A closer look at the pieces that define Strand, grouped by the feeling they bring
           to a room — or an outfit.
         </p>
       </header>

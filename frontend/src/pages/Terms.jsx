@@ -10,7 +10,7 @@ export default function Terms() {
       <header className="info-page__header">
         <h1 className="info-page__title">Terms of Service</h1>
         <p className="info-page__intro">
-          The basics of buying from RRAND.
+          The basics of buying from Strand.
         </p>
       </header>
 

@@ -7,7 +7,7 @@ const GROUPS = [
     {
         title: "Homepage",
         fields: [
-            { key: "hero_tagline", label: "Tagline under RRAND" },
+            { key: "hero_tagline", label: "Tagline under the logo" },
             { key: "hero_text", label: "Intro text", type: "textarea" },
             {
                 key: "ticker",

@@ -33,7 +33,7 @@ export default function TheProcess() {
       <header className="info-page__header">
         <h1 className="info-page__title">The Process</h1>
         <p className="info-page__intro">
-          From skein to finished piece — here's how every RRAND item comes together.
+          From skein to finished piece — here's how every Strand item comes together.
         </p>
       </header>
 

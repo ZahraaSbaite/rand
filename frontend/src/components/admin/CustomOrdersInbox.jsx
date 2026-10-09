@@ -131,7 +131,7 @@ function Request({ request, onChange, onDelete }) {
                     />
                 </label>
                 <div className="admin-row">
-                    <a className="admin-btn admin-btn--small admin-btn--ghost" href={`mailto:${request.email}?subject=${encodeURIComponent("Your RRAND custom order")}`}>
+                    <a className="admin-btn admin-btn--small admin-btn--ghost" href={`mailto:${request.email}?subject=${encodeURIComponent("Your Strand custom order")}`}>
                         Reply by email
                     </a>
                     <button type="button" className="admin-link-btn admin-link-btn--danger" onClick={() => onDelete(request)}>

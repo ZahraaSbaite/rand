@@ -11,7 +11,7 @@ const FALLBACK = [
   {
     id: 1,
     heading: "How it began",
-    body: "What started as a way to unwind after long days turned into something bigger — friends asking where a bag or a scarf came from, then asking to buy one for themselves. RRAND was born out of that word-of-mouth, one stitch at a time.",
+    body: "What started as a way to unwind after long days turned into something bigger — friends asking where a bag or a scarf came from, then asking to buy one for themselves. Strand was born out of that word-of-mouth, one stitch at a time.",
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ export default function OurStory() {
       <header className="info-page__header">
         <h1 className="info-page__title">A World of Color + Thread</h1>
         <p className="info-page__intro">
-          RRAND started as a hobby between projects and grew, one skein at a time, into a
+          Strand started as a hobby between projects and grew, one skein at a time, into a
           small studio built around slow, deliberate making.
         </p>
       </header>

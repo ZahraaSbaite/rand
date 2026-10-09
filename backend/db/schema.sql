@@ -217,7 +217,7 @@ WHERE NOT EXISTS (SELECT 1 FROM process_steps);
 
 INSERT INTO story_blocks (heading, body, sort_order)
 SELECT * FROM (VALUES
-  ('How it began', 'What started as a way to unwind after long days turned into something bigger — friends asking where a bag or a scarf came from, then asking to buy one for themselves. RRAND was born out of that word-of-mouth, one stitch at a time.', 1),
+  ('How it began', 'What started as a way to unwind after long days turned into something bigger — friends asking where a bag or a scarf came from, then asking to buy one for themselves. Strand was born out of that word-of-mouth, one stitch at a time.', 1),
   ('Small-batch, on purpose', 'Every piece is made in limited quantities and sold as it''s finished — no mass production, no overseas factories. Just yarn, hooks, and time. That''s why some pieces sell out and don''t always come back the same way twice.', 2)
 ) AS v(heading, body, sort_order)
 WHERE NOT EXISTS (SELECT 1 FROM story_blocks);

@@ -1,5 +1,5 @@
 ---
-name: RRAND
+name: Strand
 description: A world of color + thread. Handmade crochet, presented as 1970s pattern leaflets.
 colors:
   ink-tomato: "#c8381f"
@@ -75,13 +75,13 @@ components:
     padding: "10px"
 ---
 
-# Design System: RRAND
+# Design System: Strand
 
 ## Overview
 
 **Creative North Star: "The Pattern Leaflet"**
 
-RRAND's shop is a stack of 1970s crochet pattern leaflets. Every piece is presented the way an old leaflet presents a pattern: a number stamped on the cover, its facts set plainly, and the rounds it took to make. Colour is offset ink printed flat across whole sections, not accents sprinkled on a neutral page. The sections alternate between marigold cover, uncoated stock, avocado and chocolate, and that rhythm is the page structure.
+Strand's shop is a stack of 1970s crochet pattern leaflets. Every piece is presented the way an old leaflet presents a pattern: a number stamped on the cover, its facts set plainly, and the rounds it took to make. Colour is offset ink printed flat across whole sections, not accents sprinkled on a neutral page. The sections alternate between marigold cover, uncoated stock, avocado and chocolate, and that rhythm is the page structure.
 
 The world is warm and loud but orderly: one display face with real swagger, workhorse text, typewriter notation for numbers and labels. Motion is physical and crafty: a strand of yarn is worked down the page as you scroll, stamps land with a small overshoot, and yarn balls roll into the basket.
 
@@ -127,7 +127,7 @@ Night print (`data-theme="dark"`) redefines the same tokens: stock becomes #2214
 **Character:** A heavy, swashy 70s italic carrying the brand voice over a plain, sturdy grotesk, with typewriter notation for anything numbered.
 
 ### Hierarchy
-- **Display** (400, clamp(4.25rem, 13vw, 6rem), 0.9): the RRAND logotype on the cover only.
+- **Display** (400, clamp(4.25rem, 13vw, 6rem), 0.9): the Strand logotype on the cover only.
 - **Headline** (400, clamp(2.1rem, 4.6vw, 3.6rem), 1.05): section titles and pattern-book labels.
 - **Title** (800, clamp(1.4rem, 2.4vw, 1.9rem), 1.15): row and card headings, in Archivo.
 - **Body** (400, 1rem–1.1rem, 1.55–1.6): running copy, max about 36rem wide.
@@ -172,7 +172,7 @@ Rounded photo frames (28px) set inside a 10px tinted mat; the cover photo is an 
 - **Focus ring (global):** 2.5px dashed tomato outline, 3px offset.
 
 ### Navigation
-- A running chocolate ticker, then a stock masthead with the RRAND logotype, a search pill and icons, then a centred menu whose links get a stitched underline worked in from the left. The cart badge pops on count change, and the basket jolts when a yarn ball lands. On mobile, a marigold drawer slides in from the left.
+- A running chocolate ticker, then a stock masthead with the Strand logotype, a search pill and icons, then a centred menu whose links get a stitched underline worked in from the left. The cart badge pops on count change, and the basket jolts when a yarn ball lands. On mobile, a marigold drawer slides in from the left.
 
 ### Yarn Strand (signature)
 A two-ply strand (5px chocolate core, dashed marigold twist) runs down the page gutters and crosses only at section seams with a chain-stitch loop. It is drawn by scroll, with a rolling yarn ball at its tip. Under reduced motion it is fully drawn and the ball is hidden.

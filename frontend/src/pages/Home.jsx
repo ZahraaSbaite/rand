@@ -235,13 +235,13 @@ export default function Home() {
       <section
         className="cover"
         data-strand
-        aria-label="RRAND"
+        aria-label="Strand"
         ref={parallax.ref}
         onMouseMove={parallax.onMouseMove}
         onMouseLeave={parallax.onMouseLeave}
       >
         <div className="cover__strip">
-          <span>RRAND Pattern Leaflets</span>
+          <span>Strand Pattern Leaflets</span>
           <span className="cover__strip-mid">Crochet, made by hand</span>
           <span>{coverPiece ? `Leaflet No. ${coverPiece.id}` : "Small batches"}</span>
         </div>
@@ -249,7 +249,7 @@ export default function Home() {
         <div className="cover__layout">
           <div className="cover__text">
             <h1 className="cover__title">
-              {"RRAND".split("").map((letter, i) => (
+              {"strand".split("").map((letter, i) => (
                 <span key={i} style={{ "--i": i }}>
                   {letter}
                 </span>
@@ -397,14 +397,14 @@ export default function Home() {
       </section>
 
       {/* ---------- Close ---------- */}
-      <section className="close" aria-label="More from RRAND">
+      <section className="close" aria-label="More from Strand">
         <figure className="close__photo">
           <img src={heroGranny} alt="A granny square blanket in progress" loading="lazy" />
         </figure>
         <div className="close__text">
           <h2 className="home__h2">Started between projects, grown one skein at a time.</h2>
           <p>
-            RRAND began as a way to unwind after long days. Friends asked where a bag or a
+            Strand began as a way to unwind after long days. Friends asked where a bag or a
             scarf came from, then asked to buy one. It's still that small.
           </p>
           <div className="close__links">

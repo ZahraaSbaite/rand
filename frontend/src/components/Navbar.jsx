@@ -96,7 +96,7 @@ export default function Navbar() {
                 </button>
 
                 <NavLink to="/" className="navbar__logo">
-                    <span className="navbar__logo-mark">RRAND</span>
+                    <span className="navbar__logo-mark">strand</span>
                     <span className="navbar__logo-sub">pattern leaflets</span>
                 </NavLink>
 
