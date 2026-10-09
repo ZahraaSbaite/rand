@@ -67,7 +67,8 @@ The whole site is one Vercel project: the React build is served as static files 
 
 1. Import the repository in Vercel. Leave the framework preset as **Other** and the root
    directory as the repo root; `vercel.json` sets the build.
-2. **Storage → Neon Postgres**: create (or connect) a database for the project. This sets `DATABASE_URL`.
+2. **Storage → Supabase**: create a database and connect it to the project (Production and Preview).
+   This sets `POSTGRES_URL`, which the app uses.
 3. **Storage → Blob**: create a store for the project. This sets `BLOB_READ_WRITE_TOKEN`;
    uploaded images are saved there.
 4. **Settings → Environment Variables**: add

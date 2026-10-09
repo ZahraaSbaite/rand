@@ -8,7 +8,7 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            // DATABASE_URL / POSTGRES_URL are set by Vercel's Neon integration.
+            // POSTGRES_URL is set by Vercel's Supabase integration (its pooled connection).
             'url' => env('DB_URL', env('DATABASE_URL', env('POSTGRES_URL'))),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
@@ -22,6 +22,11 @@ return [
             // Timestamps are stored without a zone; keep them in UTC.
             'timezone' => 'UTC',
             'sslmode' => env('DB_SSLMODE', 'prefer'),
+            // Connection poolers in transaction mode (Supabase's included) don't
+            // support server-side prepared statements, so let PDO build queries.
+            'options' => [
+                PDO::ATTR_EMULATE_PREPARES => true,
+            ],
         ],
 
     ],
