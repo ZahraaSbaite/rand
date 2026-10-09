@@ -1,9 +1,30 @@
 [build]
   base = "frontend"
-  command = "npm run build"
+  # Backend deps are installed too, since the API is bundled into a function
+  command = "npm ci --prefix ../backend && npm run build"
   publish = "dist"
 
-# Send every route to the React app so /admin, /cart, etc. work on refresh
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  node_bundler = "esbuild"
+  # pg optionally loads a native driver we don't use
+  external_node_modules = ["pg-native"]
+  included_files = ["../backend/db/schema.sql"]
+
+# API and uploaded images are served by the backend function
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/uploads/*"
+  to = "/.netlify/functions/api/uploads/:splat"
+  status = 200
+
+# Send every other route to the React app so /admin, /cart, etc. work on refresh
 [[redirects]]
   from = "/*"
   to = "/index.html"

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import rateLimit from "express-rate-limit";
 import { requireAdmin } from "../middleware/requireAdmin.js";
@@ -19,9 +19,7 @@ const loginLimiter = rateLimit({
 const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    // The frontend (Netlify) and API (Render) are on different sites in
-    // production, so the cookie must be cross-site to be sent at all.
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    sameSite: "strict",
     maxAge: SESSION_MAX_AGE_MS,
     path: "/",
 };

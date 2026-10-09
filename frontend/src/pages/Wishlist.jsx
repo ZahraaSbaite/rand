@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useWishlist } from "../context/WishlistContext.jsx";
 import { useCart } from "../context/CartContext.jsx";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 export default function Wishlist() {
   const { wishlistIds, removeFromWishlist } = useWishlist();

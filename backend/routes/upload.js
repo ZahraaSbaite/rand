@@ -1,30 +1,12 @@
 import { Router } from 'express';
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
 import { requireAdmin } from '../middleware/requireAdmin.js';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadsDir = path.join(__dirname, '..', 'uploads');
-
-// Ensure the uploads folder exists
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadsDir),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const safeName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-        cb(null, safeName);
-    },
-});
+import { saveUpload } from '../lib/fileStore.js';
 
 const upload = multer({
-    storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+    storage: multer.memoryStorage(),
+    // Netlify functions cap request bodies at ~6MB, which is ~4.5MB of file once encoded
+    limits: { fileSize: 4 * 1024 * 1024 }, // 4MB max
     fileFilter: (req, file, cb) => {
         const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         if (allowed.includes(file.mimetype)) {
@@ -38,11 +20,15 @@ const upload = multer({
 const router = Router();
 
 // POST /api/upload — admin only, single image
-router.post('/', requireAdmin, upload.single('image'), (req, res) => {
+router.post('/', requireAdmin, upload.single('image'), async (req, res, next) => {
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
     }
-    res.status(201).json({ url: `/uploads/${req.file.filename}` });
+    try {
+        res.status(201).json({ url: await saveUpload(req.file) });
+    } catch (err) {
+        next(err);
+    }
 });
 
 export default router;

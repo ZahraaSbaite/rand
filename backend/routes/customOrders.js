@@ -1,20 +1,15 @@
 import { Router } from "express";
 import multer from "multer";
-import path from "path";
 import { pool } from "../db/pool.js";
 import { requireAdmin } from "../middleware/requireAdmin.js";
+import { saveUpload } from "../lib/fileStore.js";
 
 const router = Router();
 
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: path.join(process.cwd(), "uploads"),
-    filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname).slice(0, 10);
-      cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
-    },
-  }),
-  limits: { fileSize: 8 * 1024 * 1024 },
+  storage: multer.memoryStorage(),
+  // Netlify functions cap request bodies at ~6MB
+  limits: { fileSize: 4 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     cb(null, /^image\//.test(file.mimetype));
   },
@@ -43,9 +38,8 @@ router.post("/", upload.single("inspiration_image"), async (req, res) => {
     });
   }
 
-  const inspirationImageUrl = req.file ? `/uploads/${req.file.filename}` : null;
-
   try {
+    const inspirationImageUrl = req.file ? await saveUpload(req.file) : null;
     const result = await pool.query(
       `INSERT INTO custom_order_requests
         (name, email, phone, product_type, description, preferred_colors, preferred_size,

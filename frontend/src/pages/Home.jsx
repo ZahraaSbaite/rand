@@ -13,7 +13,7 @@ import slugify from "../lib/slug.js";
 import heroHands from "../assets/hero-crochet-hands.jpg";
 import heroGranny from "../assets/hero-granny-square.jpg";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL || "";
 const RACK_SIZE = 8;
 
 const BOOK_TONES = ["marigold", "avocado", "band", "kraft", "oat", "sage"];
