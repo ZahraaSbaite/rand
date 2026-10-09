@@ -11,9 +11,9 @@
     }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.php" },
-    { "source": "/uploads/(.*)", "destination": "/api/index.php" },
-    { "source": "/health", "destination": "/api/index.php" },
+    { "source": "/api/:path*", "destination": "/api/index.php?__route=/api/:path*" },
+    { "source": "/uploads/:path*", "destination": "/api/index.php?__route=/uploads/:path*" },
+    { "source": "/health", "destination": "/api/index.php?__route=/health" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

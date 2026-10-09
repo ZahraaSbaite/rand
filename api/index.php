@@ -26,4 +26,19 @@ foreach ($defaults as $key => $value) {
     }
 }
 
+// vercel.json passes the original path as ?__route=, since the rewrite
+// replaces the request path with /api/index.php.
+if (isset($_GET['__route'])) {
+    $path = '/'.ltrim((string) $_GET['__route'], '/');
+    unset($_GET['__route']);
+    $query = http_build_query($_GET);
+    $_SERVER['REQUEST_URI'] = $path.($query === '' ? '' : "?$query");
+    $_SERVER['QUERY_STRING'] = $query;
+}
+
+// Present the app as running from the site root. Otherwise Laravel treats
+// /api as the base URL and /api/products would be routed as /products.
+$_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'] = '/index.php';
+$_SERVER['SCRIPT_FILENAME'] = __DIR__.'/../public/index.php';
+
 require __DIR__.'/../public/index.php';
