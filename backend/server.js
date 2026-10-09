@@ -23,6 +23,8 @@ import adminStatsRouter from './routes/adminStats.js';
 import { optionalAdmin } from './middleware/optionalAdmin.js';
 
 const app = express();
+// Render sits behind a proxy; trust it so rate limiting sees real client IPs.
+app.set("trust proxy", 1);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

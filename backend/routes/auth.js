@@ -19,7 +19,9 @@ const loginLimiter = rateLimit({
 const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    // The frontend (Netlify) and API (Render) are on different sites in
+    // production, so the cookie must be cross-site to be sent at all.
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     maxAge: SESSION_MAX_AGE_MS,
     path: "/",
 };
