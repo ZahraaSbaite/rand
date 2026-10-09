@@ -1,16 +1,16 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext(null);
-const STORAGE_KEY = "rrand_theme";
+const STORAGE_KEY = "strand_theme";
 
+// Light unless the visitor has picked dark with the toggle.
 function getInitialTheme() {
     try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved === "light" || saved === "dark") return saved;
+        if (localStorage.getItem(STORAGE_KEY) === "dark") return "dark";
     } catch {
         // ignore
     }
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return "light";
 }
 
 export function ThemeProvider({ children }) {
@@ -18,14 +18,19 @@ export function ThemeProvider({ children }) {
 
     useEffect(() => {
         document.documentElement.setAttribute("data-theme", theme);
-        try {
-            localStorage.setItem(STORAGE_KEY, theme);
-        } catch {
-            // ignore
-        }
     }, [theme]);
 
-    const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
+    // Only an explicit choice is remembered, so the default stays light.
+    const toggleTheme = () =>
+        setTheme((t) => {
+            const next = t === "dark" ? "light" : "dark";
+            try {
+                localStorage.setItem(STORAGE_KEY, next);
+            } catch {
+                // ignore
+            }
+            return next;
+        });
 
     return (
         <ThemeContext.Provider value={{ theme, toggleTheme }}>

@@ -18,14 +18,8 @@
     <script>
       (function () {
         try {
-          var saved = localStorage.getItem("rrand_theme");
-          var theme =
-            saved === "light" || saved === "dark"
-              ? saved
-              : window.matchMedia("(prefers-color-scheme: dark)").matches
-              ? "dark"
-              : "light";
-          document.documentElement.setAttribute("data-theme", theme);
+          var saved = localStorage.getItem("strand_theme");
+          document.documentElement.setAttribute("data-theme", saved === "dark" ? "dark" : "light");
         } catch (e) {}
       })();
     </script>
