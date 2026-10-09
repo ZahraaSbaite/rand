@@ -1,0 +1,23 @@
+<?php
+
+// On Vercel the frontend and API share an origin, so CORS only matters when
+// the frontend is served from somewhere else (FRONTEND_URL).
+return [
+
+    'paths' => ['api/*', 'uploads/*'],
+
+    'allowed_methods' => ['*'],
+
+    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:5173')],
+
+    'allowed_origins_patterns' => [],
+
+    'allowed_headers' => ['*'],
+
+    'exposed_headers' => [],
+
+    'max_age' => 0,
+
+    'supports_credentials' => true,
+
+];

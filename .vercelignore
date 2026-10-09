@@ -1,0 +1,10 @@
+# Installed during the Vercel build
+vendor
+node_modules
+frontend/node_modules
+frontend/dist
+
+# Local-only files
+.env
+storage/app/uploads
+storage/logs/*.log
