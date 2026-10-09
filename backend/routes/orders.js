@@ -163,6 +163,39 @@ router.patch("/:id/tracking", requireAdmin, async (req, res) => {
   }
 });
 
+
+// DELETE /api/orders/:id — admin only
+router.delete('/:id', requireAdmin, async (req, res) => {
+  const { id } = req.params;
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    // order_items has a FK to orders with no ON DELETE CASCADE,
+    // so child rows must be removed first or the delete will fail.
+    await client.query('DELETE FROM order_items WHERE order_id = $1', [id]);
+
+    const result = await client.query(
+      'DELETE FROM orders WHERE id = $1 RETURNING id',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    await client.query('COMMIT');
+    res.json({ success: true });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('DELETE /api/orders/:id error:', err);
+    res.status(500).json({ error: 'Failed to delete order' });
+  } finally {
+    client.release();
+  }
+});
 // POST /api/orders - create a COD order with its line items
 // PUBLIC - customers need this for checkout
 router.post("/", async (req, res) => {
@@ -280,40 +313,8 @@ router.post("/", async (req, res) => {
   } finally {
     client.release();
   }
-});
+}
 
-// DELETE /api/orders/:id - remove an order and its line items
-// ADMIN ONLY
-router.delete("/:id", requireAdmin, async (req, res) => {
-  const { id } = req.params;
-  const client = await pool.connect();
-
-  try {
-    await client.query("BEGIN");
-
-    // order_items has a FK to orders with no ON DELETE CASCADE,
-    // so child rows must be removed first or the delete will fail.
-    await client.query("DELETE FROM order_items WHERE order_id = $1", [id]);
-
-    const result = await client.query(
-      "DELETE FROM orders WHERE id = $1 RETURNING id",
-      [id]
-    );
-
-    if (result.rows.length === 0) {
-      await client.query("ROLLBACK");
-      return res.status(404).json({ error: "Order not found" });
-    }
-
-    await client.query("COMMIT");
-    res.json({ success: true });
-  } catch (err) {
-    await client.query("ROLLBACK");
-    console.error(err);
-    res.status(500).json({ error: "Failed to delete order" });
-  } finally {
-    client.release();
-  }
-});
+);
 
 export default router;

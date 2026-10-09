@@ -1,350 +1,211 @@
-/* ============================================================
-   AdminOrders — design tokens
-   Built on the app's existing --ink / --wool variables (with
-   fallbacks below in case this file loads standalone). Status
-   columns get their own quiet accent so the board reads at a
-   glance without shouting.
-   ============================================================ */
-
 .admin-orders-board {
-    --ink: #2b2620;
-    --wool: #b5602f;
-    --page: #f3ede3;
-    --paper: #fbf8f3;
-    --status-not-started: color-mix(in srgb, var(--ink) 55%, transparent);
-    --status-in-progress: #c08a2e;
-    --status-done: #5f7a52;
-
-    display: flex;
-    gap: 1.25rem;
-    padding: 1.5rem;
-    background: var(--page);
-    min-height: 100vh;
-    align-items: flex-start;
-    overflow-x: auto;
-    font-family: "Inter", "Helvetica Neue", system-ui, sans-serif;
-    color: var(--ink);
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-/* ============================================================
-   Column
-   ============================================================ */
+.admin-orders-board__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.admin-orders-board__row--done {
+  grid-template-columns: 1fr;
+}
+
+.admin-orders-board__row--done .admin-orders-column__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.75rem;
+}
 
 .admin-orders-column {
-    flex: 1 1 300px;
-    min-width: 280px;
-    max-width: 380px;
-    background: var(--paper);
-    border-radius: 10px;
-    box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 8%, transparent),
-        0 8px 24px color-mix(in srgb, var(--ink) 6%, transparent);
-    display: flex;
-    flex-direction: column;
-    max-height: calc(100vh - 3rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border: 1.5px solid var(--rule);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--stock-deep) 45%, var(--stock));
 }
 
 .admin-orders-column__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1.1rem 0.85rem;
-    border-bottom: 2px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.2rem 0.35rem;
+  font-weight: 800;
 }
 
-.admin-orders-column__header span:first-child {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink);
+.admin-orders-column__header::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  margin-right: 0.5rem;
+  border-radius: 50%;
+  background: var(--ink-marigold);
 }
 
-.admin-orders-column__header--not_started {
-    box-shadow: inset 0 2px 0 0 var(--status-not-started);
+.admin-orders-column__header--in_progress::before {
+  background: var(--powder-blue);
 }
 
-.admin-orders-column__header--in_progress {
-    box-shadow: inset 0 2px 0 0 var(--status-in-progress);
+.admin-orders-column__header--done::before {
+  background: var(--ink-avocado);
 }
 
-.admin-orders-column__header--done {
-    box-shadow: inset 0 2px 0 0 var(--status-done);
+.admin-orders-column__header > span:first-child {
+  margin-right: auto;
 }
 
 .admin-orders-column__count {
-    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
-    font-size: 0.72rem;
-    font-weight: 600;
-    background: color-mix(in srgb, var(--ink) 8%, transparent);
-    color: var(--ink);
-    padding: 0.15rem 0.5rem;
-    border-radius: 999px;
-    min-width: 1.6rem;
-    text-align: center;
+  min-width: 26px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: var(--radius-pill);
+  background: var(--band);
+  color: var(--on-band);
+  font-size: 0.8rem;
+  line-height: 24px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }
-
-/* ============================================================
-   Filters
-   ============================================================ */
 
 .admin-orders-column__filters {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.9rem 1.1rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
-}
-
-.admin-orders-column__filters input[type="search"] {
-    width: 100%;
-    padding: 0.45rem 0.65rem;
-    border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
-    border-radius: 7px;
-    font-size: 0.8rem;
-    font-family: inherit;
-    background: var(--paper);
-    color: var(--ink);
-    box-sizing: border-box;
-    transition: border-color 0.15s ease;
-}
-
-.admin-orders-column__filters input[type="search"]:focus-visible {
-    outline: none;
-    border-color: var(--wool);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--wool) 18%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
 .admin-orders-column__date-row {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-.admin-orders-column__date-row input[type="date"] {
-    flex: 1;
-    min-width: 0;
-    padding: 0.35rem 0.4rem;
-    border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
-    border-radius: 7px;
-    font-size: 0.72rem;
-    font-family: inherit;
-    background: var(--paper);
-    color: var(--ink);
-}
-
-.admin-orders-column__date-row input[type="date"]:focus-visible {
-    outline: none;
-    border-color: var(--wool);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--wool) 18%, transparent);
-}
-
-.admin-orders-column__date-row span {
-    color: color-mix(in srgb, var(--ink) 40%, transparent);
-    font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .admin-orders-column__clear {
-    align-self: flex-start;
-    background: none;
-    border: none;
-    color: var(--wool);
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 0;
+  align-self: flex-start;
+  padding: 0.2rem;
+  border: 0;
+  background: none;
+  color: var(--ink-chocolate);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
 }
-
-.admin-orders-column__clear:hover {
-    text-decoration: underline;
-}
-
-/* ============================================================
-   Card list
-   ============================================================ */
 
 .admin-orders-column__list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0.9rem 1.1rem 1.1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.admin-orders-column__list::-webkit-scrollbar {
-    width: 6px;
-}
-
-.admin-orders-column__list::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--ink) 15%, transparent);
-    border-radius: 999px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
 .admin-orders-column__empty {
-    text-align: center;
-    color: color-mix(in srgb, var(--ink) 45%, transparent);
-    font-size: 0.85rem;
-    font-style: italic;
-    padding: 2rem 0.5rem;
+  margin: 0;
+  padding: 1.25rem;
+  border: 1.5px dashed var(--rule);
+  border-radius: 14px;
+  text-align: center;
+  color: var(--charcoal-soft);
+  font-size: 0.9rem;
 }
 
-/* ============================================================
-   Order card — a quiet nod to a printed ticket: a torn line
-   under the header, a receipt-style rule above the total.
-   ============================================================ */
-
 .admin-orders__card {
-    background: #fff;
-    border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
-    border-radius: 8px;
-    padding: 0.85rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.95rem 1rem;
+  border: 1.5px solid var(--rule);
+  border-radius: 16px;
+  background: var(--stock);
 }
 
 .admin-orders__card-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 0.5rem;
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.5rem;
-    border-bottom: 1px dashed color-mix(in srgb, var(--ink) 18%, transparent);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .admin-orders__customer {
-    margin: 0;
-    font-weight: 600;
-    font-size: 0.92rem;
-    color: var(--ink);
+  margin: 0;
+  font-weight: 800;
 }
 
 .admin-orders__card-top-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
 }
 
 .admin-orders__overdue {
-    flex-shrink: 0;
-    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    color: #fff;
-    background: #b3462c;
-    padding: 0.15rem 0.4rem;
-    border-radius: 5px;
+  height: 22px;
+  padding: 0 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--coral-light);
+  color: var(--admin-danger, #a3301c);
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 22px;
 }
 
 .admin-orders__delete {
-    flex-shrink: 0;
-    border: none;
-    background: transparent;
-    color: color-mix(in srgb, var(--ink) 45%, transparent);
-    font-size: 0.85rem;
-    line-height: 1;
-    padding: 0.15rem 0.3rem;
-    border-radius: 4px;
-    cursor: pointer;
+  padding: 0.15rem 0.3rem;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--admin-danger, #a3301c);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
-.admin-orders__delete:hover {
-    color: #b3462c;
-    background: color-mix(in srgb, #b3462c 10%, transparent);
-}
-
-.admin-orders__meta {
-    margin: 0 0 0.35rem;
-    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
-    font-size: 0.72rem;
-    color: color-mix(in srgb, var(--ink) 62%, transparent);
-}
-
+.admin-orders__meta,
 .admin-orders__address {
-    margin: 0 0 0.6rem;
-    font-size: 0.78rem;
-    color: color-mix(in srgb, var(--ink) 70%, transparent);
-    line-height: 1.35;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--charcoal-soft);
+  overflow-wrap: anywhere;
+}
+
+.admin-orders__meta a {
+  color: inherit;
 }
 
 .admin-orders__items {
-    list-style: none;
-    margin: 0 0 0.65rem;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.admin-orders__items li {
-    font-size: 0.8rem;
-    color: var(--ink);
-    font-variant-numeric: tabular-nums;
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.9rem;
 }
 
 .admin-orders__total {
-    margin: 0 0 0.75rem;
-    padding-top: 0.5rem;
-    border-top: 1px dashed color-mix(in srgb, var(--ink) 18%, transparent);
-    text-align: right;
-    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--ink);
+  margin: 0.25rem 0 0.35rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
 
-.admin-orders__move {
-    width: 100%;
-    padding: 0.5rem 0.6rem;
-    border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
-    border-radius: 7px;
-    background: var(--paper);
-    color: var(--ink);
-    font-size: 0.8rem;
-    font-family: inherit;
-    box-sizing: border-box;
-    cursor: pointer;
-    appearance: none;
-    background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%),
-        linear-gradient(135deg, var(--ink) 50%, transparent 50%);
-    background-position: calc(100% - 16px) center, calc(100% - 11px) center;
-    background-size: 5px 5px, 5px 5px;
-    background-repeat: no-repeat;
+.admin-orders__tracking {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--charcoal-soft);
 }
 
-.admin-orders__move:focus-visible {
-    outline: none;
-    border-color: var(--wool);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--wool) 18%, transparent);
+.admin-orders__tracking + .admin-orders__tracking {
+  margin-top: 0.35rem;
 }
 
-/* ============================================================
-   Responsive: stack columns on narrow screens
-   ============================================================ */
-
-@media (max-width: 720px) {
-    .admin-orders-board {
-        flex-direction: column;
-        overflow-x: visible;
-        padding: 1rem;
-    }
-
-    .admin-orders-column {
-        max-width: none;
-        max-height: none;
-        width: 100%;
-    }
-
-    .admin-orders-column__list {
-        overflow-y: visible;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-
-    .admin-orders-column__filters input,
-    .admin-orders__move {
-        transition: none;
-    }
+@media (max-width: 860px) {
+  .admin-orders-board__row {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,159 +1,186 @@
+/* The leaflet's back cover. */
 .footer {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: clamp(1.5rem, 4vw, 2.5rem);
-  padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 2.5rem);
-  background: linear-gradient(
-    165deg,
-    var(--coral-light) 0%,
-    color-mix(in srgb, var(--soft-pink-light) 70%, var(--cream)) 100%
-  );
-  border-top: 2px solid color-mix(in srgb, var(--coral) 25%, transparent);
-  position: relative;
-  overflow: hidden;
+  background: var(--ink-marigold);
+  color: var(--band);
+  border-top: 2px solid var(--band);
 }
 
-.footer::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 10%;
-  width: 200px;
-  height: 200px;
-  background: color-mix(in srgb, var(--coral) 12%, transparent);
-  border-radius: 50%;
-  pointer-events: none;
+.footer__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 0.7fr)) minmax(0, 1.3fr);
+  gap: 2.5rem clamp(1.5rem, 4vw, 3.5rem);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 4vw, 3rem) 2.5rem;
+}
+
+.footer__mark {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  line-height: 0.9;
+  color: var(--band);
+}
+
+.footer__tag {
+  max-width: 20rem;
+  margin: 0.85rem 0 0;
+  line-height: 1.5;
 }
 
 .footer__col {
-  position: relative;
-  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
 }
 
 .footer__col h4 {
-  font-family: var(--font-display);
+  margin: 0 0 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
   font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin: 0 0 1.1rem;
-  color: var(--charcoal);
 }
 
 .footer__col a {
-  display: block;
-  font-size: 0.88rem;
-  color: var(--charcoal-soft);
+  width: fit-content;
+  color: var(--band);
   text-decoration: none;
-  margin-bottom: 0.55rem;
-  transition: color var(--duration-fast) ease;
+  background: linear-gradient(currentColor, currentColor) left bottom / 0 2px no-repeat;
+  transition: background-size var(--duration-med) var(--ease-out);
 }
 
 .footer__col a:hover {
-  color: var(--coral);
+  background-size: 100% 2px;
 }
 
-.footer__socials {
-  display: flex;
-  gap: 0.65rem;
-}
-
-.footer__socials a {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: var(--charcoal);
-  color: var(--cream);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  margin: 0;
-  transition:
-    background var(--duration-fast) ease,
-    transform var(--duration-fast) ease;
-}
-
-.footer__socials a:hover {
-  background: var(--coral);
-  color: var(--cream);
-  transform: translateY(-2px);
+.footer__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .footer__form {
   display: flex;
   gap: 0.5rem;
+  padding: 5px;
+  border: 2px solid var(--band);
+  border-radius: var(--radius-pill);
+  background: var(--stock);
 }
 
 .footer__form input {
   flex: 1;
-  padding: 0.65rem 0.9rem;
-  border: 1.5px solid color-mix(in srgb, var(--charcoal) 15%, transparent);
-  border-radius: 0;
-  background: var(--cream);
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  color: var(--charcoal);
-  transition: border-color var(--duration-fast) ease;
+  min-width: 0;
+  padding: 0 0.85rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink-chocolate);
+  font-size: 0.95rem;
+  outline: none;
 }
 
-.footer__form input:focus {
-  outline: none;
-  border-color: var(--coral);
+.footer__form input::placeholder {
+  color: var(--charcoal-soft);
 }
 
 .footer__form button {
-  padding: 0.65rem 1.15rem;
-  background: var(--charcoal);
-  color: var(--cream);
-  border: none;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 0.82rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  height: 42px;
+  padding: 0 1.2rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--band);
+  color: var(--ink-marigold);
+  font-weight: 700;
   cursor: pointer;
-  transition:
-    background var(--duration-fast) ease,
-    transform var(--duration-fast) ease;
+  transition: transform 0.3s var(--ease-spring);
 }
 
 .footer__form button:hover {
-  background: var(--coral);
   transform: translateY(-1px);
 }
 
+.footer__form button:active {
+  transform: scale(0.95);
+}
+
+.footer__thanks {
+  margin: 0;
+  padding: 0.85rem 1.1rem;
+  border: 2px dashed var(--band);
+  border-radius: 18px;
+  font-weight: 600;
+  animation: fade-up 0.5s var(--ease-out);
+}
+
+.footer__email {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--band);
+  font-weight: 700;
+}
+
+.footer__socials {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.footer__socials a {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--band);
+  border-radius: 50%;
+  background: none;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform 0.35s var(--ease-spring);
+}
+
+.footer__socials a:hover {
+  background: var(--band);
+  color: var(--ink-marigold);
+  transform: rotate(-10deg);
+}
+
+.footer__socials svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .footer__credit {
-  grid-column: 1 / -1;
-  position: relative;
-  z-index: 1;
-  margin-top: clamp(1.5rem, 4vw, 2.5rem);
-  padding-top: 1.25rem;
-  border-top: 1px solid color-mix(in srgb, var(--charcoal) 12%, transparent);
-  font-size: 0.8rem;
-  color: var(--charcoal-soft);
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.1rem clamp(1rem, 4vw, 3rem) 1.5rem;
+  border-top: 2px dashed color-mix(in srgb, var(--band) 40%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
 }
 
 .footer__credit a {
-  color: var(--charcoal);
-  font-weight: 600;
-  text-decoration: none;
-  transition: color var(--duration-fast) ease;
+  color: inherit;
+  font-weight: 700;
 }
 
-.footer__credit a:hover {
-  color: var(--coral);
-}
-
-@media (max-width: 720px) {
-  .footer {
-    grid-template-columns: 1fr 1fr;
+@media (max-width: 960px) {
+  .footer__inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .footer__brand,
   .footer__newsletter {
     grid-column: 1 / -1;
   }

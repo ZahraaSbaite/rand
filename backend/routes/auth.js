@@ -16,13 +16,10 @@ const loginLimiter = rateLimit({
     message: { error: "Too many login attempts. Try again later." },
 });
 
-const isProduction = process.env.NODE_ENV === "production";
 const cookieOptions = {
     httpOnly: true,
-    secure: isProduction,
-    // Frontend and backend live on different domains in production, so the
-    // cookie must be SameSite=None (requires Secure) to be sent cross-site.
-    sameSite: isProduction ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
     maxAge: SESSION_MAX_AGE_MS,
     path: "/",
 };

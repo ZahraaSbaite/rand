@@ -124,6 +124,14 @@
   color: var(--charcoal);
 }
 
+.shop-page__status {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--charcoal) 55%, transparent);
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .shop-page {
     animation: none;

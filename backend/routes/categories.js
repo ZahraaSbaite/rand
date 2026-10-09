@@ -9,7 +9,7 @@ const router = Router();
 router.get("/", async (req, res) => {
     try {
         const result = await pool.query(
-            "SELECT * FROM categories ORDER BY name ASC"
+            "SELECT * FROM categories ORDER BY sort_order ASC, name ASC"
         );
 
         res.json(result.rows);
@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
 // POST /api/categories
 // ADMIN ONLY
 router.post("/", requireAdmin, async (req, res) => {
-    const { name } = req.body;
+    const { name, sort_order, description } = req.body;
 
     if (!name?.trim()) {
         return res.status(400).json({
@@ -32,8 +32,10 @@ router.post("/", requireAdmin, async (req, res) => {
 
     try {
         const result = await pool.query(
-            "INSERT INTO categories (name) VALUES ($1) RETURNING *",
-            [name.trim()]
+            `INSERT INTO categories (name, sort_order, description)
+             VALUES ($1, COALESCE($2, (SELECT COALESCE(MAX(sort_order), 0) + 1 FROM categories)), $3)
+             RETURNING *`,
+            [name.trim(), sort_order ?? null, description ?? null]
         );
 
         res.status(201).json(result.rows[0]);
@@ -54,7 +56,7 @@ router.post("/", requireAdmin, async (req, res) => {
 // PUT /api/categories/:id
 // ADMIN ONLY
 router.put("/:id", requireAdmin, async (req, res) => {
-    const { name } = req.body;
+    const { name, sort_order, description } = req.body;
 
     if (!name?.trim()) {
         return res.status(400).json({
@@ -83,8 +85,12 @@ router.put("/:id", requireAdmin, async (req, res) => {
         const oldName = oldResult.rows[0].name;
 
         const updated = await client.query(
-            "UPDATE categories SET name = $1 WHERE id = $2 RETURNING *",
-            [name.trim(), req.params.id]
+            `UPDATE categories SET
+               name = $1,
+               sort_order = COALESCE($2, sort_order),
+               description = COALESCE($3, description)
+             WHERE id = $4 RETURNING *`,
+            [name.trim(), sort_order ?? null, description ?? null, req.params.id]
         );
 
         // Keep existing products' category text in sync with the rename

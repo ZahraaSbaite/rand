@@ -1,8 +1,8 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { CartProvider } from "./context/CartContext.jsx";
 import { WishlistProvider } from "./context/WishlistContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
-import { CustomerAuthProvider } from "./context/CustomerAuthContext.jsx";
+import { SiteProvider } from "./context/SiteContext.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import Home from "./pages/Home.jsx";
@@ -15,7 +15,7 @@ import OrderConfirmation from "./pages/OrderConfirmation.jsx";
 import OrderTracking from "./pages/OrderTracking.jsx";
 import Wishlist from "./pages/Wishlist.jsx";
 import CustomOrders from "./pages/CustomOrders.jsx";
-import Journal from "./pages/Journal.jsx";
+import Lookbook from "./pages/Lookbook.jsx";
 import OurStory from "./pages/OurStory.jsx";
 import TheProcess from "./pages/TheProcess.jsx";
 import Reviews from "./pages/Reviews.jsx";
@@ -28,16 +28,16 @@ import Terms from "./pages/Terms.jsx";
 import AdminLogin from "./pages/AdminLogin.jsx";
 import Admin from "./pages/Admin.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
-import Login from "./pages/Login.jsx";
-import Signup from "./pages/Signup.jsx";
 
 export default function App() {
+  const isAdmin = useLocation().pathname.startsWith("/admin");
+
   return (
     <ThemeProvider>
-      <CustomerAuthProvider>
+      <SiteProvider>
       <CartProvider>
         <WishlistProvider>
-          <Navbar />
+          {!isAdmin && <Navbar />}
 
           <Routes>
             <Route path="/" element={<Home />} />
@@ -53,11 +53,9 @@ export default function App() {
             <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
             <Route path="/order-tracking" element={<OrderTracking />} />
             <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
 
             <Route path="/custom-orders" element={<CustomOrders />} />
-            <Route path="/journal" element={<Journal />} />
+            <Route path="/lookbook" element={<Lookbook />} />
             <Route path="/our-story" element={<OurStory />} />
             <Route path="/the-process" element={<TheProcess />} />
             <Route path="/reviews" element={<Reviews />} />
@@ -82,10 +80,10 @@ export default function App() {
             />
           </Routes>
 
-          <Footer />
+          {!isAdmin && <Footer />}
         </WishlistProvider>
       </CartProvider>
-      </CustomerAuthProvider>
+      </SiteProvider>
     </ThemeProvider>
   );
 }

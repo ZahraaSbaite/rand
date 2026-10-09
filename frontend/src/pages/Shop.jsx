@@ -4,12 +4,10 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import ProductList from "../components/ProductList.jsx";
 import CategoryStrip from "../components/CategoryStrip.jsx";
 import Pagination from "../components/Pagination.jsx";
-import { SkeletonProductGrid } from "../components/Skeleton.jsx";
-import EmptyState from "../components/EmptyState.jsx";
 import useReveal from "../hooks/useReveal.js";
-import { getImageUrl, getPrimaryImage } from "../utils/imageUrl.js";
+import slugify from "../lib/slug.js";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 const PAGE_SIZE = 5;
 
 const SORTS = [
@@ -64,12 +62,12 @@ export default function Shop() {
     const map = new Map();
     for (const p of products) {
       if (!p.category) continue;
-      const key = p.category.trim().toLowerCase();
+      const key = slugify(p.category);
       if (!map.has(key)) {
         map.set(key, {
           name: key,
           label: p.category.trim().replace(/^./, (c) => c.toUpperCase()),
-          image: getImageUrl(getPrimaryImage(p)) || "https://placehold.co/200x200?text=" + key,
+          image: p.image_url || "https://placehold.co/200x200/f4e2b8/34201a?text=" + encodeURIComponent(p.category.trim()),
         });
       }
     }
@@ -81,7 +79,7 @@ export default function Shop() {
 
     if (selectedCategory) {
       result = result.filter(
-        (p) => p.category?.trim().toLowerCase() === selectedCategory
+        (p) => slugify(p.category) === selectedCategory
       );
     }
 
@@ -199,21 +197,9 @@ export default function Shop() {
         </div>
 
         {loading ? (
-          <SkeletonProductGrid count={PAGE_SIZE} />
+          <p className="shop-page__status">Winding the yarn — loading products…</p>
         ) : filteredProducts.length === 0 ? (
-          <EmptyState
-            icon={
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="7" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" strokeLinecap="round" />
-              </svg>
-            }
-            title="No pieces found"
-            subtitle={emptyMessage}
-            ctaText={hasActiveFilters ? "Clear filters" : "Browse all pieces"}
-            ctaTo={hasActiveFilters ? undefined : "/shop"}
-            onCtaClick={hasActiveFilters ? clearFilters : undefined}
-          />
+          <p className="shop-page__status">{emptyMessage}</p>
         ) : (
           <>
             <ProductList products={visibleProducts} />

@@ -1,8 +1,10 @@
 import "./CustomOrders.css";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useSite } from "../context/SiteContext.jsx";
 import heroHands from "../assets/hero-crochet-hands.jpg";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 const PROCESS_STEPS = [
   { title: "Tell Us Your Idea", copy: "Share the piece you're picturing — item, colors, inspiration.", tone: "lavender" },
@@ -23,6 +25,9 @@ export default function CustomOrders() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [searchParams] = useSearchParams();
+  const presetColors = searchParams.get("colorway") || "";
+  const { categories } = useSite();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -117,11 +122,11 @@ export default function CustomOrders() {
                   Product type
                   <select name="product_type" defaultValue="">
                     <option value="" disabled>Select a type</option>
-                    <option value="Bag">Bag</option>
-                    <option value="Flower">Flower</option>
-                    <option value="Plushie">Plushie</option>
-                    <option value="Accessory">Accessory</option>
-                    <option value="Home decor">Home decor</option>
+                    {categories.map((cat) => (
+                      <option key={cat.slug} value={cat.name}>
+                        {cat.name}
+                      </option>
+                    ))}
                     <option value="Other">Other</option>
                   </select>
                 </label>
@@ -137,7 +142,7 @@ export default function CustomOrders() {
               <div className="custom-orders__row">
                 <label>
                   Preferred colors
-                  <input type="text" name="preferred_colors" placeholder="e.g. sage green, cream" />
+                  <input type="text" name="preferred_colors" placeholder="e.g. sage green, cream" defaultValue={presetColors} />
                 </label>
                 <label>
                   Preferred size

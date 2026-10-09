@@ -1,15 +1,23 @@
 import "./InfoPage.css";
+import PolicyText from "../components/PolicyText.jsx";
+import { useSite } from "../context/SiteContext.jsx";
 
 export default function PrivacyPolicy() {
+  const custom = useSite().settings.privacy_text;
+
   return (
     <main className="info-page">
       <header className="info-page__header">
-        <p className="info-page__eyebrow">Legal</p>
         <h1 className="info-page__title">Privacy Policy</h1>
         <p className="info-page__intro">
           A plain-language summary of what we collect and how it's used.
         </p>
       </header>
+
+      {custom ? (
+        <PolicyText text={custom} />
+      ) : (
+        <>
 
       <section className="info-page__section">
         <h2>What we collect</h2>
@@ -35,6 +43,8 @@ export default function PrivacyPolicy() {
           Questions about your data? Reach out on the <a href="/contact">Contact</a> page.
         </p>
       </section>
+        </>
+      )}
     </main>
   );
 }

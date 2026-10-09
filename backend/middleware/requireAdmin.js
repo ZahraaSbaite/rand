@@ -8,10 +8,7 @@ export function requireAdmin(req, res, next) {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        if (decoded.role !== "admin") {
-            return res.status(401).json({ error: "Invalid or expired session" });
-        }
+        jwt.verify(token, process.env.JWT_SECRET);
         next();
     } catch {
         return res.status(401).json({ error: "Invalid or expired session" });

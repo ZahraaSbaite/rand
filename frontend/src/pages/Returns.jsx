@@ -1,16 +1,24 @@
 import "./InfoPage.css";
+import PolicyText from "../components/PolicyText.jsx";
+import { useSite } from "../context/SiteContext.jsx";
 
 export default function Returns() {
+  const custom = useSite().settings.returns_text;
+
   return (
     <main className="info-page">
       <header className="info-page__header">
-        <p className="info-page__eyebrow">Good to know</p>
         <h1 className="info-page__title">Returns</h1>
         <p className="info-page__intro">
           Because every piece is handmade to order or in very limited quantity, our returns
           policy is narrower than a mass-market shop's — here's exactly how it works.
         </p>
       </header>
+
+      {custom ? (
+        <PolicyText text={custom} />
+      ) : (
+        <>
 
       <section className="info-page__section">
         <h2>Damaged or defective items</h2>
@@ -36,6 +44,8 @@ export default function Returns() {
           we'll walk you through the next steps.
         </p>
       </section>
+        </>
+      )}
     </main>
   );
 }

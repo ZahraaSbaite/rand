@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-09T00:00:00Z",
+  "title": "Design System: RRAND",
+  "extensions": {
+    "colorMeta": {
+      "ink-tomato": { "role": "primary", "displayName": "Buy Tomato" },
+      "ink-marigold": { "role": "secondary", "displayName": "Cover Marigold" },
+      "ink-avocado": { "role": "secondary", "displayName": "Making Avocado" },
+      "ink-chocolate": { "role": "neutral", "displayName": "Print Chocolate" },
+      "stock": { "role": "neutral", "displayName": "Uncoated Stock" },
+      "stock-deep": { "role": "neutral", "displayName": "Deep Stock" },
+      "kraft": { "role": "neutral", "displayName": "Kraft" }
+    },
+    "shadows": [
+      { "name": "caption", "value": "0 16px 30px -14px rgba(52,32,26,.45)", "purpose": "Objects placed on the cover (caption card)." },
+      { "name": "lifted-book", "value": "0 24px 36px -18px rgba(52,32,26,.55)", "purpose": "Hovered pattern books." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Default: draws, reveals, underlines." },
+      { "name": "ease-spring", "value": "cubic-bezier(0.34, 1.32, 0.64, 1)", "purpose": "Stamps, presses, yarn balls: a small overshoot." },
+      { "name": "yarn-strand", "value": "scroll-linked stroke draw", "purpose": "Signature strand down the home page." }
+    ],
+    "breakpoints": [
+      { "name": "phone", "value": "600px" },
+      { "name": "stack", "value": "900px" }
+    ]
+  },
+  "components": [
+    { "name": "Buy Button", "kind": "button", "refersTo": "button-buy", "description": "Add to cart; the only tomato on the page.",
+      "html": "<button class=\"ds-btn-buy\">Add to cart</button>",
+      "css": ".ds-btn-buy{height:48px;padding:0 1.3rem;border:0;border-radius:999px;background:var(--ink-tomato,#c8381f);color:var(--on-ink,#fff8ea);font:700 .98rem Archivo,sans-serif;cursor:pointer;transition:transform .35s cubic-bezier(.34,1.32,.64,1),background .2s}.ds-btn-buy:hover{background:#a92e19;transform:translateY(-2px)}.ds-btn-buy:active{transform:scale(.95)}.ds-btn-buy:focus-visible{outline:2.5px dashed #c8381f;outline-offset:3px}" },
+    { "name": "Primary Button", "kind": "button", "refersTo": "button-primary", "description": "Navigation actions such as Shop all pieces.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Shop all pieces</a>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;height:54px;padding:0 1.6rem;border-radius:999px;background:#34201a;color:#f2a516;font:700 1.02rem Archivo,sans-serif;text-decoration:none;transition:transform .35s cubic-bezier(.34,1.32,.64,1)}.ds-btn-primary:hover{transform:translateY(-2px)}.ds-btn-primary:focus-visible{outline:2.5px dashed #c8381f;outline-offset:3px}" },
+    { "name": "Filter Chip", "kind": "chip", "refersTo": "chip", "description": "Dashed pill; solid avocado when active.",
+      "html": "<button class=\"ds-chip\">Bags</button> <button class=\"ds-chip is-active\">Everything</button>",
+      "css": ".ds-chip{height:40px;padding:0 1.1rem;border:1.5px dashed rgba(52,32,26,.5);border-radius:999px;background:transparent;color:#34201a;font:600 .92rem Archivo,sans-serif;cursor:pointer}.ds-chip:hover{border-color:#34201a}.ds-chip.is-active{border-style:solid;border-color:#5d7629;background:#5d7629;color:#fff8ea}" },
+    { "name": "Search Field", "kind": "input", "description": "Dashed pill that goes solid on focus.",
+      "html": "<input class=\"ds-input\" placeholder=\"Search pieces\">",
+      "css": ".ds-input{height:44px;padding:0 1rem;border:1.5px dashed rgba(52,32,26,.45);border-radius:999px;background:transparent;color:#34201a;font:400 .95rem Archivo,sans-serif;outline:none}.ds-input:focus{border-style:solid;border-color:#34201a;background:#f4e2b8}" },
+    { "name": "Pattern Book", "kind": "card", "description": "Category booklet tile with a stapled spine.",
+      "html": "<a class=\"ds-book\" href=\"#\">Bags</a>",
+      "css": ".ds-book{display:flex;align-items:flex-end;min-height:180px;width:220px;padding:1.25rem 1.4rem 1.4rem 2.6rem;border-radius:6px 22px 22px 6px;background:#f2a516;color:#34201a;font:400 2rem Shrikhand,serif;text-decoration:none;transition:transform .5s cubic-bezier(.34,1.32,.64,1),box-shadow .5s}.ds-book:hover{transform:translateY(-8px) rotate(-2deg);box-shadow:0 24px 36px -18px rgba(52,32,26,.55)}" }
+  ],
+  "narrative": {
+    "northStar": "The Pattern Leaflet",
+    "keyCharacteristics": ["Four inks plus stock; flat full-width ink fields own sections.", "Tomato is the buy action and nothing else.", "Shrikhand display, Archivo text, Courier Prime notation.", "Arched and rounded photo frames, dashed stitch lines, round number stamps.", "Night print: the same inks on chocolate stock."],
+    "rules": [
+      { "name": "The Tomato Is Money Rule", "body": "Tomato and its tints appear only on the buy action.", "section": "colors" },
+      { "name": "The Four Inks Rule", "body": "No new hues; yarn swatches are content, not interface colour.", "section": "colors" },
+      { "name": "The Ink Field Rule", "body": "Colour commits at section scale.", "section": "colors" },
+      { "name": "The Notation Rule", "body": "Making numbers are Courier Prime notation, never eyebrows.", "section": "typography" },
+      { "name": "The Printed Flat Rule", "body": "Surfaces rest flat; lift appears on hover or placed objects.", "section": "elevation" }
+    ]
+  }
+}

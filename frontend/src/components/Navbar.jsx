@@ -3,19 +3,14 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
 import { useWishlist } from "../context/WishlistContext.jsx";
 import { useTheme } from "../context/ThemeContext.jsx";
-import { useCustomerAuth } from "../context/CustomerAuthContext.jsx";
+import { useSite } from "../context/SiteContext.jsx";
 import "./Navbar.css";
 
-const SHOP_CATEGORIES = [
-    { slug: "bags", label: "Bags" },
-    { slug: "flowers", label: "Flowers" },
-    { slug: "plushies", label: "Plushies" },
-];
 
 const MENU_LINKS = [
     { to: "/collections", label: "Collections" },
     { to: "/custom-orders", label: "Custom Orders" },
-    { to: "/journal", label: "Journal" },
+    { to: "/lookbook", label: "Lookbook" },
     { to: "/our-story", label: "Our Story" },
     { to: "/the-process", label: "The Process" },
     { to: "/reviews", label: "Reviews" },
@@ -31,7 +26,8 @@ export default function Navbar() {
     const { cartRefs } = useCart();
     const { wishlistIds } = useWishlist();
     const { theme, toggleTheme } = useTheme();
-    const { customer, logout } = useCustomerAuth();
+    const { settings, categories } = useSite();
+    const tickerItems = settings.ticker.split("|").map((t) => t.trim()).filter(Boolean);
     const cartCount = cartRefs.reduce((sum, r) => sum + r.quantity, 0);
     const wishlistCount = wishlistIds.length;
 
@@ -73,6 +69,19 @@ export default function Navbar() {
     return (
         <>
         <header className="navbar">
+            <div className="navbar__ticker" aria-hidden="true">
+                <div className="navbar__ticker-track">
+                    {[0, 1].map((n) => (
+                        <span key={n}>
+                            {[...tickerItems, ...tickerItems].map((item, i) => (
+                                <span key={i}>
+                                    {item} <i />
+                                </span>
+                            ))}
+                        </span>
+                    ))}
+                </div>
+            </div>
             <div className="navbar__top">
                 <button
                     type="button"
@@ -86,38 +95,9 @@ export default function Navbar() {
                     </svg>
                 </button>
 
-                <button
-                    type="button"
-                    className="navbar__icon-link navbar__theme-toggle"
-                    aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                    onClick={toggleTheme}
-                >
-                    {theme === "dark" ? (
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" strokeWidth="2" />
-                            <path
-                                d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                            />
-                        </svg>
-                    ) : (
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path
-                                d="M20.5 14.5A8.5 8.5 0 019.5 3.5a8.5 8.5 0 1011 11z"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinejoin="round"
-                            />
-                        </svg>
-                    )}
-                </button>
-
                 <NavLink to="/" className="navbar__logo">
                     <span className="navbar__logo-mark">RRAND</span>
-                    <span className="navbar__logo-sub">archive</span>
+                    <span className="navbar__logo-sub">pattern leaflets</span>
                 </NavLink>
 
                 <form className="navbar__search" onSubmit={(e) => e.preventDefault()}>
@@ -135,6 +115,35 @@ export default function Navbar() {
                 </form>
 
                 <nav className="navbar__icons">
+                    <button
+                        type="button"
+                        className="navbar__icon-link"
+                        aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                        onClick={toggleTheme}
+                    >
+                        {theme === "dark" ? (
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" strokeWidth="2" />
+                                <path
+                                    d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                />
+                            </svg>
+                        ) : (
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path
+                                    d="M20.5 14.5A8.5 8.5 0 019.5 3.5a8.5 8.5 0 1011 11z"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+                        )}
+                    </button>
+
                     <NavLink to="/wishlist" className="navbar__icon-link" aria-label="Wishlist">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path
@@ -145,46 +154,10 @@ export default function Navbar() {
                                 strokeLinejoin="round"
                             />
                         </svg>
-                        {wishlistCount > 0 && <span className="navbar__badge">{wishlistCount}</span>}
+                        {wishlistCount > 0 && <span className="navbar__badge" key={wishlistCount}>{wishlistCount}</span>}
                     </NavLink>
 
-                    {customer ? (
-                        <button
-                            type="button"
-                            className="navbar__icon-link"
-                            aria-label={`Log out (${customer.name})`}
-                            onClick={async () => {
-                                await logout();
-                                navigate("/");
-                            }}
-                        >
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" strokeWidth="2" />
-                                <path
-                                    d="M4.5 20c1.4-4 5-6.5 7.5-6.5s6.1 2.5 7.5 6.5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                            </svg>
-                        </button>
-                    ) : (
-                        <NavLink to="/login" className="navbar__icon-link" aria-label="Log in">
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" strokeWidth="2" />
-                                <path
-                                    d="M4.5 20c1.4-4 5-6.5 7.5-6.5s6.1 2.5 7.5 6.5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                            </svg>
-                        </NavLink>
-                    )}
-
-                    <NavLink to="/cart" className="navbar__icon-link" aria-label="Cart">
+                    <NavLink to="/cart" className="navbar__icon-link" aria-label={`Cart, ${cartCount} items`} data-cart-target>
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path
                                 d="M6 6h15l-1.5 9h-12z M6 6L5 3H2 M9 20a1 1 0 100-2 1 1 0 000 2z M18 20a1 1 0 100-2 1 1 0 000 2z"
@@ -195,7 +168,7 @@ export default function Navbar() {
                                 strokeLinejoin="round"
                             />
                         </svg>
-                        {cartCount > 0 && <span className="navbar__badge">{cartCount}</span>}
+                        {cartCount > 0 && <span className="navbar__badge" key={cartCount}>{cartCount}</span>}
                     </NavLink>
                 </nav>
             </div>
@@ -213,9 +186,9 @@ export default function Navbar() {
                         </svg>
                     </NavLink>
                     <div className="navbar__dropdown-menu">
-                        {SHOP_CATEGORIES.map((cat) => (
+                        {categories.map((cat) => (
                             <NavLink key={cat.slug} to={`/shop/${cat.slug}`} className="navbar__dropdown-item">
-                                {cat.label}
+                                {cat.name}
                             </NavLink>
                         ))}
                     </div>
@@ -270,9 +243,9 @@ export default function Navbar() {
                         </div>
                         {shopExpanded && (
                             <div className="navbar__drawer-submenu">
-                                {SHOP_CATEGORIES.map((cat) => (
+                                {categories.map((cat) => (
                                     <NavLink key={cat.slug} to={`/shop/${cat.slug}`} className="navbar__drawer-sublink">
-                                        {cat.label}
+                                        {cat.name}
                                     </NavLink>
                                 ))}
                             </div>
@@ -288,23 +261,6 @@ export default function Navbar() {
                     <NavLink to="/wishlist" className="navbar__drawer-link">
                         Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
                     </NavLink>
-
-                    {customer ? (
-                        <button
-                            type="button"
-                            className="navbar__drawer-link"
-                            onClick={async () => {
-                                await logout();
-                                navigate("/");
-                            }}
-                        >
-                            Log out ({customer.name})
-                        </button>
-                    ) : (
-                        <NavLink to="/login" className="navbar__drawer-link">
-                            Log in
-                        </NavLink>
-                    )}
 
                     <NavLink to="/cart" className="navbar__drawer-link">
                         Cart {cartCount > 0 && `(${cartCount})`}

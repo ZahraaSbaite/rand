@@ -1,0 +1,122 @@
+{
+  "title": "Choose the visual world for RRAND",
+  "question": "The roll assigned The Pattern Leaflet. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "The Pattern Leaflet",
+      "kicker": "THE ROLL",
+      "lineage": "1970s crochet pattern booklets and leaflets (Coats & Clark, Patons, Lion Brand)",
+      "thesis": "Every piece is sold as its own pattern leaflet: issue number, skill rating, materials, and the rounds it took.",
+      "palette": ["#d8432a", "#f2a516", "#5f7a2e", "#3a2218", "#f6efe2"],
+      "materials": ["uncoated leaflet stock", "four-ink offset print, slightly off-register", "chunky rounded display type", "pattern row notation"],
+      "viewport": "A marigold leaflet cover fills the screen: RRAND set huge in a soft heavy face, an 'Issue No.' badge, a live product photo in a rounded frame, and a working Add to basket under its price.",
+      "risk": "Reads as retro pastiche if the notation is decoration rather than real product facts.",
+      "raised": [
+        {"from": "challenger-cutting-bench", "raise": "State is a mark, not a hue: sold-out pieces get a struck-through 'frogged' row, items in the basket wear a stitch-marker clip."},
+        {"from": "challenger-kiosk-print", "raise": "Four inks only, site-wide; every colour on the page is one of them or its tint."},
+        {"from": "challenger-arcade", "raise": "Palette law: tomato is reserved for the buy action and nothing else."},
+        {"from": "challenger-azulejo", "raise": "Layouts snap to the leaflet's column grid in whole units, never half-cells."}
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "The Granny Square Blanket",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "granny-square afghans and patchwork throws",
+      "thesis": "The storefront is a blanket being joined: each category and product is one square, stitched in as you scroll.",
+      "palette": ["#2b2a5c", "#f2b134", "#e8604c", "#7fb7a4", "#f3e9dc"],
+      "materials": ["crochet square tiles", "contrast joining seam", "yarn texture"],
+      "viewport": "A full-width blanket of colour squares with RRAND worked into the centre square; squares lift and turn on hover.",
+      "risk": "The most obvious crochet motif; most runs for a crochet shop land somewhere near here."
+    },
+    {
+      "id": "challenger-yeye-sleeve",
+      "label": "Pop Record Sleeve",
+      "verdict": "competitive",
+      "lineage": "1960s French yé-yé record sleeves",
+      "thesis": "Each collection is a release: one flat saturated ground, a square-cropped hero piece, four pieces listed like tracks.",
+      "palette": ["#f26a1b", "#1aa6a0", "#ffffff", "#20201e"],
+      "materials": ["flat offset ground", "rounded pop logotype", "square photo crop"],
+      "viewport": "A tangerine ground flooding the screen, one bag cropped square, RRAND in a rounded logotype, four pieces listed in a corner.",
+      "case": "Fuses well for trend-led shoppers; loses on showing that every piece is handmade.",
+      "risk": "Strong look, but it says 'merch' more than 'made by hand'."
+    },
+    {
+      "id": "challenger-azulejo",
+      "label": "Azulejo Station Hall",
+      "verdict": "declined",
+      "lineage": "Portuguese tin-glazed tile halls",
+      "thesis": "Pieces painted as cobalt tile panels.",
+      "palette": ["#1d3f9a", "#f7f5ee", "#d9a92b"],
+      "materials": ["tin glaze", "grout grid"],
+      "viewport": "A cobalt tile frieze with framed product panels.",
+      "case": "Fuses poorly: tiles are a different craft, and cobalt-only hides the yarn colours.",
+      "risk": "Visitors would read 'ceramics shop'.",
+      "kept": "Whole-unit grid discipline."
+    },
+    {
+      "id": "challenger-cutting-bench",
+      "label": "Cutting Bench Rail",
+      "verdict": "declined",
+      "lineage": "film editing bench",
+      "thesis": "Products strung as frames on a rail.",
+      "palette": ["#f2711c", "#0b0b0b", "#ffffff"],
+      "materials": ["film grain", "punched windows"],
+      "viewport": "A perforated rail of product frames on black.",
+      "case": "Fuses poorly: no link to yarn or gifting.",
+      "risk": "Cold and technical for a handmade brand.",
+      "kept": "State shown as a mark, not a colour."
+    },
+    {
+      "id": "challenger-kiosk-print",
+      "label": "Kiosk Print",
+      "verdict": "declined",
+      "lineage": "state-office printed goods",
+      "thesis": "Products as three-ink kiosk labels.",
+      "palette": ["#c8362a", "#2c4a7a", "#b8b2a6"],
+      "materials": ["recycled board", "off-register ink"],
+      "viewport": "A kiosk grid of label cells.",
+      "case": "Fuses poorly: bans photos, and the pieces must be seen.",
+      "risk": "Austere where the brand is warm.",
+      "kept": "A restricted ink set."
+    },
+    {
+      "id": "challenger-arcade",
+      "label": "Arcade Pixel Glow",
+      "verdict": "declined",
+      "lineage": "CRT arcade cabinets",
+      "thesis": "Pieces as glowing sprites.",
+      "palette": ["#000000", "#ff3d7f", "#ffd23f", "#3df2ff"],
+      "materials": ["scanlines", "phosphor bloom"],
+      "viewport": "A pixel stage with sprite products.",
+      "case": "Fuses poorly: screen-native, the opposite of handmade.",
+      "risk": "Gimmick.",
+      "kept": "One colour reserved by law for one meaning."
+    },
+    {
+      "id": "challenger-multiplane",
+      "label": "Multiplane Dawn",
+      "verdict": "declined",
+      "lineage": "cel-animation multiplane camera",
+      "thesis": "Painted forest planes drifting toward a cottage.",
+      "palette": ["#2f4a2c", "#8fa3a8", "#e0a23a", "#3a2a1c"],
+      "materials": ["gouache planes", "mist"],
+      "viewport": "Layered painted forest sinking toward a lit window.",
+      "case": "Fuses weakly: needs painted assets that don't exist; buries the products.",
+      "risk": "Asset-heavy and slow.",
+      "kept": "Depth through layered planes."
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A soft, pastel handmade-boutique storefront, executed impeccably.",
+    "palette": ["#fbf7f0", "#2a2420", "#e8a598"],
+    "materials": ["clean grid", "product photography", "rounded cards"],
+    "viewport": "Hero photo with headline and Shop button, category row and product grid below.",
+    "risk": "Looks like every other handmade shop by design."
+  },
+  "steer": true
+}

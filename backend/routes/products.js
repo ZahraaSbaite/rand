@@ -49,6 +49,11 @@ router.get("/", async (req, res) => {
       conditions.push("bestseller = true");
     }
 
+    // Hidden products are only listed for a signed-in admin asking for them.
+    if (!(req.isAdmin && req.query.all === "true")) {
+      conditions.push("is_visible = true");
+    }
+
     const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
     const orderBy = SORTS[sort] || SORTS.newest;
 
@@ -69,7 +74,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM products WHERE id = $1",
+      `SELECT * FROM products WHERE id = $1 ${req.isAdmin ? "" : "AND is_visible = true"}`,
       [req.params.id]
     );
 
@@ -104,6 +109,7 @@ router.post("/", requireAdmin, async (req, res) => {
       production_time,
       featured,
       bestseller,
+      is_visible,
     } = req.body;
 
     if (!name || price_cents === undefined) {
@@ -115,8 +121,8 @@ router.post("/", requireAdmin, async (req, res) => {
     const result = await pool.query(
       `INSERT INTO products
         (name, description, price_cents, image_url, images, yarn_color, colors, category,
-         stock_quantity, materials, dimensions, care_instructions, production_time, featured, bestseller)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+         stock_quantity, materials, dimensions, care_instructions, production_time, featured, bestseller, is_visible)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
        RETURNING *`,
       [
         name,
@@ -134,11 +140,15 @@ router.post("/", requireAdmin, async (req, res) => {
         production_time ?? null,
         featured ?? false,
         bestseller ?? false,
+        is_visible ?? true,
       ]
     );
 
     res.status(201).json(result.rows[0]);
   } catch (err) {
+    if (err.code === "23505") {
+      return res.status(409).json({ error: "A product with that name already exists" });
+    }
     console.error(err);
     res.status(500).json({ error: "Failed to create product" });
   }
@@ -164,6 +174,7 @@ router.put("/:id", requireAdmin, async (req, res) => {
       production_time,
       featured,
       bestseller,
+      is_visible,
     } = req.body;
 
     const result = await pool.query(
@@ -182,8 +193,9 @@ router.put("/:id", requireAdmin, async (req, res) => {
         care_instructions = COALESCE($12, care_instructions),
         production_time = COALESCE($13, production_time),
         featured = COALESCE($14, featured),
-        bestseller = COALESCE($15, bestseller)
-       WHERE id = $16
+        bestseller = COALESCE($15, bestseller),
+        is_visible = COALESCE($16, is_visible)
+       WHERE id = $17
        RETURNING *`,
       [
         name,
@@ -201,6 +213,7 @@ router.put("/:id", requireAdmin, async (req, res) => {
         production_time,
         featured,
         bestseller,
+        is_visible,
         req.params.id,
       ]
     );
@@ -211,6 +224,9 @@ router.put("/:id", requireAdmin, async (req, res) => {
 
     res.json(result.rows[0]);
   } catch (err) {
+    if (err.code === "23505") {
+      return res.status(409).json({ error: "A product with that name already exists" });
+    }
     console.error(err);
     res.status(500).json({ error: "Failed to update product" });
   }
@@ -234,6 +250,11 @@ router.delete("/:id", requireAdmin, async (req, res) => {
       product: result.rows[0],
     });
   } catch (err) {
+    if (err.code === "23503") {
+      return res.status(409).json({
+        error: "This product is part of past orders, so it can't be deleted. Hide it instead.",
+      });
+    }
     console.error(err);
     res.status(500).json({ error: "Failed to delete product" });
   }

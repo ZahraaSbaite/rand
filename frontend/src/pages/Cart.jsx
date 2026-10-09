@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
-import { SkeletonCart } from "../components/Skeleton.jsx";
-import { getImageUrl, getPrimaryImage } from "../utils/imageUrl.js";
 import "./cart.css";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 export default function Cart() {
   const { cartRefs, removeFromCart, updateCartQuantity } = useCart();
@@ -48,6 +46,14 @@ export default function Cart() {
 
   const formatPrice = (cents) => `$${(cents / 100).toFixed(2)}`;
 
+  if (loading) {
+    return (
+      <main className="cart">
+        <p className="cart__empty">Loading your cart…</p>
+      </main>
+    );
+  }
+
   return (
     <main className="cart">
       <nav className="cart__crumb">
@@ -57,12 +63,10 @@ export default function Cart() {
       </nav>
 
       <h1 className="cart__title">
-        Cart {!loading && <span className="cart__count">({items.length} product{items.length !== 1 ? "s" : ""})</span>}
+        Cart <span className="cart__count">({items.length} product{items.length !== 1 ? "s" : ""})</span>
       </h1>
 
-      {loading ? (
-        <SkeletonCart />
-      ) : items.length === 0 ? (
+      {items.length === 0 ? (
         <div className="cart__empty-state">
           <div className="cart__empty-icon" aria-hidden="true">
             <svg viewBox="0 0 64 64">
@@ -100,7 +104,7 @@ export default function Cart() {
             {items.map((item) => (
               <div className="cart__item" key={item.id}>
                 <img
-                  src={getImageUrl(getPrimaryImage(item))}
+                  src={item.image_url}
                   alt={item.name}
                   className="cart__item-image"
                   onError={(e) => {

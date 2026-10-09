@@ -1,0 +1,211 @@
+.product-reviews {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 4rem) clamp(1rem, 4vw, 3rem);
+  color: var(--ink-chocolate);
+}
+
+.product-reviews__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.product-reviews__head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+}
+
+.product-reviews__toggle,
+.product-reviews__actions button[type="submit"] {
+  height: 46px;
+  padding: 0 1.3rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--band);
+  color: var(--ink-marigold);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.product-reviews__actions button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.product-reviews__cancel {
+  height: 46px;
+  padding: 0 1rem;
+  border: 0;
+  background: none;
+  color: var(--ink-chocolate);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.product-reviews__form {
+  display: grid;
+  gap: 1rem;
+  max-width: 640px;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border: 2px dashed var(--rule);
+  border-radius: 22px;
+}
+
+.product-reviews__form label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.product-reviews__form small {
+  font-weight: 400;
+  color: var(--charcoal-soft);
+}
+
+.product-reviews__form input:not([type="radio"]),
+.product-reviews__form textarea {
+  padding: 0.75rem 0.9rem;
+  border: 1.5px solid var(--rule);
+  border-radius: 12px;
+  background: var(--stock);
+  color: var(--ink-chocolate);
+  font: inherit;
+}
+
+.product-reviews__form input:focus,
+.product-reviews__form textarea:focus {
+  border-color: var(--ink-chocolate);
+  outline: none;
+}
+
+.product-reviews__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.product-reviews__rating {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.product-reviews__rating legend {
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.product-reviews__form .product-reviews__rating label {
+  display: inline-flex;
+  position: relative;
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--rule);
+  cursor: pointer;
+  transition:
+    transform 0.25s var(--ease-spring),
+    color 0.15s;
+}
+
+.product-reviews__form .product-reviews__rating label.is-on {
+  color: var(--ink-marigold);
+}
+
+.product-reviews__rating label:hover {
+  transform: scale(1.15);
+}
+
+.product-reviews__rating input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.product-reviews__rating label:has(input:focus-visible) {
+  outline: 2.5px dashed var(--ink-tomato);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.product-reviews__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.product-reviews__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.product-reviews__error {
+  margin: 0;
+  color: var(--ink-tomato);
+  font-weight: 600;
+}
+
+.product-reviews__thanks {
+  margin: 0 0 2rem;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  background: var(--mint-light);
+  font-weight: 600;
+}
+
+.product-reviews__none {
+  color: var(--charcoal-soft);
+}
+
+.product-reviews__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-reviews__list li {
+  padding: 1.25rem;
+  border-radius: 20px;
+  background: var(--stock-deep);
+}
+
+.product-reviews__stars {
+  margin: 0;
+  color: var(--ink-marigold);
+  letter-spacing: 0.1em;
+}
+
+.product-reviews__comment {
+  margin: 0.6rem 0;
+  line-height: 1.55;
+}
+
+.product-reviews__meta {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--charcoal-soft);
+}
+
+@media (max-width: 600px) {
+  .product-reviews__row {
+    grid-template-columns: 1fr;
+  }
+}

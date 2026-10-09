@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { getImageUrl } from "../utils/imageUrl.js";
 import "./CategoryStrip.css";
 
 export default function CategoryStrip({ categories, selected, onSelectCategory }) {
@@ -37,7 +38,7 @@ export default function CategoryStrip({ categories, selected, onSelectCategory }
                         className={`category-strip__item ${selected === cat.name ? "category-strip__item--active" : ""}`}
                         onClick={() => onSelectCategory(cat.name)}
                     >
-                        <img className="category-strip__circle" src={cat.image} alt={cat.name} />
+                        <img className="category-strip__circle" src={getImageUrl(cat.image)} alt={cat.name} />
                         <span>{cat.label}</span>
                     </button>
                 ))}

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./AdminLogin.css";
 
 const API_URL =
-    import.meta.env.VITE_API_URL ?? "http://localhost:4000";
+    import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 export default function AdminLogin() {
     const [password, setPassword] = useState("");
@@ -38,7 +38,8 @@ export default function AdminLogin() {
     return (
         <main className="admin-login">
             <form className="admin-login__form" onSubmit={handleSubmit}>
-                <h1>Admin login</h1>
+                <p className="admin-login__mark">RRAND</p>
+                <h1>Studio login</h1>
                 <input
                     type="password"
                     placeholder="Password"
@@ -51,6 +52,9 @@ export default function AdminLogin() {
                 <button type="submit" disabled={submitting}>
                     {submitting ? "Checking…" : "Log in"}
                 </button>
+                <Link to="/" className="admin-login__back">
+                    Back to the shop
+                </Link>
             </form>
         </main>
     );

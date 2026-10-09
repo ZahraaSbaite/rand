@@ -51,6 +51,37 @@ textarea {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--lavender) 35%, transparent);
-  color: var(--charcoal);
+  background: var(--ink-marigold);
+  color: var(--band);
+}
+
+body {
+  caret-color: var(--ink-tomato);
+  font-size: 1rem;
+  line-height: 1.55;
+  scrollbar-color: color-mix(in srgb, var(--ink-chocolate) 45%, transparent) var(--stock);
+}
+
+:focus-visible {
+  outline: 2.5px dashed var(--ink-tomato);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+a {
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1.5px;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+/* Prices and counts read in tabular figures everywhere. */
+[class*="price"],
+[class*="badge"],
+[class*="total"] {
+  font-variant-numeric: tabular-nums;
 }

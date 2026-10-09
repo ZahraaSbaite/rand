@@ -4,11 +4,10 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
 import { useWishlist } from "../context/WishlistContext.jsx";
 import useRecentlyViewed from "../hooks/useRecentlyViewed.js";
-import { SkeletonProductDetail } from "../components/Skeleton.jsx";
-import EmptyState from "../components/EmptyState.jsx";
-import { getImageUrl, getPrimaryImage } from "../utils/imageUrl.js";
+import { getImageUrl } from "../utils/imageUrl.js";
+import ProductReviews from "../components/ProductReviews.jsx";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 const FALLBACK_IMAGE = "https://placehold.co/700x700/e8e2f8/2a2420?text=RRAND";
 
 const TABS = ["Description", "Materials", "Dimensions", "Care", "Production Time", "Shipping"];
@@ -34,19 +33,12 @@ export default function ProductPage() {
     setActiveImage(0);
     setActiveTab(0);
     fetch(`${API_URL}/api/products/${id}`)
-      .then(async (res) => {
-        if (!res.ok) {
-          setProduct(null);
-          return;
-        }
-        const data = await res.json();
+      .then((res) => res.json())
+      .then((data) => {
         setProduct(data);
         setSelectedColor(data.colors?.[0] ?? data.yarn_color ?? null);
       })
-      .catch((err) => {
-        console.error(err);
-        setProduct(null);
-      })
+      .catch(console.error)
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -81,30 +73,11 @@ export default function ProductPage() {
   );
 
   if (loading) {
-    return (
-      <main className="product">
-        <SkeletonProductDetail />
-      </main>
-    );
+    return <p className="product__status">Winding the yarn — loading…</p>;
   }
 
   if (!product) {
-    return (
-      <main className="product">
-        <EmptyState
-          icon={
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="7" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" strokeLinecap="round" />
-            </svg>
-          }
-          title="We couldn't find that piece"
-          subtitle="It may have sold out or the link may be outdated."
-          ctaText="Back to shop"
-          ctaTo="/shop"
-        />
-      </main>
-    );
+    return <p className="product__status">We couldn't find that piece.</p>;
   }
 
   const priceLabel = `$${(product.price_cents / 100).toFixed(2)}`;
@@ -112,7 +85,7 @@ export default function ProductPage() {
   const wishlisted = isWishlisted(product.id);
   const gallery = product.images?.length
     ? product.images.map(getImageUrl)
-    : [getImageUrl(product.image_url) || FALLBACK_IMAGE];
+    : [product.image_url ? getImageUrl(product.image_url) : FALLBACK_IMAGE];
   const rating = Number(product.rating) || 0;
 
   const decrement = () => setQuantity((q) => Math.max(1, q - 1));
@@ -170,10 +143,7 @@ export default function ProductPage() {
             <button
               type="button"
               className={`product__wishlist-btn${wishlisted ? " is-active" : ""}`}
-              onClick={() => {
-                const ok = toggleWishlist(product.id);
-                if (!ok) navigate("/login", { state: { from: `/product/${id}` } });
-              }}
+              onClick={() => toggleWishlist(product.id)}
               aria-pressed={wishlisted}
               aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
             >
@@ -319,6 +289,8 @@ export default function ProductPage() {
         </div>
       </div>
 
+      <ProductReviews productId={product.id} productName={product.name} />
+
       {similarProducts.length > 0 && (
         <section className="product__similar">
           <h2 className="product__similar-title">Shop Similar</h2>
@@ -331,7 +303,7 @@ export default function ProductPage() {
               >
                 <div className="similar-card__image-wrap">
                   <img
-                    src={getImageUrl(getPrimaryImage(p)) || "/placeholder.jpg"}
+                    src={p.image_url ? getImageUrl(p.image_url) : FALLBACK_IMAGE}
                     alt={p.name}
                     className="similar-card__image"
                   />
@@ -354,7 +326,7 @@ export default function ProductPage() {
               <Link to={`/product/${p.id}`} key={p.id} className="similar-card">
                 <div className="similar-card__image-wrap">
                   <img
-                    src={getImageUrl(getPrimaryImage(p)) || "/placeholder.jpg"}
+                    src={p.image_url ? getImageUrl(p.image_url) : FALLBACK_IMAGE}
                     alt={p.name}
                     className="similar-card__image"
                   />

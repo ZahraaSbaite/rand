@@ -89,4 +89,47 @@ router.get("/", requireAdmin, async (req, res) => {
   }
 });
 
+const CUSTOM_STATUSES = ["new", "quoted", "in_progress", "completed", "declined"];
+
+// PATCH /api/custom-orders/:id - update status and private notes
+// ADMIN ONLY
+router.patch("/:id", requireAdmin, async (req, res) => {
+  const { status, admin_notes } = req.body;
+
+  if (status !== undefined && !CUSTOM_STATUSES.includes(status)) {
+    return res.status(400).json({ error: "Invalid status" });
+  }
+
+  try {
+    const result = await pool.query(
+      `UPDATE custom_order_requests SET
+         status = COALESCE($1, status),
+         admin_notes = COALESCE($2, admin_notes)
+       WHERE id = $3 RETURNING *`,
+      [status ?? null, admin_notes ?? null, req.params.id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: "Not found" });
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update custom order request" });
+  }
+});
+
+// DELETE /api/custom-orders/:id
+// ADMIN ONLY
+router.delete("/:id", requireAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(
+      "DELETE FROM custom_order_requests WHERE id = $1 RETURNING id",
+      [req.params.id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: "Not found" });
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete custom order request" });
+  }
+});
+
 export default router;

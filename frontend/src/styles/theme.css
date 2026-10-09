@@ -1,26 +1,42 @@
-/* RRAND — A World of Color + Thread */
+/* RRAND — Pattern Leaflets.
+   Four offset inks on uncoated stock: tomato (the buy action, nothing else),
+   marigold, avocado, chocolate. Every colour on the site is one of them or a
+   tint of one. */
 :root {
-  /* Base */
-  --cream: #fbf7f0;
-  --charcoal: #2a2420;
-  --charcoal-soft: #4a4038;
+  /* Inks */
+  --ink-tomato: #c8381f;
+  --ink-tomato-deep: #a92e19;
+  --ink-marigold: #f2a516;
+  --ink-avocado: #5d7629;
+  --ink-chocolate: #34201a;
 
-  /* Brand palette */
-  --lavender: #9b8fd4;
-  --lavender-light: #e8e2f8;
-  --lavender-deep: #7b6fbc;
-  --butter: #f5d76e;
-  --butter-light: #fff3b8;
-  --powder-blue: #a8c8e8;
-  --powder-blue-light: #d4e8f8;
-  --mint: #8ec4a8;
-  --mint-light: #d4ede0;
-  --coral: #e8725c;
-  --coral-light: #fad4cc;
-  --soft-pink: #f4c4d4;
-  --soft-pink-light: #fbe8ef;
+  /* Stock + text */
+  --stock: #fbf0d6;
+  --stock-deep: #f4e2b8;
+  --on-ink: #fff8ea;
+  --rule: color-mix(in srgb, var(--ink-chocolate) 22%, transparent);
+  --band: #34201a;
+  --on-band: #fbf0d6;
 
-  /* Legacy aliases (used across existing CSS) */
+  /* Legacy names, remapped onto the inks so every page inherits the world */
+  --cream: var(--stock);
+  --charcoal: var(--ink-chocolate);
+  --charcoal-soft: #6b4b3b;
+
+  --lavender: var(--ink-avocado);
+  --lavender-light: #e9e7c4;
+  --lavender-deep: #46601c;
+  --butter: var(--ink-marigold);
+  --butter-light: #fde0a0;
+  --powder-blue: #c79a6b;
+  --powder-blue-light: #f2dcbc;
+  --mint: #8aa24a;
+  --mint-light: #e3e8c3;
+  --coral: var(--ink-tomato);
+  --coral-light: #f8cdb9;
+  --soft-pink: #ef9f86;
+  --soft-pink-light: #f9d9c6;
+
   --linen: var(--cream);
   --ink: var(--charcoal);
   --wool: var(--coral);
@@ -28,40 +44,53 @@
   --mustard: var(--butter);
 
   /* Typography */
-  --font-display: "Syne", system-ui, sans-serif;
-  --font-body: "DM Sans", system-ui, sans-serif;
-  --font-accent: "Instrument Serif", Georgia, serif;
-  --font-mono: "IBM Plex Mono", monospace;
+  --font-display: "Shrikhand", "Georgia", serif;
+  --font-body: "Archivo", system-ui, sans-serif;
+  --font-accent: "Shrikhand", "Georgia", serif;
+  --font-mono: "Courier Prime", "Courier New", monospace;
+
+  /* Shape */
+  --radius-frame: 28px;
+  --radius-pill: 999px;
 
   /* Motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.32, 0.64, 1);
   --duration-fast: 0.2s;
   --duration-med: 0.45s;
+
+  color-scheme: light;
 }
 
-/* Dark mode — same tokens, redefined values. Because nearly every color in
-   the app is expressed through these variables, this cascades app-wide
-   without needing per-component dark rules. */
+/* Night print: the same four inks on chocolate stock. */
 :root[data-theme="dark"] {
-  --cream: #1b1714;
-  --charcoal: #f3ede4;
-  --charcoal-soft: #b9ac9f;
+  --ink-tomato: #ef6748;
+  --ink-tomato-deep: #d24c2f;
+  --ink-marigold: #f5b43a;
+  --ink-avocado: #a3bb5b;
+  --ink-chocolate: #f6e6c8;
 
-  --lavender: #b3a5ec;
-  --lavender-light: #2e2a45;
-  --lavender-deep: #c9befa;
-  --butter: #f5d76e;
-  --butter-light: #3a2f18;
-  --powder-blue: #a8c8e8;
-  --powder-blue-light: #1e2c3a;
-  --mint: #9ed6b7;
-  --mint-light: #1c3327;
-  --coral: #f08b74;
-  --coral-light: #3d2420;
-  --soft-pink: #f4c4d4;
-  --soft-pink-light: #3a232d;
+  --stock: #22140e;
+  --stock-deep: #2f1d15;
+  --on-ink: #22140e;
+  --rule: color-mix(in srgb, #f6e6c8 20%, transparent);
+  --band: #120a06;
+  --on-band: #f6e6c8;
+
+  --charcoal-soft: #cdb08c;
+  --lavender-light: #2c2d17;
+  --lavender-deep: #c3d77f;
+  --butter-light: #3d2a0e;
+  --powder-blue: #c79a6b;
+  --powder-blue-light: #33231a;
+  --mint: #a3bb5b;
+  --mint-light: #262b15;
+  --coral-light: #43201a;
+  --soft-pink: #ef9f86;
+  --soft-pink-light: #3a1f19;
+
+  color-scheme: dark;
 }
-
 
 @keyframes fade-up {
   from {
@@ -74,16 +103,6 @@
   }
 }
 
-@keyframes thread-drift {
-  0%,
-  100% {
-    transform: translateX(0) rotate(-2deg);
-  }
-  50% {
-    transform: translateX(6px) rotate(2deg);
-  }
-}
-
 @keyframes reveal-in {
   from {
     opacity: 0;
@@ -92,6 +111,23 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* A printed stamp landing: slight overshoot, blur clearing. */
+@keyframes stamp-in {
+  0% {
+    opacity: 0;
+    transform: scale(1.35) rotate(var(--stamp-rot, -8deg));
+    filter: blur(6px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(var(--stamp-rot, -8deg));
   }
 }
 

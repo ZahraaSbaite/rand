@@ -1,10 +1,10 @@
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
-  gap: clamp(1.25rem, 3vw, 2rem);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: clamp(1.5rem, 3vw, 2.25rem) clamp(1rem, 2.5vw, 1.75rem);
   max-width: 1280px;
   margin: 0 auto;
-  padding: 1.5rem clamp(1.5rem, 4vw, 3rem) 3rem;
+  padding: 1.5rem clamp(1rem, 4vw, 3rem) 3rem;
 }
 
 .product-grid__empty {
@@ -13,154 +13,277 @@
   color: var(--charcoal-soft);
 }
 
+/* ---------- Leaflet card ---------- */
 .product-card {
-  --tilt-x: 0deg;
-  --tilt-y: 0deg;
+  --tone: var(--ink-marigold);
+  --tone-soft: var(--butter-light);
   display: flex;
   flex-direction: column;
-  text-decoration: none;
-  color: var(--charcoal);
+  gap: 0.85rem;
   position: relative;
-  overflow: hidden;
-  transform-style: preserve-3d;
-  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  color: var(--ink-chocolate);
+  text-decoration: none;
+}
+
+.product-card--avocado {
+  --tone: var(--ink-avocado);
+  --tone-soft: var(--lavender-light);
+}
+
+.product-card--oat {
+  --tone: var(--ink-chocolate);
+  --tone-soft: var(--stock-deep);
+}
+
+.product-card--kraft {
+  --tone: var(--powder-blue);
+  --tone-soft: var(--powder-blue-light);
+}
+
+.product-card__frame {
+  position: relative;
+  padding: 10px;
+  border-radius: calc(var(--radius-frame) + 10px);
+  background: var(--tone-soft);
   transition:
-    transform 0.15s ease-out,
-    box-shadow var(--duration-med) var(--ease-out);
+    transform 0.5s var(--ease-spring),
+    background var(--duration-med) var(--ease-out);
 }
 
-.product-card--lavender {
-  background: var(--lavender-light);
-}
-
-.product-card--butter {
-  background: var(--butter-light);
-}
-
-.product-card--powder {
-  background: var(--powder-blue-light);
-}
-
-.product-card--mint {
-  background: var(--mint-light);
-}
-
-.product-card--pink {
-  background: var(--soft-pink-light);
-}
-
-.product-card:hover {
-  transform: perspective(900px) translateY(-6px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) scale3d(1.02, 1.02, 1.02);
-  box-shadow: 0 20px 40px color-mix(in srgb, var(--charcoal) 12%, transparent);
-  z-index: 5;
-}
-
-.product-card__wishlist {
-  position: absolute;
-  top: 0.65rem;
-  right: 0.65rem;
-  z-index: 6;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: color-mix(in srgb, var(--cream) 88%, transparent);
-  color: var(--charcoal);
-  backdrop-filter: blur(4px);
-  transition: transform var(--duration-fast) ease, color var(--duration-fast) ease, background var(--duration-fast) ease;
-}
-
-.product-card__wishlist svg {
-  width: 17px;
-  height: 17px;
-}
-
-.product-card__wishlist:hover {
-  transform: scale(1.1);
-}
-
-.product-card__wishlist.is-active {
-  color: var(--coral);
-  background: var(--cream);
+.product-card:hover .product-card__frame {
+  transform: translateY(-6px) rotate(-1deg);
+  background: var(--tone);
 }
 
 .product-card__image {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  overflow: hidden;
   position: relative;
-}
-
-.product-card__image::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    transparent 55%,
-    color-mix(in srgb, var(--charcoal) 8%, transparent) 100%
-  );
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--duration-med) ease;
-}
-
-.product-card:hover .product-card__image::after {
-  opacity: 1;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--radius-frame);
+  background: var(--stock-deep);
 }
 
 .product-card__image img {
-  width: 100% !important;
-  height: 100% !important;
-  max-width: none !important;
-  object-fit: cover !important;
-  object-position: center 15% !important;
-  display: block;
-  transition: transform 0.55s var(--ease-out);
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center 20%;
+  transition: transform 0.7s var(--ease-out);
 }
 
 .product-card:hover .product-card__image img {
   transform: scale(1.06);
 }
 
+/* The leaflet number, printed as a round stamp over the photo corner. */
+.product-card__stamp {
+  position: absolute;
+  top: -8px;
+  left: -6px;
+  z-index: 3;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-content: center;
+  border-radius: 50%;
+  background: var(--band);
+  color: var(--on-band);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 0.9;
+  text-align: center;
+  transform: rotate(var(--stamp-rot, -6deg));
+  transition: transform 0.6s var(--ease-spring);
+}
+
+.product-card__stamp small {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  line-height: 1.2;
+}
+
+.product-card:hover .product-card__stamp {
+  transform: rotate(calc(var(--stamp-rot, -6deg) + 20deg)) scale(1.08);
+}
+
+.product-card__wishlist {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--stock);
+  color: var(--ink-chocolate);
+  cursor: pointer;
+  box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--band) 35%, transparent);
+  transition:
+    transform 0.35s var(--ease-spring),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.product-card__wishlist svg {
+  width: 18px;
+  height: 18px;
+}
+
+.product-card__wishlist:hover {
+  transform: scale(1.12);
+}
+
+.product-card__wishlist:active {
+  transform: scale(0.9);
+}
+
+.product-card__wishlist.is-active {
+  color: var(--ink-tomato);
+}
+
+.product-card__wishlist.is-active svg {
+  animation: card-heart 0.45s var(--ease-spring);
+}
+
+@keyframes card-heart {
+  40% {
+    transform: scale(1.35);
+  }
+}
+
+/* ---------- Meta ---------- */
 .product-card__meta {
-  padding: 1.1rem 1.25rem 1.35rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
+  padding: 0 0.35rem;
+}
+
+.product-card__category {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--charcoal-soft);
+  text-transform: lowercase;
 }
 
 .product-card__name {
-  font-family: var(--font-body);
-  font-size: 0.92rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
   margin: 0;
-  line-height: 1.35;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.product-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+  min-height: 40px;
 }
 
 .product-card__price {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+/* The buy action: tomato, and only the buy action is tomato. */
+.product-card__add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 40px;
+  padding: 0 0.9rem 0 1.05rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--ink-tomato);
+  color: var(--on-ink);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.35s var(--ease-spring),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.product-card__add svg {
+  width: 16px;
+  height: 16px;
+}
+
+.product-card__add:hover {
+  background: var(--ink-tomato-deep);
+  transform: translateY(-2px);
+}
+
+.product-card__add:active {
+  transform: scale(0.94);
+}
+
+.product-card__add.is-added {
+  background: var(--ink-avocado);
+}
+
+/* Sold out is a mark, not a colour: the row is struck through like a frogged
+   (unravelled) stitch row. */
+.product-card__sold {
+  margin: 0;
   font-family: var(--font-mono);
   font-size: 0.82rem;
-  font-weight: 500;
   color: var(--charcoal-soft);
-  margin: 0;
+}
+
+.product-card.is-sold-out .product-card__image img {
+  filter: grayscale(0.65) contrast(0.95);
 }
 
 @media (max-width: 600px) {
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    gap: 1.5rem 0.85rem;
     padding: 1rem 1rem 2.5rem;
   }
 
-  .product-card__meta {
-    padding: 0.85rem 0.9rem 1rem;
+  .product-card__frame {
+    padding: 6px;
+    border-radius: 24px;
+  }
+
+  .product-card__image {
+    border-radius: 18px;
+  }
+
+  .product-card__stamp {
+    width: 44px;
+    height: 44px;
+    font-size: 0.95rem;
+  }
+
+  .product-card__wishlist {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
   }
 
   .product-card__name {
-    font-size: 0.82rem;
+    font-size: 0.95rem;
+  }
+
+  .product-card__row {
+    flex-wrap: wrap;
+  }
+
+  .product-card__add {
+    height: 36px;
+    padding: 0 0.75rem;
   }
 }

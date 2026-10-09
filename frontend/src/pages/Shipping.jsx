@@ -1,16 +1,24 @@
 import "./InfoPage.css";
+import PolicyText from "../components/PolicyText.jsx";
+import { useSite } from "../context/SiteContext.jsx";
 
 export default function Shipping() {
+  const custom = useSite().settings.shipping_text;
+
   return (
     <main className="info-page">
       <header className="info-page__header">
-        <p className="info-page__eyebrow">Good to know</p>
         <h1 className="info-page__title">Shipping</h1>
         <p className="info-page__intro">
           Every piece is made to order or from very limited stock, so shipping timelines
           reflect the making time, not a warehouse pick-and-pack.
         </p>
       </header>
+
+      {custom ? (
+        <PolicyText text={custom} />
+      ) : (
+        <>
 
       <section className="info-page__section">
         <h2>Processing time</h2>
@@ -35,6 +43,8 @@ export default function Shipping() {
           reach out on the <a href="/contact">Contact</a> page if you'd like to be notified.
         </p>
       </section>
+        </>
+      )}
     </main>
   );
 }
