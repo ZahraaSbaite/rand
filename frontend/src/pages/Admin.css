@@ -1246,6 +1246,233 @@
   }
 }
 
+/* ---------- Analytics ---------- */
+/* One data colour, avocado, stepped per mode (validated for contrast,
+   lightness and chroma against the sand and navy panels). Text stays in the
+   navy/slate inks; the grid is a hairline of the rule colour. */
+.admin-analytics {
+  --chart-mark: var(--strand-avocado);
+  --chart-mark-active: color-mix(in srgb, var(--strand-avocado) 78%, var(--strand-navy));
+  --chart-track: color-mix(in srgb, var(--ink-navy) 7%, transparent);
+}
+
+:root[data-theme="dark"] .admin-analytics {
+  --chart-mark: #7f9a3a;
+  --chart-mark-active: color-mix(in srgb, #7f9a3a 75%, var(--strand-cream));
+}
+
+/* On the navy page the navy "selected" pill disappears; print it in cream instead. */
+:root[data-theme="dark"] .admin-analytics .admin-tabs__tab.is-active {
+  border-color: var(--strand-cream);
+  background: var(--strand-cream);
+  color: var(--strand-navy);
+}
+
+.admin-analytics__body {
+  transition: opacity var(--duration-fast) ease;
+}
+
+.admin-analytics__body.is-refreshing {
+  opacity: 0.55;
+}
+
+.admin-analytics__figure {
+  font-variant-numeric: proportional-nums;
+}
+
+.admin-analytics__wide {
+  margin-bottom: 0.75rem;
+}
+
+.admin-analytics__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.admin-analytics__note {
+  margin-bottom: 0.75rem;
+  font-size: 0.82rem;
+}
+
+.admin-analytics__table td,
+.admin-analytics__table th {
+  padding-left: 0;
+}
+
+.admin-chart__plot {
+  position: relative;
+}
+
+.admin-chart svg {
+  display: block;
+  overflow: visible;
+}
+
+.admin-chart__grid {
+  stroke: var(--rule);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.admin-chart__axis {
+  stroke: color-mix(in srgb, var(--ink-navy) 40%, transparent);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.admin-chart__tick {
+  fill: var(--ink-slate);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-chart__bar {
+  fill: var(--chart-mark);
+  transition: fill var(--duration-fast) ease;
+}
+
+.admin-chart__bar.is-active {
+  fill: var(--chart-mark-active);
+}
+
+.admin-chart__hit {
+  fill: transparent;
+  outline: none;
+  cursor: default;
+}
+
+.admin-chart__hit:focus-visible {
+  stroke: var(--ink-navy);
+  stroke-width: 1.5;
+}
+
+.admin-chart__tooltip {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 132px;
+  padding: 0.5rem 0.7rem;
+  border: 1.5px solid var(--rule);
+  border-radius: 12px;
+  background: var(--stock-deep);
+  color: var(--ink-navy);
+  font-size: 0.82rem;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--strand-navy) 18%, transparent);
+}
+
+.admin-chart__tooltip strong {
+  font-size: 1rem;
+}
+
+.admin-chart__tooltip-label {
+  color: var(--ink-slate);
+}
+
+.admin-chart__toggle {
+  margin-top: 0.5rem;
+}
+
+.admin-chart__table {
+  margin-top: 0.5rem;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.admin-barlist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-barlist__row {
+  display: grid;
+  grid-template-columns: minmax(96px, 34%) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.admin-barlist__label {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-barlist__label small {
+  color: var(--ink-slate);
+  font-size: 0.78rem;
+}
+
+.admin-barlist__track {
+  display: block;
+  height: 14px;
+  border-radius: 0 4px 4px 0;
+  background: var(--chart-track);
+}
+
+/* Square at the baseline, 4px round at the data end. */
+.admin-barlist__bar {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  border-radius: 0 4px 4px 0;
+  background: var(--chart-mark);
+}
+
+.admin-barlist__value {
+  min-width: 3.5rem;
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-analytics__inbox {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.admin-analytics__inbox div {
+  padding: 0.75rem 0.85rem;
+  border-radius: 14px;
+  background: var(--admin-surface);
+}
+
+.admin-analytics__inbox dt {
+  color: var(--ink-slate);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.admin-analytics__inbox dd {
+  margin: 0.15rem 0 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+@media (max-width: 1100px) {
+  .admin-analytics__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .admin-barlist__row {
+    grid-template-columns: minmax(80px, 38%) minmax(0, 1fr) auto;
+    gap: 0.5rem;
+  }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1100px) {
   .admin-stats {

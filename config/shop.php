@@ -14,4 +14,12 @@ return [
     // Without it, uploaded images are saved under storage/app/uploads.
     'blob_token' => trim((string) env('BLOB_READ_WRITE_TOKEN')) ?: null,
 
+    // The public shop address, for links in customer emails. On Vercel it
+    // defaults to the production domain.
+    'site_url' => rtrim(
+        env('SITE_URL')
+            ?: (env('VERCEL_PROJECT_PRODUCTION_URL') ? 'https://'.env('VERCEL_PROJECT_PRODUCTION_URL') : 'http://localhost:5173'),
+        '/',
+    ),
+
 ];

@@ -75,7 +75,9 @@ The whole site is one Vercel project: the React build is served as static files 
    - `APP_KEY` — output of `php artisan key:generate --show`
    - `ADMIN_PASSWORD_HASH`
    - `JWT_SECRET`
-5. Deploy. The first API request creates the tables.
+5. For customer emails, also add `MAIL_USERNAME` (the shop's Gmail address) and `MAIL_PASSWORD`
+   (a Google app password: Google Account → Security → 2-Step Verification → App passwords).
+6. Deploy. The first API request creates the tables.
 
 Production defaults (UTC, logs to stderr, caches in `/tmp`, database cache store) are set in
 `api/index.php`; anything set in Vercel's environment variables overrides them.
@@ -85,7 +87,7 @@ Production defaults (UTC, logs to stderr, caches in `/tmp`, database cache store
 - Product catalog with category filtering, sorting, live search and pagination
 - Product pages with colorways, reviews (moderated) and "shop similar" suggestions
 - Cart and wishlist (persisted in localStorage) with cash-on-delivery checkout
-- Order tracking by order number + email
+- Order tracking by order number + email, with an email to the customer on checkout and at every tracking stage
 - Custom order requests (with an inspiration photo) and a contact form
 - Admin panel (`/admin`, password-protected):
   - Dashboard with revenue, low stock, pending items and top sellers

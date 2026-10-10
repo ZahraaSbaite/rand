@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Support\CustomerMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -66,7 +67,19 @@ class OrderController extends Controller
             return $this->error('Invalid tracking_stage', 400);
         }
 
-        return $this->updateField($id, 'tracking_stage', $stage);
+        $order = Order::find($id);
+        if (! $order) {
+            return $this->error('Order not found', 404);
+        }
+
+        // Email the customer only when the stage actually moves.
+        $changed = $order->tracking_stage !== $stage;
+        $order->update(['tracking_stage' => $stage]);
+
+        return [
+            ...$order->toArray(),
+            'customer_notified' => $changed ? CustomerMail::orderUpdate($order) : 'skipped',
+        ];
     }
 
     // DELETE /api/orders/{id}
@@ -109,7 +122,7 @@ class OrderController extends Controller
             $items[$i] = ['product_id' => $item['product_id'], 'quantity' => $quantity];
         }
 
-        return DB::transaction(function () use ($request, $items) {
+        $result = DB::transaction(function () use ($request, $items) {
             // Lock the rows so two checkouts can't oversell the same stock.
             $products = Product::whereIn('id', array_column($items, 'product_id'))
                 ->lockForUpdate()
@@ -149,8 +162,17 @@ class OrderController extends Controller
                 Product::whereKey($item['product_id'])->decrement('stock_quantity', $item['quantity']);
             }
 
-            return response()->json($order->refresh(), 201);
+            return $order->refresh();
         });
+
+        if (! $result instanceof Order) {
+            return $result; // an error response; nothing was saved
+        }
+
+        // Sent after the order is committed, so a mail problem can't undo a sale.
+        CustomerMail::orderUpdate($result, isNew: true);
+
+        return response()->json($result->withoutRelations(), 201);
     }
 
     private function updateField(int $id, string $field, string $value)

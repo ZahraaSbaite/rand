@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useAdmin } from "./admin/AdminUI.jsx";
 import "./AdminOrders.css";
 
 const API_URL =
@@ -30,6 +31,7 @@ const emptyFilters = {
 };
 
 export default function AdminOrders() {
+    const { notify } = useAdmin() || {};
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -177,6 +179,12 @@ export default function AdminOrders() {
                 body: JSON.stringify({ tracking_stage }),
             });
             if (!res.ok) throw new Error("Update failed");
+            const saved = await res.json().catch(() => ({}));
+            if (saved.customer_notified === "sent") {
+                notify?.(`Emailed ${saved.customer_email} about the update.`);
+            } else if (saved.customer_notified === "failed") {
+                notify?.("Stage saved, but the email to the customer couldn't be sent.", "bad");
+            }
         } catch (err) {
             console.error(err);
             alert("Couldn't update what the customer sees. Try again.");

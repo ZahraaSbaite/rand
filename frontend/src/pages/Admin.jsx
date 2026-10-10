@@ -5,6 +5,7 @@ import { useSite } from "../context/SiteContext.jsx";
 import { useTheme } from "../context/ThemeContext.jsx";
 import { AdminProvider, SectionHeader } from "../components/admin/AdminUI.jsx";
 import Overview from "../components/admin/Overview.jsx";
+import Analytics from "../components/admin/Analytics.jsx";
 import ProductsManager from "../components/admin/ProductsManager.jsx";
 import CategoriesManager from "../components/admin/CategoriesManager.jsx";
 import CustomOrdersInbox from "../components/admin/CustomOrdersInbox.jsx";
@@ -20,6 +21,7 @@ const NAV = [
         group: "Shop",
         items: [
             { key: "overview", label: "Overview" },
+            { key: "analytics", label: "Analytics" },
             { key: "orders", label: "Orders", count: "orders" },
             { key: "products", label: "Products" },
             { key: "categories", label: "Categories" },
@@ -90,6 +92,8 @@ export default function Admin() {
 
     const content = (() => {
         switch (section) {
+            case "analytics":
+                return <Analytics />;
             case "orders":
                 return (
                     <>

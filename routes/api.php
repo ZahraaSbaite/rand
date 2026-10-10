@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminStatsController;
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CollectionController;
@@ -94,4 +95,5 @@ Route::middleware('admin')->group(function () use ($content) {
     Route::post('/upload', [UploadController::class, 'store']);
     Route::put('/settings', [SettingsController::class, 'update']);
     Route::get('/admin/stats', AdminStatsController::class);
+    Route::get('/admin/analytics', AnalyticsController::class);
 });
