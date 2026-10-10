@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { CartProvider } from "./context/CartContext.jsx";
 import { WishlistProvider } from "./context/WishlistContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
@@ -18,7 +18,6 @@ import CustomOrders from "./pages/CustomOrders.jsx";
 import Lookbook from "./pages/Lookbook.jsx";
 import OurStory from "./pages/OurStory.jsx";
 import TheProcess from "./pages/TheProcess.jsx";
-import Reviews from "./pages/Reviews.jsx";
 import FAQ from "./pages/FAQ.jsx";
 import Contact from "./pages/Contact.jsx";
 import Shipping from "./pages/Shipping.jsx";
@@ -60,7 +59,7 @@ export default function App() {
             <Route path="/lookbook" element={<Lookbook />} />
             <Route path="/our-story" element={<OurStory />} />
             <Route path="/the-process" element={<TheProcess />} />
-            <Route path="/reviews" element={<Reviews />} />
+            <Route path="/reviews" element={<Navigate to="/#reviews" replace />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/shipping" element={<Shipping />} />

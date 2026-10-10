@@ -1,9 +1,10 @@
 import "./Home.css";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ProductCard from "../components/ProductCard.jsx";
 import YarnStrand from "../components/YarnStrand.jsx";
 import ColorwayBuilder from "../components/ColorwayBuilder.jsx";
+import ReviewsSection from "../components/ReviewsSection.jsx";
 import { useCart } from "../context/CartContext.jsx";
 import { getImageUrl } from "../utils/imageUrl.js";
 import flyToCart from "../utils/flyToCart.js";
@@ -186,6 +187,12 @@ export default function Home() {
   const [filter, setFilter] = useState(null);
   const { settings, categories } = useSite();
   const rounds = useContentList("/api/process-steps", ROUNDS);
+  const { hash } = useLocation();
+
+  // Links like /#reviews land on that section.
+  useEffect(() => {
+    if (hash) document.getElementById(hash.slice(1))?.scrollIntoView();
+  }, [hash]);
 
   useEffect(() => {
     let cancelled = false;
@@ -395,6 +402,9 @@ export default function Home() {
           <ColorwayBuilder />
         </div>
       </section>
+
+      {/* ---------- Reviews ---------- */}
+      <ReviewsSection />
     </main>
   );
 }

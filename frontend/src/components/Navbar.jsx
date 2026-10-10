@@ -13,7 +13,6 @@ const MENU_LINKS = [
     { to: "/lookbook", label: "Lookbook" },
     { to: "/our-story", label: "Our Story" },
     { to: "/the-process", label: "The Process" },
-    { to: "/reviews", label: "Reviews" },
     { to: "/faq", label: "FAQ" },
     { to: "/contact", label: "Contact" },
 ];

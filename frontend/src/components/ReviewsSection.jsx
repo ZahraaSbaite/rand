@@ -1,7 +1,7 @@
-import "./InfoPage.css";
+import "./ReviewsSection.css";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import TiltCard from "../components/TiltCard.jsx";
+import TiltCard from "./TiltCard.jsx";
 import { api } from "../lib/api.js";
 
 function Stars({ value }) {
@@ -14,7 +14,7 @@ function Stars({ value }) {
   );
 }
 
-export default function Reviews() {
+export default function ReviewsSection() {
   const [reviews, setReviews] = useState(null);
   const [failed, setFailed] = useState(false);
 
@@ -35,16 +35,18 @@ export default function Reviews() {
   }));
 
   return (
-    <main className="info-page">
-      <header className="info-page__header">
-        <h1 className="info-page__title">Reviews</h1>
-        <p className="info-page__intro">
-          What people say about the pieces they've brought home. Every review here was left on a
-          product page by a customer.
+    <section className="reviews-section" id="reviews" data-strand aria-labelledby="reviews-title">
+      <header className="reviews-section__header">
+        <h2 id="reviews-title" className="home__h2">
+          What people say
+        </h2>
+        <p>
+          Reviews from customers about the pieces they've brought home, each left on a product
+          page.
         </p>
       </header>
 
-      <section className="info-page__section">
+      <div>
         {reviews === null ? (
           <p>Loading reviews…</p>
         ) : count === 0 ? (
@@ -102,7 +104,7 @@ export default function Reviews() {
             </div>
           </>
         )}
-      </section>
-    </main>
+      </div>
+    </section>
   );
 }

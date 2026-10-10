@@ -38,7 +38,7 @@ export default function OurStory() {
             scarf came from, then asked to buy one. It's still that small: a studio built around
             slow, deliberate making.
           </p>
-          <Link to="/reviews" className="our-story__hero-link">
+          <Link to="/#reviews" className="our-story__hero-link">
             Read reviews
           </Link>
         </div>
