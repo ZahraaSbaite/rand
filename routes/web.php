@@ -8,10 +8,17 @@ use Illuminate\Support\Facades\Route;
 // connection variables are set (never their values) and strips hosts, IPs
 // and user names from the error.
 Route::get('/health', function () {
+    // For each connection variable: unset, or the provider's domain (e.g. "prisma.io").
     $vars = [];
     foreach (['DB_URL', 'DATABASE_URL', 'POSTGRES_URL'] as $name) {
-        $vars[$name] = filled(getenv($name));
+        $host = parse_url((string) getenv($name), PHP_URL_HOST);
+        $vars[$name] = $host ? implode('.', array_slice(explode('.', $host), -2)) : false;
     }
+
+    // Older libpq versions don't send SNI, which some hosted Postgres proxies require.
+    ob_start();
+    phpinfo(INFO_MODULES);
+    preg_match('/libpq\)? Version\s*(?:=>)?\s*([\d.]+)/i', strip_tags(ob_get_clean()), $libpq);
 
     try {
         DB::select('SELECT 1');
@@ -25,7 +32,12 @@ Route::get('/health', function () {
         $database = trim($message);
     }
 
-    return ['status' => $database === 'ok' ? 'ok' : 'error', 'database' => $database, 'env' => $vars];
+    return [
+        'status' => $database === 'ok' ? 'ok' : 'error',
+        'database' => $database,
+        'env' => $vars,
+        'libpq' => $libpq[1] ?? null,
+    ];
 });
 
 // Images uploaded during local development (production images live in Vercel Blob).
