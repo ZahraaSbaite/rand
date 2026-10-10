@@ -110,8 +110,8 @@ export default function CustomOrders() {
                 </label>
               </div>
               <label>
-                Phone <span className="custom-orders__optional">(optional)</span>
-                <input type="tel" name="phone" />
+                Phone
+                <input type="tel" name="phone" required />
               </label>
             </fieldset>
 

@@ -13,8 +13,9 @@ class CustomOrderController extends Controller
     // POST /api/custom-orders - multipart form, optional inspiration_image
     public function store(Request $request)
     {
-        if (! $request->filled('name') || ! $request->filled('email') || ! $request->filled('description')) {
-            return $this->error('Name, email, and a description of the idea are required', 400);
+        if (! $request->filled('name') || ! $request->filled('email') || ! $request->filled('phone')
+            || ! $request->filled('description')) {
+            return $this->error('Name, email, phone, and a description of the idea are required', 400);
         }
 
         // Like the old backend, a non-image attachment is ignored rather than rejected.
@@ -29,7 +30,7 @@ class CustomOrderController extends Controller
         $customOrder = CustomOrderRequest::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
-            'phone' => $optional('phone'),
+            'phone' => $request->input('phone'),
             'product_type' => $optional('product_type'),
             'description' => $request->input('description'),
             'preferred_colors' => $optional('preferred_colors'),
