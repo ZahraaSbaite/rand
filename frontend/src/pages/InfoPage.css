@@ -378,7 +378,57 @@
   font-size: 0.85rem;
 }
 
-/* ── Contact details ── */
+/* ── Contact ── */
+/* Fills the screen between the header and the footer: intro and details
+   on the left, the form on the right. */
+.contact {
+  display: flex;
+  /* 9rem is the height of the site header. */
+  min-height: calc(100vh - 9rem);
+}
+
+.contact__layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: center;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem);
+}
+
+.contact__aside .info-page__title {
+  font-size: clamp(3rem, 8vw, 6rem);
+}
+
+.contact__aside .info-page__intro {
+  margin-bottom: 2rem;
+}
+
+.contact__form {
+  max-width: none;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--charcoal) 5%, var(--cream));
+}
+
+.contact__form textarea {
+  min-height: 180px;
+}
+
+@media (max-width: 860px) {
+  .contact {
+    min-height: 0;
+  }
+
+  .contact__layout {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+
 .contact__details {
   display: flex;
   flex-direction: column;
@@ -417,7 +467,7 @@
   transform: translateY(-2px);
 }
 
-.contact__whatsapp {
+.contact__socials .contact__whatsapp {
   width: auto;
   height: 40px;
   border-radius: 999px;

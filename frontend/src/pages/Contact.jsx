@@ -42,27 +42,29 @@ export default function Contact() {
   };
 
   return (
-    <main className="info-page">
-      <header className="info-page__header">
-        <p className="info-page__eyebrow">Get in touch</p>
-        <h1 className="info-page__title">Contact</h1>
-        <p className="info-page__intro">
-          Questions about an order, a custom piece, or just want to say hi? Reach out.
-        </p>
-      </header>
+    <main className="info-page contact">
+      <div className="contact__layout">
+        <div className="contact__aside">
+          <header>
+            <p className="info-page__eyebrow">Get in touch</p>
+            <h1 className="info-page__title">Contact</h1>
+            <p className="info-page__intro">
+              Questions about an order, a custom piece, or just want to say hi? Reach out.
+            </p>
+          </header>
 
-      <section className="info-page__section">
-        <div className="contact__details">
-          <a href="mailto:hello@rrand.shop">hello@rrand.shop</a>
-          <div className="contact__socials">
-            <a href="#" aria-label="WhatsApp" className="contact__whatsapp">WhatsApp</a>
-            <a href="#" aria-label="Instagram">IG</a>
-            <a href="#" aria-label="TikTok">TT</a>
-            <a href="#" aria-label="Pinterest">PIN</a>
+          <div className="contact__details">
+            <a href="mailto:hello@rrand.shop">hello@rrand.shop</a>
+            <div className="contact__socials">
+              <a href="#" aria-label="WhatsApp" className="contact__whatsapp">WhatsApp</a>
+              <a href="#" aria-label="Instagram">IG</a>
+              <a href="#" aria-label="TikTok">TT</a>
+              <a href="#" aria-label="Pinterest">PIN</a>
+            </div>
           </div>
         </div>
 
-        <form className="info-form" onSubmit={handleSubmit}>
+        <form className="info-form contact__form" onSubmit={handleSubmit}>
           <label>
             Name
             <input type="text" name="name" required />
@@ -89,7 +91,7 @@ export default function Contact() {
             <p className="info-form__status">Thanks for reaching out — we'll reply soon.</p>
           )}
         </form>
-      </section>
+      </div>
     </main>
   );
 }
