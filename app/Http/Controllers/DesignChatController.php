@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -25,6 +26,13 @@ class DesignChatController extends Controller
     private const UNAVAILABLE = 'The AI designer is not available right now. Please use the form instead.';
 
     private const FAILED = "The designer couldn't answer just now. Please try again.";
+
+    private const BUSY = 'The designer is busy right now. Please try again in a minute, or use the form.';
+
+    // Gemini answers 503 when the model is overloaded; these spikes usually pass in seconds.
+    private const RETRY_DELAYS_MS = [1000, 3000];
+
+    private const RETRY_STATUSES = [500, 502, 503, 504];
 
     // GET /api/design-chat - whether the designer is switched on
     public function status()
@@ -53,7 +61,14 @@ class DesignChatController extends Controller
 
         try {
             $response = Http::withHeaders(['x-goog-api-key' => $key])
-                ->timeout(45)
+                ->timeout(30)
+                ->retry(
+                    self::RETRY_DELAYS_MS,
+                    when: fn ($e) => $e instanceof ConnectionException
+                        || ($e instanceof RequestException
+                            && in_array($e->response->status(), self::RETRY_STATUSES, true)),
+                    throw: false,
+                )
                 ->post(config('shop.gemini_base_url')."/v1beta/models/{$model}:generateContent", [
                     'systemInstruction' => ['parts' => [['text' => $this->systemPrompt($categories)]]],
                     'contents' => array_map(fn ($m) => [
@@ -73,7 +88,13 @@ class DesignChatController extends Controller
 
         if ($response->status() === 429) {
             // Free-tier quota (per minute or per day) used up.
-            return $this->error('The designer is busy right now. Please try again in a minute, or use the form.', 429);
+            return $this->error(self::BUSY, 429);
+        }
+        if ($response->status() === 503) {
+            // Still overloaded after the retries.
+            Log::warning('AI designer: Gemini overloaded after retries');
+
+            return $this->error(self::BUSY, 503);
         }
         if (in_array($response->status(), [400, 401, 403], true) && str_contains($response->body(), 'API_KEY')) {
             Log::error('AI designer: Gemini rejected the API key', ['status' => $response->status()]);
