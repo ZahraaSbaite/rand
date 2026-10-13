@@ -9,6 +9,9 @@ export const DEFAULT_SETTINGS = {
         "Handmade bags, totes, scarves, cardigans and gloves, worked slowly by hand and sold as each piece is finished.",
     ticker:
         "Made by hand, one stitch at a time | Small batches, sold as they're finished | Custom colorways on request",
+    // Homepage cover: empty means "pick automatically" / "use the product's photo".
+    hero_product_id: "",
+    hero_image_url: "",
     instagram_url: "",
     tiktok_url: "",
     pinterest_url: "",

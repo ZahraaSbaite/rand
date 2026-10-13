@@ -44,7 +44,11 @@ const ROUNDS = [
   },
 ];
 
-function pickCoverPiece(products) {
+function pickCoverPiece(products, chosenId) {
+  // The piece the admin chose in Site settings, if it's still in the shop.
+  const chosen = chosenId && products.find((p) => String(p.id) === String(chosenId));
+  if (chosen) return chosen;
+
   const available = products.filter((p) => Number(p.stock_quantity ?? 1) > 0);
   const pool = available.length ? available : products;
   return (
@@ -54,7 +58,7 @@ function pickCoverPiece(products) {
   );
 }
 
-function CoverPiece({ piece, loading }) {
+function CoverPiece({ piece, photo, loading }) {
   const { addToCart } = useCart();
   const [added, setAdded] = useState(false);
 
@@ -95,7 +99,7 @@ function CoverPiece({ piece, loading }) {
     <figure className="cover__piece">
       <Link to={`/product/${piece.id}`} className="cover__photo">
         <img
-          src={getImageUrl(piece.image_url) || heroGranny}
+          src={getImageUrl(photo || piece.image_url) || heroGranny}
           alt={piece.name}
           onError={(e) => {
             e.currentTarget.onerror = null;
@@ -215,7 +219,10 @@ export default function Home() {
     };
   }, []);
 
-  const coverPiece = useMemo(() => pickCoverPiece(products), [products]);
+  const coverPiece = useMemo(
+    () => pickCoverPiece(products, settings.hero_product_id),
+    [products, settings.hero_product_id]
+  );
 
   const rackCategories = useMemo(() => {
     const seen = new Map();
@@ -281,7 +288,7 @@ export default function Home() {
             <svg className="cover__ring" viewBox="0 0 200 200" aria-hidden="true">
               <circle cx="100" cy="100" r="96" />
             </svg>
-            <CoverPiece piece={coverPiece} loading={loading} />
+            <CoverPiece piece={coverPiece} photo={settings.hero_image_url} loading={loading} />
           </div>
         </div>
       </section>

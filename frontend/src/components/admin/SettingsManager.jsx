@@ -1,12 +1,24 @@
 import { useEffect, useState } from "react";
 import { api } from "../../lib/api.js";
 import { DEFAULT_SETTINGS, useSite } from "../../context/SiteContext.jsx";
-import { SectionHeader, useAdmin } from "./AdminUI.jsx";
+import { ImageField, SectionHeader, useAdmin } from "./AdminUI.jsx";
 
 const GROUPS = [
     {
         title: "Homepage",
         fields: [
+            {
+                key: "hero_product_id",
+                label: "Featured piece in the cover",
+                hint: "Automatic shows the first featured piece that's in stock, or else the newest.",
+                type: "product",
+            },
+            {
+                key: "hero_image_url",
+                label: "Cover photo",
+                hint: "Leave empty to use the featured piece's own photo.",
+                type: "image",
+            },
             { key: "hero_tagline", label: "Tagline under the logo" },
             { key: "hero_text", label: "Intro text", type: "textarea" },
             {
@@ -46,6 +58,13 @@ export default function SettingsManager() {
     const [form, setForm] = useState(null);
     const [saved, setSaved] = useState(null);
     const [saving, setSaving] = useState(false);
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        api("/api/products?all=true")
+            .then((data) => setProducts(Array.isArray(data) ? data : []))
+            .catch(() => {});
+    }, []);
 
     useEffect(() => {
         api("/api/settings")
@@ -91,7 +110,17 @@ export default function SettingsManager() {
                     <h2 className="admin-panel__title">{group.title}</h2>
                     {group.description && <p className="admin-muted">{group.description}</p>}
                     <div className="admin-form-grid">
-                        {group.fields.map((field) => (
+                        {group.fields.map((field) =>
+                            field.type === "image" ? (
+                                <div key={field.key} className="admin-field admin-field--wide">
+                                    <ImageField
+                                        label={field.label}
+                                        value={form[field.key]}
+                                        onChange={(url) => setForm({ ...form, [field.key]: url })}
+                                    />
+                                    {field.hint && <span className="admin-field__hint">{field.hint}</span>}
+                                </div>
+                            ) : (
                             <label key={field.key} className="admin-field admin-field--wide">
                                 <span className="admin-field__label">
                                     {field.label}
@@ -101,7 +130,20 @@ export default function SettingsManager() {
                                         </a>
                                     )}
                                 </span>
-                                {field.type === "textarea" || field.type === "longtext" ? (
+                                {field.type === "product" ? (
+                                    <select
+                                        value={form[field.key]}
+                                        onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                                    >
+                                        <option value="">Automatic</option>
+                                        {products.map((p) => (
+                                            <option key={p.id} value={String(p.id)} disabled={!p.is_visible}>
+                                                {p.name}
+                                                {!p.is_visible ? " (hidden)" : p.stock_quantity <= 0 ? " (sold out)" : ""}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : field.type === "textarea" || field.type === "longtext" ? (
                                     <textarea
                                         rows={field.type === "longtext" ? 8 : 3}
                                         value={form[field.key]}
@@ -118,7 +160,8 @@ export default function SettingsManager() {
                                 )}
                                 {field.hint && <span className="admin-field__hint">{field.hint}</span>}
                             </label>
-                        ))}
+                            )
+                        )}
                     </div>
                 </section>
             ))}
