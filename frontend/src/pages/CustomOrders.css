@@ -10,7 +10,8 @@
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   gap: clamp(2rem, 5vw, 4rem);
-  align-items: center;
+  /* The text sets the row height and the photo fills it, so the two line up. */
+  align-items: stretch;
   max-width: 1280px;
   margin: 0 auto;
   padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 3rem);
@@ -64,8 +65,8 @@
 }
 
 .custom-orders__hero-frame {
-  position: relative;
-  aspect-ratio: 4 / 5;
+  position: absolute;
+  inset: 0;
   border-radius: 20px;
   overflow: hidden;
 }
@@ -85,6 +86,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Keep the hands and hook in view when the frame is wide. */
+  object-position: 50% 30%;
   border-radius: 20px;
 }
 
@@ -370,8 +373,14 @@
 
   .custom-orders__hero-visual {
     order: -1;
+    width: 100%;
     max-width: 360px;
     margin: 0 auto;
+  }
+
+  .custom-orders__hero-frame {
+    position: relative;
+    aspect-ratio: 4 / 5;
   }
 
   .custom-orders__steps {
