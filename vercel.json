@@ -4,6 +4,9 @@
   "installCommand": "npm ci --prefix frontend",
   "buildCommand": "npm run build --prefix frontend",
   "outputDirectory": "frontend/dist",
+  "regions": [
+    "fra1"
+  ],
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.9.0",
@@ -11,9 +14,21 @@
     }
   },
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/index.php?__route=/api/:path*" },
-    { "source": "/uploads/:path*", "destination": "/api/index.php?__route=/uploads/:path*" },
-    { "source": "/health", "destination": "/api/index.php?__route=/health" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/:path*",
+      "destination": "/api/index.php?__route=/api/:path*"
+    },
+    {
+      "source": "/uploads/:path*",
+      "destination": "/api/index.php?__route=/uploads/:path*"
+    },
+    {
+      "source": "/health",
+      "destination": "/api/index.php?__route=/health"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }

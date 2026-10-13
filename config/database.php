@@ -26,6 +26,9 @@ return [
             // support server-side prepared statements, so let PDO build queries.
             'options' => [
                 PDO::ATTR_EMULATE_PREPARES => true,
+                // Keep the connection open between requests on a warm server, so
+                // each request skips the TCP + TLS + login handshake.
+                PDO::ATTR_PERSISTENT => (bool) env('DB_PERSISTENT', true),
             ],
         ],
 
