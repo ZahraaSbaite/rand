@@ -419,3 +419,28 @@
     animation: none;
   }
 }
+
+/* Link back to the AI designer from the classic form. */
+.custom-orders__switch {
+  margin: -0.5rem 0 1.25rem;
+  color: var(--charcoal-soft);
+}
+
+.custom-orders__form .custom-orders__switch button {
+  display: inline;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ink-navy);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline dashed;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.custom-orders__form .custom-orders__switch button:hover {
+  background: none;
+}

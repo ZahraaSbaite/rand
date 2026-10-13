@@ -14,6 +14,12 @@ return [
     // Without it, uploaded images are saved under storage/app/uploads.
     'blob_token' => trim((string) env('BLOB_READ_WRITE_TOKEN')) ?: null,
 
+    // Google Gemini (free tier) for the AI designer on the Custom Orders page.
+    // Without a key the designer is switched off and customers see the classic form.
+    'gemini_api_key' => trim((string) env('GEMINI_API_KEY')) ?: null,
+    'gemini_model' => trim((string) env('GEMINI_MODEL')) ?: 'gemini-3.8-flash',
+    'gemini_base_url' => rtrim(env('GEMINI_BASE_URL') ?: 'https://generativelanguage.googleapis.com', '/'),
+
     // The public shop address, for links in customer emails. On Vercel it
     // defaults to the production domain.
     'site_url' => rtrim(

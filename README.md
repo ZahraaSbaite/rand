@@ -77,7 +77,9 @@ The whole site is one Vercel project: the React build is served as static files 
    - `JWT_SECRET`
 5. For customer emails, also add `MAIL_USERNAME` (the shop's Gmail address) and `MAIL_PASSWORD`
    (a Google app password: Google Account → Security → 2-Step Verification → App passwords).
-6. Deploy. The first API request creates the tables.
+6. For the AI designer on the Custom Orders page, add `GEMINI_API_KEY` (free, from
+   aistudio.google.com → Get API key). Without it, customers see the classic request form.
+7. Deploy. The first API request creates the tables.
 
 Production defaults (UTC, logs to stderr, caches in `/tmp`, database cache store) are set in
 `api/index.php`; anything set in Vercel's environment variables overrides them.
@@ -88,7 +90,8 @@ Production defaults (UTC, logs to stderr, caches in `/tmp`, database cache store
 - Product pages with colorways, reviews (moderated) and "shop similar" suggestions
 - Cart and wishlist (persisted in localStorage) with cash-on-delivery checkout
 - Order tracking by order number + email, with an email to the customer on checkout and at every tracking stage
-- Custom order requests (with an inspiration photo) and a contact form
+- Custom order requests: designed in a chat with an AI helper (Google Gemini, free tier), or through a classic form with an inspiration photo
+- A contact form
 - Admin panel (`/admin`, password-protected):
   - Dashboard with revenue, low stock, pending items and top sellers
   - Products (with image uploads, hide/show), categories, orders (kanban + tracking stage)

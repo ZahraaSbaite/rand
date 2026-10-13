@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CustomOrderController;
+use App\Http\Controllers\DesignChatController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\OrderController;
@@ -38,6 +39,10 @@ Route::post('/orders', [OrderController::class, 'store']);
 Route::get('/categories', [CategoryController::class, 'index']);
 
 Route::post('/custom-orders', [CustomOrderController::class, 'store']);
+
+// The AI designer on the Custom Orders page (each reply is a paid API call, hence the limit).
+Route::get('/design-chat', [DesignChatController::class, 'status']);
+Route::post('/design-chat', [DesignChatController::class, 'reply'])->middleware('throttle:design-chat');
 Route::post('/contact', [ContactController::class, 'store']);
 
 Route::get('/reviews', [ReviewController::class, 'index']);

@@ -1,7 +1,8 @@
 import "./CustomOrders.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useSite } from "../context/SiteContext.jsx";
+import DesignChat from "../components/DesignChat.jsx";
 import heroHands from "../assets/hero-crochet-hands.jpg";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
@@ -28,6 +29,16 @@ export default function CustomOrders() {
   const [searchParams] = useSearchParams();
   const presetColors = searchParams.get("colorway") || "";
   const { categories } = useSite();
+  // The AI designer is offered first when the shop has it switched on.
+  const [aiEnabled, setAiEnabled] = useState(false);
+  const [mode, setMode] = useState("ai");
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/design-chat`)
+      .then((res) => (res.ok ? res.json() : { enabled: false }))
+      .then((data) => setAiEnabled(Boolean(data.enabled)))
+      .catch(() => setAiEnabled(false));
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -93,9 +104,20 @@ export default function CustomOrders() {
       </section>
 
       <section className="custom-orders__form-section" id="request-form">
+        {aiEnabled && mode === "ai" ? (
+          <DesignChat onUseForm={() => setMode("form")} />
+        ) : (
         <div className="custom-orders__form-layout">
           <form className="custom-orders__form" onSubmit={handleSubmit}>
             <h2>Request a piece</h2>
+            {aiEnabled && (
+              <p className="custom-orders__switch">
+                Not sure yet?{" "}
+                <button type="button" onClick={() => setMode("ai")}>
+                  Design it with our AI helper instead
+                </button>
+              </p>
+            )}
 
             <fieldset>
               <legend>Your details</legend>
@@ -210,6 +232,7 @@ export default function CustomOrders() {
             </div>
           </aside>
         </div>
+        )}
       </section>
     </main>
   );
