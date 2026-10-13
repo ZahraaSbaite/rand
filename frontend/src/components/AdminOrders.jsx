@@ -1,25 +1,28 @@
 import { useEffect, useMemo, useState } from "react";
-import { useAdmin } from "./admin/AdminUI.jsx";
+import { StatusPill, useAdmin } from "./admin/AdminUI.jsx";
 import "./AdminOrders.css";
 
 const API_URL =
     import.meta.env.VITE_API_URL || "";
 
 const columns = [
-    { key: "not_started", label: "Not started" },
+    { key: "not_started", label: "New" },
     { key: "in_progress", label: "In progress" },
     { key: "done", label: "Done" },
 ];
 
-const TRACKING_STAGES = [
-    { key: "received", label: "Received" },
-    { key: "preparing", label: "Preparing" },
-    { key: "crocheting", label: "Crocheting" },
-    { key: "quality_check", label: "Quality check" },
-    { key: "ready", label: "Ready" },
-    { key: "shipped", label: "Shipped" },
-    { key: "delivered", label: "Delivered" },
+// Each order has one status. The board column follows from it.
+const STATUSES = [
+    { key: "received", label: "Received", column: "not_started", tone: "warn" },
+    { key: "preparing", label: "Preparing", column: "in_progress", tone: "info" },
+    { key: "crocheting", label: "Crocheting", column: "in_progress", tone: "info" },
+    { key: "quality_check", label: "Quality check", column: "in_progress", tone: "info" },
+    { key: "ready", label: "Ready", column: "in_progress", tone: "info" },
+    { key: "shipped", label: "Shipped", column: "done", tone: "ok" },
+    { key: "delivered", label: "Delivered", column: "done", tone: "ok" },
 ];
+
+const statusOf = (order) => STATUSES.find((s) => s.key === order.tracking_stage) ?? STATUSES[0];
 
 const topColumns = columns.filter((c) => c.key !== "done");
 const doneColumn = columns.find((c) => c.key === "done");
@@ -70,7 +73,7 @@ export default function AdminOrders() {
         };
 
         for (const order of orders) {
-            (byStatus[order.status] ?? byStatus.not_started).push(order);
+            byStatus[statusOf(order).column].push(order);
         }
 
         for (const key of Object.keys(byStatus)) {
@@ -130,40 +133,6 @@ export default function AdminOrders() {
 
         return byStatus;
     }, [orders, filters]);
-
-    const handleStatusChange = async (orderId, status) => {
-        setOrders((prev) =>
-            prev.map((o) =>
-                o.id === orderId
-                    ? { ...o, status }
-                    : o
-            )
-        );
-
-        try {
-            const res = await fetch(
-                `${API_URL}/api/orders/${orderId}/status`,
-                {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "include",
-                    body: JSON.stringify({ status }),
-                }
-            );
-
-            if (!res.ok) {
-                throw new Error("Update failed");
-            }
-        } catch (err) {
-            console.error(err);
-            alert(
-                "Couldn't update the order status. Reloading."
-            );
-            loadOrders();
-        }
-    };
 
     const handleTrackingChange = async (orderId, tracking_stage) => {
         const previous = orders;
@@ -344,11 +313,14 @@ export default function AdminOrders() {
                                     key={order.id}
                                 >
                                     <div className="admin-orders__card-top">
-                                        <p className="admin-orders__customer">
-                                            {
-                                                order.customer_name
-                                            }
-                                        </p>
+                                        <div className="admin-orders__who">
+                                            <p className="admin-orders__customer">
+                                                {order.customer_name}
+                                            </p>
+                                            <StatusPill tone={statusOf(order).tone}>
+                                                {statusOf(order).label}
+                                            </StatusPill>
+                                        </div>
 
                                         <div className="admin-orders__card-top-actions">
                                             {col.key !== "done" &&
@@ -419,52 +391,19 @@ export default function AdminOrders() {
                                     </p>
 
                                     <label className="admin-orders__tracking">
-                                        Customer sees
+                                        Status · emails the customer
                                         <select
-                                            value={order.tracking_stage || "received"}
+                                            value={statusOf(order).key}
                                             onChange={(e) =>
                                                 handleTrackingChange(order.id, e.target.value)
                                             }
                                         >
-                                            {TRACKING_STAGES.map((s) => (
+                                            {STATUSES.map((s) => (
                                                 <option key={s.key} value={s.key}>
                                                     {s.label}
                                                 </option>
                                             ))}
                                         </select>
-                                    </label>
-
-                                    <label className="admin-orders__tracking">
-                                        Board column
-                                    <select
-                                        className="admin-orders__move"
-                                        value={
-                                            order.status
-                                        }
-                                        onChange={(e) =>
-                                            handleStatusChange(
-                                                order.id,
-                                                e.target.value
-                                            )
-                                        }
-                                    >
-                                        {columns.map(
-                                            (c) => (
-                                                <option
-                                                    key={
-                                                        c.key
-                                                    }
-                                                    value={
-                                                        c.key
-                                                    }
-                                                >
-                                                    {
-                                                        c.label
-                                                    }
-                                                </option>
-                                            )
-                                        )}
-                                    </select>
                                     </label>
                                 </div>
                             );

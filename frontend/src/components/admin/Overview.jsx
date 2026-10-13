@@ -3,9 +3,13 @@ import { api } from "../../lib/api.js";
 import { EmptyState, SectionHeader, StatusPill, formatDate, formatMoney } from "./AdminUI.jsx";
 
 const ORDER_STATUS = {
-    not_started: { label: "Not started", tone: "warn" },
-    in_progress: { label: "In progress", tone: "info" },
-    done: { label: "Done", tone: "ok" },
+    received: { label: "Received", tone: "warn" },
+    preparing: { label: "Preparing", tone: "info" },
+    crocheting: { label: "Crocheting", tone: "info" },
+    quality_check: { label: "Quality check", tone: "info" },
+    ready: { label: "Ready", tone: "info" },
+    shipped: { label: "Shipped", tone: "ok" },
+    delivered: { label: "Delivered", tone: "ok" },
 };
 
 export default function Overview({ goTo }) {
@@ -23,7 +27,7 @@ export default function Overview({ goTo }) {
 
     const openOrders = stats.orders.not_started + stats.orders.in_progress;
     const todo = [
-        { count: stats.orders.not_started, label: "orders not started", section: "orders" },
+        { count: stats.orders.not_started, label: "new orders to start", section: "orders" },
         { count: stats.pending.custom_orders, label: "new custom order requests", section: "custom-orders" },
         { count: stats.pending.messages, label: "unread messages", section: "messages" },
         { count: stats.pending.reviews, label: "reviews waiting for approval", section: "reviews" },
@@ -125,8 +129,8 @@ export default function Overview({ goTo }) {
                                         <td>{o.customer_name}</td>
                                         <td>{formatDate(o.created_at)}</td>
                                         <td>
-                                            <StatusPill tone={ORDER_STATUS[o.status]?.tone}>
-                                                {ORDER_STATUS[o.status]?.label || o.status}
+                                            <StatusPill tone={ORDER_STATUS[o.tracking_stage]?.tone}>
+                                                {ORDER_STATUS[o.tracking_stage]?.label || o.tracking_stage}
                                             </StatusPill>
                                         </td>
                                         <td className="admin-table__num">{formatMoney(o.total_cents)}</td>

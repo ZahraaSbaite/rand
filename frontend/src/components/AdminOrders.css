@@ -131,6 +131,14 @@
   gap: 0.5rem;
 }
 
+.admin-orders__who {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
 .admin-orders__customer {
   margin: 0;
   font-weight: 800;

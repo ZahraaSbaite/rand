@@ -99,7 +99,7 @@ export default function Admin() {
                     <>
                         <SectionHeader
                             title="Orders"
-                            description="Move orders across the board as you work on them. “Customer sees” is what shows on their tracking page."
+                            description="Change an order’s status as you work on it. The customer gets an email each time, and the order moves to the matching column."
                         />
                         <AdminOrders />
                     </>

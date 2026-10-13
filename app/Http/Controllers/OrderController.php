@@ -72,9 +72,9 @@ class OrderController extends Controller
             return $this->error('Order not found', 404);
         }
 
-        // Email the customer only when the stage actually moves.
+        // Email the customer only when the status actually changes.
         $changed = $order->tracking_stage !== $stage;
-        $order->update(['tracking_stage' => $stage]);
+        $order->update(['tracking_stage' => $stage, 'status' => self::boardColumn($stage)]);
 
         return [
             ...$order->toArray(),
@@ -173,6 +173,16 @@ class OrderController extends Controller
         CustomerMail::orderUpdate($result, isNew: true);
 
         return response()->json($result->withoutRelations(), 201);
+    }
+
+    /** The admin board column an order's status belongs in. */
+    private static function boardColumn(string $stage): string
+    {
+        return match ($stage) {
+            'received' => 'not_started',
+            'shipped', 'delivered' => 'done',
+            default => 'in_progress',
+        };
     }
 
     private function updateField(int $id, string $field, string $value)

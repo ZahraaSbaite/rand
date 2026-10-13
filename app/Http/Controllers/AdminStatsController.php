@@ -12,10 +12,15 @@ class AdminStatsController extends Controller
     // GET /api/admin/stats - numbers for the dashboard overview
     public function __invoke()
     {
+        // Board columns follow each order's status (its tracking stage).
         $byStatus = DB::table('orders')
-            ->selectRaw('status, COUNT(*)::int AS count')
-            ->groupBy('status')
-            ->pluck('count', 'status');
+            ->selectRaw("CASE
+                    WHEN tracking_stage IN ('shipped', 'delivered') THEN 'done'
+                    WHEN tracking_stage = 'received' THEN 'not_started'
+                    ELSE 'in_progress'
+                END AS column_key, COUNT(*)::int AS count")
+            ->groupByRaw('1')
+            ->pluck('count', 'column_key');
 
         $revenue = DB::selectOne(
             "SELECT
