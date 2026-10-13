@@ -32,7 +32,7 @@ const NAV = [
         items: [
             { key: "custom-orders", label: "Custom orders", count: "custom_orders" },
             { key: "messages", label: "Messages", count: "messages" },
-            { key: "reviews", label: "Reviews", count: "reviews" },
+            { key: "reviews", label: "Reviews" },
         ],
     },
     {
@@ -66,7 +66,6 @@ export default function Admin() {
                     orders: s.orders.not_started,
                     custom_orders: s.pending.custom_orders,
                     messages: s.pending.messages,
-                    reviews: s.pending.reviews,
                 })
             )
             .catch(() => {});

@@ -76,7 +76,6 @@ class AdminStatsController extends Controller
             'pending' => [
                 'custom_orders' => $count('custom_order_requests', "status = 'new'"),
                 'messages' => $count('contact_messages', 'is_read = false'),
-                'reviews' => $count('reviews', 'approved = false'),
             ],
             'recent_orders' => $recentOrders,
             'top_sellers' => $topSellers,

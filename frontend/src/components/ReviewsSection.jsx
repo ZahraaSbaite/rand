@@ -76,11 +76,12 @@ function ReviewForm({ onCancel, onSent }) {
     setSending(true);
     setError(null);
     try {
-      await api("/api/reviews", {
+      const saved = await api("/api/reviews", {
         method: "POST",
         body: { ...form, product_id: Number(form.product_id), rating: Number(form.rating) },
       });
-      onSent();
+      const piece = products?.find((p) => String(p.id) === String(form.product_id));
+      onSent({ ...saved, product_name: piece?.name ?? "" });
     } catch (err) {
       setError(err.message);
       setSending(false);
@@ -207,12 +208,19 @@ export default function ReviewsSection() {
             ))}
 
             {mode === "writing" ? (
-              <ReviewForm onCancel={() => setMode("idle")} onSent={() => setMode("sent")} />
+              <ReviewForm
+                onCancel={() => setMode("idle")}
+                onSent={(review) => {
+                  // Reviews go live straight away: stitch it into the blanket now.
+                  setReviews((list) => [review, ...(list || [])]);
+                  setMode("sent");
+                }}
+              />
             ) : (
               <li className="granny granny--unfinished">
                 {mode === "sent" ? (
                   <p className="granny__thanks" role="status">
-                    <strong>Thank you!</strong> Your square will be stitched into the blanket once we've read it.
+                    <strong>Thank you!</strong> Your square is now part of the blanket.
                   </p>
                 ) : (
                   <button type="button" className="granny__add" onClick={() => setMode("writing")}>

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class ReviewController extends Controller
 {
-    // GET /api/reviews?product_id= - approved reviews for one product
+    // GET /api/reviews?product_id= - reviews for one product
     // (an admin without product_id gets every review)
     public function index(Request $request)
     {
@@ -24,16 +24,14 @@ class ReviewController extends Controller
         }
 
         return Review::where('product_id', (int) $productId)
-            ->where('approved', true)
             ->orderByDesc('created_at')
             ->get(['id', 'product_id', 'customer_name', 'rating', 'comment', 'created_at']);
     }
 
-    // GET /api/reviews/public - every approved review with its product name
+    // GET /api/reviews/public - every review with its product name
     public function publicIndex()
     {
         return Review::join('products as p', 'p.id', '=', 'reviews.product_id')
-            ->where('reviews.approved', true)
             ->orderByDesc('reviews.created_at')
             ->get([
                 'reviews.id', 'reviews.product_id', 'reviews.customer_name', 'reviews.rating',
@@ -41,7 +39,7 @@ class ReviewController extends Controller
             ]);
     }
 
-    // GET /api/reviews/admin - all reviews, approved or not
+    // GET /api/reviews/admin - all reviews, with the reviewer's email
     public function adminIndex()
     {
         return Review::join('products as p', 'p.id', '=', 'reviews.product_id')
@@ -49,7 +47,7 @@ class ReviewController extends Controller
             ->get(['reviews.*', 'p.name as product_name']);
     }
 
-    // POST /api/reviews - new reviews wait for approval
+    // POST /api/reviews - published straight away; the admin can delete it
     public function store(Request $request)
     {
         $fields = ['product_id', 'customer_name', 'customer_email', 'rating', 'comment'];
@@ -65,7 +63,7 @@ class ReviewController extends Controller
         }
 
         try {
-            $review = Review::create($request->only($fields));
+            $review = Review::create([...$request->only($fields), 'approved' => true]);
         } catch (QueryException $e) {
             if ($this->isForeignKeyViolation($e)) {
                 return $this->error('Invalid product_id', 400);
@@ -74,23 +72,12 @@ class ReviewController extends Controller
         }
 
         $review->refresh();
+        $this->recomputeProductRating($review->product_id);
 
         return response()->json(
             $review->only(['id', 'product_id', 'customer_name', 'rating', 'comment', 'approved', 'created_at']),
             201,
         );
-    }
-
-    // PATCH /api/reviews/{id}/approve
-    public function approve(int $id)
-    {
-        return $this->setApproved($id, true);
-    }
-
-    // PATCH /api/reviews/{id}/unapprove - hide a review again
-    public function unapprove(int $id)
-    {
-        return $this->setApproved($id, false);
     }
 
     // DELETE /api/reviews/{id}
@@ -107,27 +94,14 @@ class ReviewController extends Controller
         return ['success' => true];
     }
 
-    private function setApproved(int $id, bool $approved)
-    {
-        $review = Review::find($id);
-        if (! $review) {
-            return $this->error('Review not found', 404);
-        }
-
-        $review->update(['approved' => $approved]);
-        $this->recomputeProductRating($review->product_id);
-
-        return ['success' => true];
-    }
-
-    /** Products store their approved-review average and count for listing pages. */
+    /** Products store their review average and count for listing pages. */
     private function recomputeProductRating(int $productId): void
     {
         DB::update(
             'UPDATE products SET
-               review_count = (SELECT COUNT(*) FROM reviews WHERE product_id = :id AND approved = true),
+               review_count = (SELECT COUNT(*) FROM reviews WHERE product_id = :id),
                rating = COALESCE(
-                 (SELECT ROUND(AVG(rating)::numeric, 1) FROM reviews WHERE product_id = :id2 AND approved = true),
+                 (SELECT ROUND(AVG(rating)::numeric, 1) FROM reviews WHERE product_id = :id2),
                  0
                )
              WHERE id = :id3',

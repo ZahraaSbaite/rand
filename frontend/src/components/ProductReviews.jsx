@@ -4,7 +4,7 @@ import "./ProductReviews.css";
 
 const EMPTY = { customer_name: "", customer_email: "", rating: 5, comment: "" };
 
-/** Approved reviews for one product, plus a form; new reviews wait for admin approval. */
+/** Reviews for one product, plus a form; a new review shows straight away. */
 export default function ProductReviews({ productId, productName }) {
     const [reviews, setReviews] = useState([]);
     const [form, setForm] = useState(EMPTY);
@@ -25,10 +25,11 @@ export default function ProductReviews({ productId, productName }) {
         setStatus("sending");
         setError(null);
         try {
-            await api("/api/reviews", {
+            const saved = await api("/api/reviews", {
                 method: "POST",
                 body: { ...form, rating: Number(form.rating), product_id: productId },
             });
+            setReviews((list) => [saved, ...list]);
             setStatus("sent");
             setForm(EMPTY);
         } catch (err) {
@@ -50,7 +51,7 @@ export default function ProductReviews({ productId, productName }) {
 
             {status === "sent" ? (
                 <p className="product-reviews__thanks">
-                    Thank you! Your review will appear here once it has been approved.
+                    Thank you! Your review is now on this page.
                 </p>
             ) : (
                 open && (

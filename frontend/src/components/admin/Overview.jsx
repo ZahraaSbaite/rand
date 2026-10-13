@@ -30,7 +30,6 @@ export default function Overview({ goTo }) {
         { count: stats.orders.not_started, label: "new orders to start", section: "orders" },
         { count: stats.pending.custom_orders, label: "new custom order requests", section: "custom-orders" },
         { count: stats.pending.messages, label: "unread messages", section: "messages" },
-        { count: stats.pending.reviews, label: "reviews waiting for approval", section: "reviews" },
         { count: stats.products.sold_out, label: "sold-out products", section: "products" },
     ].filter((t) => t.count > 0);
 

@@ -82,8 +82,6 @@ Route::middleware('admin')->group(function () use ($content) {
     Route::delete('/contact/{id}', [ContactController::class, 'destroy']);
 
     Route::get('/reviews/admin', [ReviewController::class, 'adminIndex']);
-    Route::patch('/reviews/{id}/approve', [ReviewController::class, 'approve']);
-    Route::patch('/reviews/{id}/unapprove', [ReviewController::class, 'unapprove']);
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 
     foreach ($content as $path => $controller) {
