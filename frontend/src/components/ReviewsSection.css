@@ -1,4 +1,7 @@
-/* Reviews, shown at the foot of the home page. */
+/* Reviews at the foot of the home page: a blanket of granny squares, one
+   square per review, plus an unfinished square for adding your own. Rounds
+   use the shop's inks only (marigold, avocado, navy); burgundy stays the buy
+   action. */
 .reviews-section {
   position: relative;
   max-width: 1280px;
@@ -10,137 +13,504 @@
 .reviews-section__header {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.reviews-section__header p {
-  margin: 0;
-  max-width: 34rem;
-  color: var(--charcoal-soft);
-}
-
-.reviews__summary {
-  display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 2rem;
-  background: var(--lavender-light);
-  border-radius: 18px;
-  padding: 1.75rem;
-  margin-bottom: 2rem;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+  margin-bottom: 2.25rem;
 }
 
-.reviews__average {
-  text-align: center;
-  min-width: 100px;
-}
-
-.reviews__average-number {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 2.5rem;
+.reviews-section__header .home__h2 {
   margin: 0;
+}
+
+.reviews-section__intro,
+.reviews-section__status {
+  margin: 0;
+  max-width: 30rem;
+  color: var(--charcoal-soft);
+  line-height: 1.55;
+}
+
+.reviews-section__status {
+  margin-bottom: 1.25rem;
+}
+
+/* The average, as a round stamp. */
+.reviews-stamp {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  width: 118px;
+  height: 118px;
+  margin: 0;
+  border-radius: 50%;
+  background: var(--band);
+  color: var(--on-band);
+  box-shadow:
+    inset 0 0 0 5px var(--band),
+    inset 0 0 0 7px color-mix(in srgb, var(--on-band) 55%, transparent);
+  transform: rotate(-8deg);
+  text-align: center;
+}
+
+.reviews-stamp__score {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
   line-height: 1;
 }
 
-.reviews__average-count {
-  font-size: 0.8rem;
-  color: var(--charcoal-soft);
-  margin: 0.35rem 0 0;
+.reviews-stamp__count {
+  margin-top: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
-.reviews__breakdown {
+/* ---------- The blanket ---------- */
+.blanket {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.granny {
+  --round-outer: var(--ink-marigold);
+  --round-middle: var(--ink-avocado);
+  --round-inner: var(--ink-navy);
+  /* Stitches: a dashed line inside each round, in the paper colour. */
+  --stitch: 2px dashed color-mix(in srgb, var(--stock) 60%, transparent);
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  padding: 11px;
+  border: var(--stitch);
+  border-radius: 14px;
+  background: var(--round-outer);
+  transform: rotate(var(--granny-tilt, 0deg));
+  transition:
+    transform var(--duration-med) var(--ease-spring),
+    box-shadow var(--duration-fast) ease;
+}
+
+/* An invisible square shares the cell with the content, so a square stays
+   square for short reviews and grows taller for long ones. */
+.granny::before {
+  content: "";
+  grid-area: 1 / 1;
+  aspect-ratio: 1;
+}
+
+.granny > * {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.granny[data-outer="marigold"] { --round-outer: var(--ink-marigold); }
+.granny[data-outer="avocado"] { --round-outer: var(--ink-avocado); }
+.granny[data-outer="navy"] { --round-outer: var(--ink-navy); }
+.granny[data-middle="marigold"] { --round-middle: var(--ink-marigold); }
+.granny[data-middle="avocado"] { --round-middle: var(--ink-avocado); }
+.granny[data-middle="navy"] { --round-middle: var(--ink-navy); }
+.granny[data-inner="marigold"] { --round-inner: var(--ink-marigold); }
+.granny[data-inner="avocado"] { --round-inner: var(--ink-avocado); }
+.granny[data-inner="navy"] { --round-inner: var(--ink-navy); }
+
+/* Lifted when you pick it up, like a square off the pile. */
+.granny:not(.granny--unfinished, .granny--form):hover {
+  transform: rotate(0deg) translateY(-4px);
+  box-shadow: 0 22px 32px -18px color-mix(in srgb, var(--strand-navy) 55%, transparent);
+}
+
+.granny__round {
+  display: flex;
   flex: 1;
-  min-width: 200px;
+  min-width: 0;
+  border: var(--stitch);
+}
+
+.granny__round--middle {
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--round-middle);
+}
+
+.granny__round--inner {
+  padding: 8px;
+  border-radius: 7px;
+  background: var(--round-inner);
+}
+
+.granny__centre {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
+  margin: 0;
+  padding: 1.1rem 1.1rem 1rem;
+  border-radius: 4px;
+  background: var(--stock-deep);
+  color: var(--ink-navy);
+}
+
+.granny__quote {
+  flex: 1;
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.granny__quote::before {
+  content: "“";
+}
+
+.granny__quote::after {
+  content: "”";
+}
+
+.granny__by {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.15rem;
+  padding-top: 0.6rem;
+  border-top: 1.5px dashed color-mix(in srgb, var(--ink-navy) 35%, transparent);
 }
 
-.reviews__breakdown-row {
-  display: grid;
-  grid-template-columns: 28px 1fr 24px;
+.granny__name {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.granny__piece {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--charcoal-soft);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.granny__piece:hover {
+  text-decoration: underline dashed;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Rating as yarn balls ---------- */
+.yarn-rating {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.yarn-rating__ball {
+  position: relative;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 1.5px dashed color-mix(in srgb, var(--ink-navy) 45%, transparent);
+  border-radius: 50%;
+}
+
+/* A wound ball: marigold with the wraps showing. */
+.yarn-rating__ball.is-wound {
+  border: 1.5px solid var(--ink-navy);
+  background:
+    repeating-linear-gradient(
+      125deg,
+      transparent 0 2.5px,
+      color-mix(in srgb, var(--strand-navy) 40%, transparent) 2.5px 3.5px
+    ),
+    var(--ink-marigold);
+}
+
+/* ---------- The unfinished square (add a review) ---------- */
+.granny--unfinished {
+  place-items: center;
+  border: 2.5px dashed color-mix(in srgb, var(--ink-navy) 50%, transparent);
+  background: transparent;
+  transform: rotate(0.5deg);
+}
+
+.granny__add {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
-  font-size: 0.78rem;
+  gap: 0.35rem;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  padding: 1.5rem;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink-navy);
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  cursor: pointer;
+  transition: background var(--duration-fast) ease;
+}
+
+.granny__add small {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
   color: var(--charcoal-soft);
 }
 
-.reviews__breakdown-bar {
-  height: 6px;
+.granny__add:hover {
+  background: color-mix(in srgb, var(--ink-marigold) 22%, transparent);
+}
+
+/* A crochet hook, drawn: a shaft with a notch at the tip. */
+.granny__hook {
+  position: relative;
+  width: 7px;
+  height: 64px;
+  margin-bottom: 0.6rem;
+  border-radius: 4px 4px 3px 3px;
+  background: var(--ink-navy);
+  transform: rotate(28deg);
+  transition: transform var(--duration-med) var(--ease-spring);
+}
+
+.granny__hook::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: -4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--stock);
+}
+
+.granny__add:hover .granny__hook {
+  transform: rotate(10deg) translateY(-3px);
+}
+
+.granny__thanks {
+  margin: 0;
+  padding: 1.5rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.granny__thanks strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+/* ---------- The form, laid across the blanket ---------- */
+.granny--form::before {
+  display: none;
+}
+
+.granny--form {
+  grid-column: 1 / -1;
+  border: 2.5px dashed color-mix(in srgb, var(--ink-navy) 50%, transparent);
+  background: var(--stock-deep);
+  transform: none;
+}
+
+.review-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.25rem;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  color: var(--ink-navy);
+}
+
+.review-form__title {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+}
+
+.review-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.review-form__field small {
+  font-weight: 400;
+  color: var(--charcoal-soft);
+}
+
+.review-form__field--wide,
+.review-form__rating,
+.review-form__error,
+.review-form__actions {
+  grid-column: 1 / -1;
+}
+
+.review-form__field input,
+.review-form__field select,
+.review-form__field textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 0.6rem 1rem;
+  border: 1.5px dashed color-mix(in srgb, var(--ink-navy) 45%, transparent);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--charcoal) 10%, transparent);
+  background: var(--stock);
+  color: var(--ink-navy);
+  font: inherit;
+  font-weight: 400;
+}
+
+.review-form__field textarea {
+  border-radius: 18px;
+  resize: vertical;
+}
+
+.review-form__field input:focus,
+.review-form__field select:focus,
+.review-form__field textarea:focus {
+  border-style: solid;
+  border-color: var(--ink-navy);
+  outline: none;
+}
+
+.review-form__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.review-form__rating legend {
+  float: left;
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.review-form__rating .yarn-rating__ball {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-spring);
+}
+
+.review-form__rating .yarn-rating__ball:hover {
+  transform: scale(1.12);
+}
+
+.review-form__rating .yarn-rating__ball:focus-within {
+  outline: 2.5px dashed var(--ink-navy);
+  outline-offset: 3px;
+}
+
+.review-form__rating input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.review-form__rating-text {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.review-form__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
   overflow: hidden;
-}
-
-.reviews__breakdown-fill {
-  height: 100%;
-  background: var(--coral);
-  border-radius: 999px;
-}
-
-.reviews__share-cta {
-  padding: 0.75rem 1.5rem;
-  border-radius: 999px;
-  background: var(--charcoal);
-  color: var(--cream);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.85rem;
+  clip: rect(0 0 0 0);
   white-space: nowrap;
-  transition: background var(--duration-fast) ease, transform var(--duration-fast) ease;
 }
 
-.reviews__share-cta:hover {
-  background: var(--coral);
+.review-form__error {
+  margin: 0;
+  color: var(--ink-burgundy);
+  font-weight: 600;
+}
+
+.review-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.review-form__submit {
+  min-height: 50px;
+  padding: 0 1.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--band);
+  color: var(--ink-marigold);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform var(--duration-fast) ease;
+}
+
+.review-form__submit:hover:not(:disabled) {
   transform: translateY(-2px);
 }
 
-.reviews__product-date {
-  font-size: 0.76rem;
-  color: color-mix(in srgb, var(--charcoal) 45%, transparent);
-  margin: 0.5rem 0 0;
+.review-form__submit:active:not(:disabled) {
+  transform: scale(0.96);
 }
 
-.reviews__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
+.review-form__submit:disabled {
+  opacity: 0.7;
+  cursor: progress;
 }
 
-.reviews__card {
-  --tilt-x: 0deg;
-  --tilt-y: 0deg;
-  background: var(--soft-pink-light);
-  border-radius: 18px;
-  padding: 1.75rem;
-  box-shadow: 0 2px 8px rgb(50 32 27 / 0.05);
-  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-  transition: transform 0.15s ease-out, box-shadow var(--duration-fast) ease;
+.review-form__cancel {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-navy);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline dashed;
+  text-underline-offset: 4px;
+  cursor: pointer;
 }
 
-.reviews__card:hover {
-  transform: perspective(900px) translateY(-4px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-  box-shadow: 0 16px 28px rgb(50 32 27 / 0.14);
+@media (max-width: 600px) {
+  .review-form {
+    grid-template-columns: 1fr;
+  }
+
+  .granny::before {
+    aspect-ratio: auto;
+    min-height: 220px;
+  }
+
+  .reviews-stamp {
+    width: 96px;
+    height: 96px;
+  }
+
+  .reviews-stamp__score {
+    font-size: 1.8rem;
+  }
 }
 
-.reviews__stars {
-  color: var(--coral);
-  letter-spacing: 0.15em;
-  margin: 0 0 0.75rem;
-}
-
-.reviews__quote {
-  font-style: italic;
-  color: var(--charcoal-soft);
-  margin: 0 0 1rem;
-  line-height: 1.6;
-}
-
-.reviews__author {
-  font-weight: 600;
-  font-size: 0.9rem;
+@media (prefers-reduced-motion: reduce) {
+  .granny,
+  .granny__hook,
+  .review-form__rating .yarn-rating__ball {
+    transition: none;
+  }
 }
