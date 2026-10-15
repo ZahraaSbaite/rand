@@ -29,9 +29,9 @@ export default function CustomOrders() {
   const [searchParams] = useSearchParams();
   const presetColors = searchParams.get("colorway") || "";
   const { categories } = useSite();
-  // The AI designer is offered first when the shop has it switched on.
+  // The classic form comes first; the AI designer is an optional extra.
   const [aiEnabled, setAiEnabled] = useState(false);
-  const [mode, setMode] = useState("ai");
+  const [mode, setMode] = useState("form");
 
   useEffect(() => {
     fetch(`${API_URL}/api/design-chat`)
