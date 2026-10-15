@@ -438,6 +438,8 @@ a.cover__caption-name:hover {
 /* ================= Making ================= */
 .making {
   position: relative;
+  /* Links to /#process (and the old /the-process) land with the title clear of the header. */
+  scroll-margin-top: 6rem;
   background: var(--band);
   color: var(--on-band);
   padding: clamp(4rem, 9vw, 7rem) clamp(1rem, 4vw, 3rem);
@@ -578,18 +580,6 @@ a.cover__caption-name:hover {
   margin: 0.5rem 0 0;
   font-size: 1.05rem;
   line-height: 1.6;
-}
-
-.making__more {
-  display: flex;
-  width: fit-content;
-  max-width: 1280px;
-  margin: 2.5rem auto 0;
-  color: var(--on-band);
-}
-
-.making > .making__more {
-  margin-left: max(0px, calc((100% - 1280px) / 2));
 }
 
 /* ================= Shelf ================= */

@@ -48,9 +48,9 @@ export const CONTENT_TYPES = {
     },
     "process-steps": {
         title: "The Process",
-        description: "Steps on The Process page and the “How a piece is made” rounds on the homepage.",
+        description: "The rounds in the “How a piece is made” section of the homepage.",
         endpoint: "/api/process-steps",
-        page: "/the-process",
+        page: "/#process",
         fields: [
             { key: "title", label: "Step", required: true, wide: true },
             { key: "description", label: "Description", type: "textarea", required: true, wide: true },

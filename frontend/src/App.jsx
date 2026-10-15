@@ -17,7 +17,6 @@ import Wishlist from "./pages/Wishlist.jsx";
 import CustomOrders from "./pages/CustomOrders.jsx";
 import Lookbook from "./pages/Lookbook.jsx";
 import OurStory from "./pages/OurStory.jsx";
-import TheProcess from "./pages/TheProcess.jsx";
 import FAQ from "./pages/FAQ.jsx";
 import Contact from "./pages/Contact.jsx";
 import Shipping from "./pages/Shipping.jsx";
@@ -58,7 +57,7 @@ export default function App() {
             <Route path="/custom-orders" element={<CustomOrders />} />
             <Route path="/lookbook" element={<Lookbook />} />
             <Route path="/our-story" element={<OurStory />} />
-            <Route path="/the-process" element={<TheProcess />} />
+            <Route path="/the-process" element={<Navigate to="/#process" replace />} />
             <Route path="/reviews" element={<Navigate to="/#reviews" replace />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/contact" element={<Contact />} />

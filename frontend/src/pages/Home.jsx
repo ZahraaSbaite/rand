@@ -193,10 +193,11 @@ export default function Home() {
   const rounds = useContentList("/api/process-steps", ROUNDS);
   const { hash } = useLocation();
 
-  // Links like /#reviews land on that section.
+  // Links like /#reviews or /#process land on that section. Scroll again once the
+  // products have loaded, since they push the lower sections down the page.
   useEffect(() => {
     if (hash) document.getElementById(hash.slice(1))?.scrollIntoView();
-  }, [hash]);
+  }, [hash, loading]);
 
   useEffect(() => {
     let cancelled = false;
@@ -357,7 +358,7 @@ export default function Home() {
       </section>
 
       {/* ---------- How a piece is made ---------- */}
-      <section className="making" data-strand aria-labelledby="making-title">
+      <section className="making" id="process" data-strand aria-labelledby="making-title">
         <header className="making__header">
           <h2 id="making-title" className="home__h2">
             How a piece is made
@@ -365,9 +366,6 @@ export default function Home() {
           <p>From skein to your door, round by round. No machines, no factories.</p>
         </header>
         {rounds && <PatternRounds rounds={rounds} />}
-        <Link to="/the-process" className="home__more making__more">
-          The whole process
-        </Link>
       </section>
 
       {/* ---------- Categories ---------- */}
