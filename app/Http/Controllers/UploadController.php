@@ -27,7 +27,11 @@ class UploadController extends Controller
             return $this->error('Only JPEG, PNG, WEBP, or GIF images are allowed', 400);
         }
 
-        return response()->json(['url' => FileStore::save($file)], 201);
+        try {
+            return response()->json(['url' => FileStore::save($file)], 201);
+        } catch (\RuntimeException $e) {
+            return $this->error($e->getMessage(), 503);
+        }
     }
 
     // GET /uploads/{name} - images saved to local disk during development

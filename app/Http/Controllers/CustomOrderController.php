@@ -20,10 +20,16 @@ class CustomOrderController extends Controller
 
         // Like the old backend, a non-image attachment is ignored rather than rejected.
         $file = $request->file('inspiration_image');
-        $image = $file && $file->isValid() && str_starts_with((string) $file->getMimeType(), 'image/')
-            && $file->getSize() <= UploadController::MAX_BYTES
-            ? FileStore::save($file)
-            : null;
+        $image = null;
+        if ($file && $file->isValid() && str_starts_with((string) $file->getMimeType(), 'image/')
+            && $file->getSize() <= UploadController::MAX_BYTES) {
+            try {
+                $image = FileStore::save($file);
+            } catch (\RuntimeException $e) {
+                // The request matters more than the photo; send it without.
+                \Illuminate\Support\Facades\Log::warning('Custom order: inspiration image not saved', ['reason' => $e->getMessage()]);
+            }
+        }
 
         $optional = fn (string $field) => $request->input($field) ?: null;
 

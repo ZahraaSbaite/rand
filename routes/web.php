@@ -36,6 +36,9 @@ Route::get('/health', function () {
         'status' => $database === 'ok' ? 'ok' : 'error',
         'database' => $database,
         'env' => $vars,
+        'image_storage' => config('shop.blob_token')
+            ? 'vercel-blob'
+            : (\App\Support\FileStore::configured() ? 'local-disk' : 'not-configured'),
         'libpq' => $libpq[1] ?? null,
     ];
 });
