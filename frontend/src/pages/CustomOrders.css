@@ -420,9 +420,9 @@
   }
 }
 
-/* Link back to the AI designer from the classic form. */
+/* Under the submit button: an optional switch to the AI designer. */
 .custom-orders__switch {
-  margin: -0.5rem 0 1.25rem;
+  margin: 1.25rem 0 0;
   color: var(--charcoal-soft);
 }
 

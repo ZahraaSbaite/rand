@@ -110,14 +110,6 @@ export default function CustomOrders() {
         <div className="custom-orders__form-layout">
           <form className="custom-orders__form" onSubmit={handleSubmit}>
             <h2>Request a piece</h2>
-            {aiEnabled && (
-              <p className="custom-orders__switch">
-                Not sure yet?{" "}
-                <button type="button" onClick={() => setMode("ai")}>
-                  Design it with our AI helper instead
-                </button>
-              </p>
-            )}
 
             <fieldset>
               <legend>Your details</legend>
@@ -217,6 +209,14 @@ export default function CustomOrders() {
             {submitted && (
               <p className="custom-orders__status">
                 Thanks! We'll follow up by email within 2–3 business days.
+              </p>
+            )}
+            {aiEnabled && (
+              <p className="custom-orders__switch">
+                Not sure yet?{" "}
+                <button type="button" onClick={() => setMode("ai")}>
+                  Design it with our AI helper instead
+                </button>
               </p>
             )}
           </form>
