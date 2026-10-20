@@ -108,10 +108,18 @@ class OrderController extends Controller
                 return $this->error('Name, email, phone, and address are required', 400);
             }
         }
+        if ($invalid = $this->invalidInput($request, [
+            'customer_name' => 100, 'customer_email' => 254, 'customer_phone' => 40, 'customer_address' => 500,
+        ], ['customer_email'])) {
+            return $invalid;
+        }
 
         $items = $request->input('items');
         if (! is_array($items) || $items === [] || ! array_is_list($items)) {
             return $this->error('Cart is empty', 400);
+        }
+        if (count($items) > 50) {
+            return $this->error('That cart has too many lines.', 400);
         }
 
         foreach ($items as $i => $item) {

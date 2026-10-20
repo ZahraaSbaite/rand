@@ -31,5 +31,23 @@ class AppServiceProvider extends ServiceProvider
             Limit::perMinute(8)->by($request->ip())->response($slowDown),
             Limit::perHour(60)->by('hour:'.$request->ip())->response($slowDown),
         ]);
+
+        // Public forms (checkout, reviews, contact, custom orders): plenty for a
+        // real customer, not enough to flood the shop or send mass emails
+        // through it. Counted per visitor and per form.
+        $tooMany = fn (Request $request, array $headers) => response()->json(
+            ['error' => "You've sent this a few times already. Please wait a little and try again."],
+            429,
+            $headers,
+        );
+        RateLimiter::for('public-forms', fn (Request $request) => [
+            Limit::perMinute(5)->by($request->ip().'|'.$request->path())->response($tooMany),
+            Limit::perHour(30)->by('hour:'.$request->ip().'|'.$request->path())->response($tooMany),
+        ]);
+
+        // Order tracking needs an order number and email; this stops guessing.
+        RateLimiter::for('order-lookup', fn (Request $request) => Limit::perMinute(10)
+            ->by($request->ip())
+            ->response($tooMany));
     }
 }

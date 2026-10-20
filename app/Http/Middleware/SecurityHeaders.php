@@ -15,8 +15,8 @@ class SecurityHeaders
 
         $response->headers->add([
             'X-Content-Type-Options' => 'nosniff',
-            'X-Frame-Options' => 'SAMEORIGIN',
-            'Referrer-Policy' => 'no-referrer',
+            'X-Frame-Options' => 'DENY',
+            'Referrer-Policy' => 'strict-origin-when-cross-origin',
             'Cross-Origin-Opener-Policy' => 'same-origin',
             'Cross-Origin-Resource-Policy' => 'cross-origin',
         ]);

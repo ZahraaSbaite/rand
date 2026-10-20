@@ -1,13 +1,15 @@
 <?php
 
 use App\Http\Controllers\UploadController;
+use App\Support\AdminSession;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-// Reports whether the database is reachable, and why not. Only says which
-// connection variables are set (never their values) and strips hosts, IPs
-// and user names from the error.
-Route::get('/health', function () {
+// Reports whether the database is reachable. A signed-in admin also gets why
+// not and which services are configured (never secret values; hosts, IPs and
+// user names are stripped from errors). The public only sees ok / error.
+Route::get('/health', function (Request $request) {
     // For each connection variable: unset, or the provider's domain (e.g. "prisma.io").
     $vars = [];
     foreach (['DB_URL', 'DATABASE_URL', 'POSTGRES_URL'] as $name) {
@@ -32,8 +34,13 @@ Route::get('/health', function () {
         $database = trim($message);
     }
 
+    $status = $database === 'ok' ? 'ok' : 'error';
+    if (! AdminSession::check($request)) {
+        return ['status' => $status];
+    }
+
     return [
-        'status' => $database === 'ok' ? 'ok' : 'error',
+        'status' => $status,
         'database' => $database,
         'env' => $vars,
         'image_storage' => config('shop.blob_token')

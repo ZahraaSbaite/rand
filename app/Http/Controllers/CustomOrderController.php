@@ -17,11 +17,18 @@ class CustomOrderController extends Controller
             || ! $request->filled('description')) {
             return $this->error('Name, email, phone, and a description of the idea are required', 400);
         }
+        if ($invalid = $this->invalidInput($request, [
+            'name' => 100, 'email' => 254, 'phone' => 40, 'product_type' => 100, 'description' => 5000,
+            'preferred_colors' => 300, 'preferred_size' => 300, 'quantity' => 4, 'deadline' => 10,
+            'budget_range' => 50, 'additional_notes' => 5000,
+        ], ['email'])) {
+            return $invalid;
+        }
 
-        // Like the old backend, a non-image attachment is ignored rather than rejected.
+        // Like the old backend, an unsupported attachment is ignored rather than rejected.
         $file = $request->file('inspiration_image');
         $image = null;
-        if ($file && $file->isValid() && str_starts_with((string) $file->getMimeType(), 'image/')
+        if ($file && $file->isValid() && in_array($file->getMimeType(), UploadController::IMAGE_TYPES, true)
             && $file->getSize() <= UploadController::MAX_BYTES) {
             try {
                 $image = FileStore::save($file);
@@ -41,8 +48,10 @@ class CustomOrderController extends Controller
             'description' => $request->input('description'),
             'preferred_colors' => $optional('preferred_colors'),
             'preferred_size' => $optional('preferred_size'),
-            'quantity' => (int) $request->input('quantity') ?: 1,
-            'deadline' => $optional('deadline'),
+            'quantity' => max(1, min(50, (int) $request->input('quantity') ?: 1)),
+            // Only a real YYYY-MM-DD date; anything else would fail the date column.
+            'deadline' => preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', (string) $request->input('deadline'), $d)
+                && checkdate((int) $d[2], (int) $d[3], (int) $d[1]) ? $d[0] : null,
             'budget_range' => $optional('budget_range'),
             'inspiration_image_url' => $image,
             'additional_notes' => $optional('additional_notes'),

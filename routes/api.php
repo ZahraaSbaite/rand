@@ -33,21 +33,21 @@ Route::prefix('auth')->group(function () {
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
 
-Route::get('/orders/track', [OrderController::class, 'track']);
-Route::post('/orders', [OrderController::class, 'store']);
+Route::get('/orders/track', [OrderController::class, 'track'])->middleware('throttle:order-lookup');
+Route::post('/orders', [OrderController::class, 'store'])->middleware('throttle:public-forms');
 
 Route::get('/categories', [CategoryController::class, 'index']);
 
-Route::post('/custom-orders', [CustomOrderController::class, 'store']);
+Route::post('/custom-orders', [CustomOrderController::class, 'store'])->middleware('throttle:public-forms');
 
 // The AI designer on the Custom Orders page (each reply is a paid API call, hence the limit).
 Route::get('/design-chat', [DesignChatController::class, 'status']);
 Route::post('/design-chat', [DesignChatController::class, 'reply'])->middleware('throttle:design-chat');
-Route::post('/contact', [ContactController::class, 'store']);
+Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:public-forms');
 
 Route::get('/reviews', [ReviewController::class, 'index']);
 Route::get('/reviews/public', [ReviewController::class, 'publicIndex']);
-Route::post('/reviews', [ReviewController::class, 'store']);
+Route::post('/reviews', [ReviewController::class, 'store'])->middleware('throttle:public-forms');
 
 Route::get('/settings', [SettingsController::class, 'index']);
 

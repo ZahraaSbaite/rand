@@ -41,4 +41,7 @@ if (isset($_GET['__route'])) {
 $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'] = '/index.php';
 $_SERVER['SCRIPT_FILENAME'] = __DIR__.'/../public/index.php';
 
+// Don't advertise the PHP version.
+header_remove('X-Powered-By');
+
 require __DIR__.'/../public/index.php';

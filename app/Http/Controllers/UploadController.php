@@ -10,7 +10,8 @@ class UploadController extends Controller
     // Vercel caps request bodies at 4.5MB.
     public const MAX_BYTES = 4 * 1024 * 1024;
 
-    private const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    // Raster formats only: SVG can carry scripts.
+    public const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
     // POST /api/upload - one image in the "image" field
     public function store(Request $request)

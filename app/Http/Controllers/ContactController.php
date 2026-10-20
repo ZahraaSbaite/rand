@@ -13,6 +13,11 @@ class ContactController extends Controller
         if (! $request->filled('name') || ! $request->filled('email') || ! $request->filled('message')) {
             return $this->error('Name, email, and message are required', 400);
         }
+        if ($invalid = $this->invalidInput($request, [
+            'name' => 100, 'email' => 254, 'subject' => 200, 'message' => 5000,
+        ], ['email'])) {
+            return $invalid;
+        }
 
         $message = ContactMessage::create([
             ...$request->only(['name', 'email', 'message']),

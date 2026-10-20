@@ -57,9 +57,14 @@ class ReviewController extends Controller
             }
         }
 
-        $rating = $request->input('rating');
-        if (! is_numeric($rating) || $rating < 1 || $rating > 5) {
+        $rating = filter_var($request->input('rating'), FILTER_VALIDATE_INT);
+        if ($rating === false || $rating < 1 || $rating > 5) {
             return $this->error('Rating must be between 1 and 5', 400);
+        }
+        if ($invalid = $this->invalidInput($request, [
+            'customer_name' => 80, 'customer_email' => 254, 'comment' => 2000, 'product_id' => 12,
+        ], ['customer_email'])) {
+            return $invalid;
         }
 
         try {
