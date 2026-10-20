@@ -237,8 +237,8 @@ SELECT * FROM (VALUES
   ('Shipping', 'How much is shipping?', 'A flat $5.00 rate applies to every order, calculated automatically at checkout.', 3),
   ('Care', 'How should I wash my crochet piece?', 'Hand wash in cold water and lay flat to dry. Avoid the dryer, which can cause shrinking or misshaping.', 1),
   ('Care', 'How should I store it?', 'Fold rather than hang — especially cardigans — and keep away from direct sunlight and humidity.', 2),
-  ('Returns', 'Can I return an item?', 'Since most pieces are handmade to order or in very limited quantity, we only accept returns for items that arrive damaged or defective.', 1),
-  ('Returns', 'What happens if my order arrives damaged?', 'Contact us within 7 days with a photo of the piece and we''ll arrange a replacement or refund.', 2)
+  ('Returns', 'Can I return an item?', 'No. Every piece is handmade to order or in very small batches, so all sales are final and we don''t accept returns or exchanges.', 1),
+  ('Returns', 'What if I''m not sure about a piece?', 'Ask us before you order. Get in touch on the Contact page and we''ll help with sizes, colours and details.', 2)
 ) AS v(category, question, answer, sort_order)
 WHERE NOT EXISTS (SELECT 1 FROM faqs);
 

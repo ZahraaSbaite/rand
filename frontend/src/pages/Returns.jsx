@@ -10,8 +10,7 @@ export default function Returns() {
       <header className="info-page__header">
         <h1 className="info-page__title">Returns</h1>
         <p className="info-page__intro">
-          Because every piece is handmade to order or in very limited quantity, our returns
-          policy is narrower than a mass-market shop's — here's exactly how it works.
+          Every piece is handmade to order or in very small batches, so all sales are final.
         </p>
       </header>
 
@@ -19,31 +18,22 @@ export default function Returns() {
         <PolicyText text={custom} />
       ) : (
         <>
+          <section className="info-page__section">
+            <h2>No returns or exchanges</h2>
+            <p>
+              We don't accept returns or exchanges, on custom orders or on pieces from the shop.
+              Please check the colours, size and details on the product page, or ask us before you
+              order.
+            </p>
+          </section>
 
-      <section className="info-page__section">
-        <h2>Damaged or defective items</h2>
-        <p>
-          If your order arrives damaged or with a manufacturing defect, contact us within 7 days
-          of delivery with a photo and we'll arrange a replacement or refund.
-        </p>
-      </section>
-
-      <section className="info-page__section">
-        <h2>Change of mind</h2>
-        <p>
-          Since most pieces are made specifically for your order, we aren't able to accept
-          change-of-mind returns on custom orders. In-stock, unused items may be returned
-          within 14 days at the buyer's shipping cost.
-        </p>
-      </section>
-
-      <section className="info-page__section">
-        <h2>How to start a return</h2>
-        <p>
-          Reach out via the <a href="/contact">Contact</a> page with your order number and
-          we'll walk you through the next steps.
-        </p>
-      </section>
+          <section className="info-page__section">
+            <h2>Questions before you order</h2>
+            <p>
+              Not sure about a size or a colour? Get in touch on the <a href="/contact">Contact</a>{" "}
+              page and we'll help you choose.
+            </p>
+          </section>
         </>
       )}
     </main>

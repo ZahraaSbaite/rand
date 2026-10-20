@@ -76,12 +76,12 @@ const QUESTIONS = [
   {
     category: "returns",
     q: "Can I return an item?",
-    a: "Since most pieces are handmade to order or in very limited quantity, we only accept returns for items that arrive damaged or defective.",
+    a: "No. Every piece is handmade to order or in very small batches, so all sales are final and we don't accept returns or exchanges.",
   },
   {
     category: "returns",
-    q: "What happens if my order arrives damaged?",
-    a: "Contact us within 7 days with a photo of the piece and we'll arrange a replacement or refund.",
+    q: "What if I'm not sure about a piece?",
+    a: "Ask us before you order. Get in touch on the Contact page and we'll help with sizes, colours and details.",
   },
 ];
 
