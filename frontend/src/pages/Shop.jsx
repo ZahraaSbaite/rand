@@ -8,7 +8,7 @@ import useReveal from "../hooks/useReveal.js";
 import slugify from "../lib/slug.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 const SORTS = [
   { value: "featured", label: "Featured" },
