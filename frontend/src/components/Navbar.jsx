@@ -8,10 +8,8 @@ import "./Navbar.css";
 
 
 const MENU_LINKS = [
-    { to: "/collections", label: "Collections" },
     { to: "/custom-orders", label: "Custom Orders" },
     { to: "/lookbook", label: "Lookbook" },
-    { to: "/our-story", label: "Our Story" },
     { to: "/faq", label: "FAQ" },
     { to: "/contact", label: "Contact" },
 ];

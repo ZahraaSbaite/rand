@@ -38,9 +38,7 @@ const NAV = [
     {
         group: "Pages",
         items: [
-            { key: "collections", label: "Collections" },
             { key: "faqs", label: "FAQs" },
-            { key: "story-blocks", label: "Our Story" },
             { key: "process-steps", label: "The Process" },
             { key: "lookbook", label: "Lookbook" },
             { key: "settings", label: "Site settings" },
@@ -113,12 +111,8 @@ export default function Admin() {
                 return <MessagesInbox />;
             case "reviews":
                 return <ReviewsManager />;
-            case "collections":
-                return <ContentManager type="collections" categories={categories} />;
             case "faqs":
                 return <ContentManager type="faqs" categories={categories} />;
-            case "story-blocks":
-                return <ContentManager type="story-blocks" categories={categories} />;
             case "process-steps":
                 return <ContentManager type="process-steps" categories={categories} />;
             case "lookbook":

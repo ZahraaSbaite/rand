@@ -4,24 +4,10 @@ import { getImageUrl } from "../../utils/imageUrl.js";
 import { EmptyState, ImageField, SectionHeader, useAdmin } from "./AdminUI.jsx";
 
 /**
- * One editor for every simple content list (collections, FAQs, story blocks,
- * process steps, lookbook). Each config names its endpoint and fields; items
+ * One editor for every simple content list (FAQs, process steps, lookbook). Each config names its endpoint and fields; items
  * are ordered with sort_order and edited inline.
  */
 export const CONTENT_TYPES = {
-    collections: {
-        title: "Collections",
-        description: "Groups shown on the Collections page. Each links to a shop category.",
-        endpoint: "/api/collections",
-        page: "/collections",
-        fields: [
-            { key: "name", label: "Name", required: true },
-            { key: "slug", label: "Links to category", type: "category", required: true },
-            { key: "tagline", label: "Tagline", wide: true },
-            { key: "image_url", label: "Cover image", type: "image" },
-        ],
-        summary: (item) => [item.name, item.tagline],
-    },
     faqs: {
         title: "FAQs",
         description: "Questions on the FAQ page. Questions with the same topic are grouped together.",
@@ -33,18 +19,6 @@ export const CONTENT_TYPES = {
             { key: "answer", label: "Answer", type: "textarea", required: true, wide: true },
         ],
         summary: (item) => [item.question, `${item.category} · ${item.answer}`],
-    },
-    "story-blocks": {
-        title: "Our Story",
-        description: "The sections of the Our Story page, top to bottom. Leave a blank line between paragraphs.",
-        endpoint: "/api/story-blocks",
-        page: "/our-story",
-        fields: [
-            { key: "heading", label: "Heading", required: true, wide: true },
-            { key: "body", label: "Text", type: "textarea", required: true, wide: true },
-            { key: "image_url", label: "Photo", type: "image" },
-        ],
-        summary: (item) => [item.heading, item.body],
     },
     "process-steps": {
         title: "The Process",

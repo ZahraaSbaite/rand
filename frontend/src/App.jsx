@@ -7,7 +7,6 @@ import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import Home from "./pages/Home.jsx";
 import Shop from "./pages/Shop.jsx";
-import Collections from "./pages/Collections.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
 import Cart from "./pages/Cart.jsx";
 import Checkout from "./pages/Checkout.jsx";
@@ -16,7 +15,6 @@ import OrderTracking from "./pages/OrderTracking.jsx";
 import Wishlist from "./pages/Wishlist.jsx";
 import CustomOrders from "./pages/CustomOrders.jsx";
 import Lookbook from "./pages/Lookbook.jsx";
-import OurStory from "./pages/OurStory.jsx";
 import FAQ from "./pages/FAQ.jsx";
 import Contact from "./pages/Contact.jsx";
 import Shipping from "./pages/Shipping.jsx";
@@ -44,7 +42,7 @@ export default function App() {
 
             <Route path="/shop" element={<Shop />} />
             <Route path="/shop/:category" element={<Shop />} />
-            <Route path="/collections" element={<Collections />} />
+            <Route path="/collections" element={<Navigate to="/shop" replace />} />
 
             <Route path="/product/:id" element={<ProductPage />} />
 
@@ -56,7 +54,7 @@ export default function App() {
 
             <Route path="/custom-orders" element={<CustomOrders />} />
             <Route path="/lookbook" element={<Lookbook />} />
-            <Route path="/our-story" element={<OurStory />} />
+            <Route path="/our-story" element={<Navigate to="/" replace />} />
             <Route path="/the-process" element={<Navigate to="/#process" replace />} />
             <Route path="/reviews" element={<Navigate to="/#reviews" replace />} />
             <Route path="/faq" element={<FAQ />} />

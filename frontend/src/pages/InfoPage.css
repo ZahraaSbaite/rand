@@ -1,5 +1,5 @@
-/* Shared layout for the content pages: Custom Orders, Lookbook, Our Story,
-   The Process, Reviews, FAQ, Contact. */
+/* Shared layout for the content pages: Lookbook, Contact, and the policy
+   pages (Shipping, Returns, Privacy, Terms). */
 
 .info-page {
   background: var(--cream);
@@ -56,103 +56,6 @@
 .info-page__section p {
   line-height: 1.65;
   color: var(--charcoal-soft);
-}
-
-/* ── Our Story: opening, round photo beside the founding line ── */
-.our-story__hero {
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: clamp(2rem, 6vw, 5rem);
-  align-items: center;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 4vw, 3rem) clamp(2rem, 4vw, 3rem);
-}
-
-.our-story__hero-photo {
-  margin: 0;
-  transform: rotate(-2deg);
-}
-
-.our-story__hero-photo img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 3px solid var(--ink-navy);
-}
-
-.our-story__hero-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(2rem, 4.2vw, 3.2rem);
-  line-height: 1.05;
-  letter-spacing: -0.01em;
-  color: var(--ink-navy);
-}
-
-.our-story__hero-text p:not(.info-page__eyebrow) {
-  max-width: 36rem;
-  margin: 1rem 0 0;
-  font-size: 1.1rem;
-  line-height: 1.6;
-}
-
-.our-story__hero-link {
-  display: inline-block;
-  margin-top: 1.5rem;
-  color: inherit;
-  font-weight: 700;
-  text-decoration: underline;
-  text-decoration-style: dashed;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 0.35em;
-  transition: text-underline-offset var(--duration-fast) var(--ease-out);
-}
-
-.our-story__hero-link:hover {
-  text-underline-offset: 0.5em;
-  text-decoration-style: solid;
-}
-
-@media (max-width: 900px) {
-  .our-story__hero {
-    grid-template-columns: 1fr;
-  }
-
-  .our-story__hero-photo {
-    max-width: 320px;
-  }
-}
-
-/* ── Our Story: two-column narrative ── */
-.our-story__block {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  align-items: center;
-}
-
-.our-story__block img {
-  width: 100%;
-  border-radius: 18px;
-  object-fit: cover;
-  aspect-ratio: 4 / 3;
-}
-
-.our-story__block:nth-child(even) .our-story__text {
-  order: 2;
-}
-
-@media (max-width: 800px) {
-  .our-story__block {
-    grid-template-columns: 1fr;
-  }
-  .our-story__block:nth-child(even) .our-story__text {
-    order: 0;
-  }
 }
 
 /* ── Lookbook: image grid ── */

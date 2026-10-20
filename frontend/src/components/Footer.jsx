@@ -41,7 +41,6 @@ export default function Footer() {
 
                 <nav className="footer__col" aria-label="Strand">
                     <h4>strand</h4>
-                    <Link to="/our-story">About us</Link>
                     <Link to="/contact">Contact us</Link>
                     <Link to="/faq">FAQ</Link>
                 </nav>
