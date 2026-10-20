@@ -604,7 +604,7 @@ a.cover__caption-name:hover {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  min-height: clamp(180px, 22vw, 260px);
+  min-height: clamp(110px, 10vw, 140px);
   padding: 1.25rem 1.4rem 1.4rem 2.6rem;
   border-radius: 6px 22px 22px 6px;
   background: var(--book);
@@ -838,7 +838,7 @@ a.cover__caption-name:hover {
   }
 
   .shelf__book {
-    min-height: 150px;
+    min-height: 100px;
     padding: 1rem 1rem 1.1rem 2.3rem;
   }
 
