@@ -134,19 +134,24 @@ function PatternRounds({ rounds }) {
 
   useEffect(() => {
     const rows = rowRefs.current.filter(Boolean);
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-worked");
-            setCurrent(Number(entry.target.dataset.index));
-          }
-        });
-      },
-      { rootMargin: "-45% 0px -45% 0px" }
-    );
-    rows.forEach((row) => observer.observe(row));
-    return () => observer.disconnect();
+    if (!rows.length) return undefined;
+
+    // The current round is the one under the middle of the screen; above the
+    // list it's the first, past it the last. (Browsers send scroll events at
+    // most once per frame, and this only measures five rows.)
+    const update = () => {
+      const middle = window.innerHeight / 2;
+      const index = rows.findIndex((r) => r.getBoundingClientRect().bottom > middle);
+      setCurrent(index === -1 ? rows.length - 1 : index);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
   }, [rounds]);
 
   return (
@@ -166,7 +171,8 @@ function PatternRounds({ rounds }) {
         {rounds.map((round, i) => (
           <li
             key={round.title}
-            className={`rounds__row${i === 0 ? " is-worked" : ""}${i === current ? " is-current" : ""}`}
+            // Every round up to the one in view is worked: white text and its stitched rule drawn.
+            className={`rounds__row${i <= current ? " is-worked" : ""}${i === current ? " is-current" : ""}`}
             data-index={i}
             ref={(el) => (rowRefs.current[i] = el)}
           >
