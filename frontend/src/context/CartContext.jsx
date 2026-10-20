@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { api } from "../lib/api.js";
 
 const CartContext = createContext(null);
 const STORAGE_KEY = "rrand_cart";
@@ -16,6 +17,23 @@ export function CartProvider({ children }) {
     useEffect(() => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(cartRefs));
     }, [cartRefs]);
+
+    // A saved cart can outlive its products (deleted or hidden in the admin).
+    // Drop those once the shop's list is in, so the cart badge matches the cart.
+    useEffect(() => {
+        api("/api/products")
+            .then((products) => {
+                if (!Array.isArray(products)) return;
+                const inShop = new Set(products.map((p) => p.id));
+                setCartRefs((prev) => {
+                    const kept = prev.filter((r) => inShop.has(r.product_id));
+                    return kept.length === prev.length ? prev : kept;
+                });
+            })
+            .catch(() => {
+                // Offline or API down: keep the cart as it is.
+            });
+    }, []);
 
     const addToCart = (productId, quantity = 1) => {
         setCartRefs((prev) => {
