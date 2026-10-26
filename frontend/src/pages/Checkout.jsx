@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
+import { useSite } from "../context/SiteContext.jsx";
+import { FLAT_DELIVERY_CENTS, formatPrice, parseDeliveryZones } from "../lib/delivery.js";
 import "./Checkout.css";
+import { variantLabel } from "../lib/productOptions.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
-const STEPS = ["Customer Info", "Shipping", "Review"];
+const STEPS = ["Customer Info", "Delivery", "Payment"];
 
 export default function Checkout() {
   const { cartRefs, clearCart } = useCart();
+  const { settings } = useSite();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +26,13 @@ export default function Checkout() {
     city: "",
     country: "",
     postalCode: "",
+    deliveryArea: "",
+    paymentMethod: "cash_on_delivery",
   });
+
+  const zones = parseDeliveryZones(settings.delivery_zones);
+  const zone = zones.find((z) => z.area === form.deliveryArea);
+  const bankDetails = settings.bank_transfer_details.trim();
 
   useEffect(() => {
     if (cartRefs.length === 0) {
@@ -36,7 +46,14 @@ export default function Checkout() {
         const cartItems = cartRefs
           .map((ref) => {
             const product = allProducts.find((p) => p.id === ref.product_id);
-            return product ? { ...product, quantity: ref.quantity } : null;
+            if (!product) return null;
+            const variant = product.variants?.find((v) => v.id === ref.variant_id);
+            return {
+              ...product,
+              quantity: ref.quantity,
+              variant_id: ref.variant_id ?? null,
+              variant_label: variantLabel(product, variant),
+            };
           })
           .filter(Boolean);
         setItems(cartItems);
@@ -46,15 +63,15 @@ export default function Checkout() {
   }, [cartRefs]);
 
   const subtotalCents = items.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
-  const shippingCents = subtotalCents > 0 ? 500 : 0;
-  const totalCents = subtotalCents + shippingCents;
-  const formatPrice = (cents) => `$${(cents / 100).toFixed(2)}`;
+  // Unknown until an area is picked, when the shop has delivery areas.
+  const shippingCents = zones.length === 0 ? FLAT_DELIVERY_CENTS : zone?.fee_cents ?? null;
+  const totalCents = subtotalCents + (shippingCents ?? 0);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const stepValid = {
     0: form.name.trim() && form.email.trim() && form.phone.trim(),
-    1: form.address.trim() && form.city.trim() && form.country.trim(),
+    1: form.address.trim() && form.city.trim() && form.country.trim() && (zones.length === 0 || zone),
     2: true,
   };
 
@@ -78,9 +95,12 @@ export default function Checkout() {
           customer_email: form.email,
           customer_phone: form.phone,
           customer_address: fullAddress,
+          delivery_area: zone?.area ?? null,
+          payment_method: form.paymentMethod,
           items: items.map((item) => ({
             product_id: item.id,
             quantity: item.quantity,
+            variant_id: item.variant_id,
             price_cents: item.price_cents,
           })),
         }),
@@ -148,6 +168,29 @@ export default function Checkout() {
 
           {step === 1 && (
             <div className="checkout__fields">
+              {zones.length > 0 && (
+                <fieldset className="checkout__choices">
+                  <legend>Delivery area</legend>
+                  {zones.map((z) => (
+                    <label key={z.area} className="checkout__choice">
+                      <input
+                        type="radio"
+                        name="deliveryArea"
+                        value={z.area}
+                        checked={form.deliveryArea === z.area}
+                        onChange={handleChange}
+                      />
+                      <span className="checkout__choice-text">
+                        <strong>{z.area}</strong>
+                        {z.eta && <span>Usually arrives in {z.eta}</span>}
+                      </span>
+                      <span className="checkout__choice-price">
+                        {z.fee_cents === 0 ? "Free" : formatPrice(z.fee_cents)}
+                      </span>
+                    </label>
+                  ))}
+                </fieldset>
+              )}
               <label>
                 Street address
                 <input name="address" value={form.address} onChange={handleChange} required />
@@ -174,13 +217,41 @@ export default function Checkout() {
                 <p>{form.name} · {form.email} · {form.phone}</p>
               </div>
               <div className="checkout__review-block">
-                <h3>Shipping to</h3>
+                <h3>Delivering to</h3>
                 <p>{[form.address, form.city, form.country, form.postalCode].filter(Boolean).join(", ")}</p>
+                {zone?.eta && <p>Usually arrives in {zone.eta}.</p>}
               </div>
-              <div className="checkout__review-block">
-                <h3>Payment</h3>
-                <p>Cash on delivery — pay when your order arrives, no card needed.</p>
-              </div>
+              <fieldset className="checkout__choices">
+                <legend>How would you like to pay?</legend>
+                <label className="checkout__choice">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="cash_on_delivery"
+                    checked={form.paymentMethod === "cash_on_delivery"}
+                    onChange={handleChange}
+                  />
+                  <span className="checkout__choice-text">
+                    <strong>Cash on delivery</strong>
+                    <span>Pay the courier when your order arrives.</span>
+                  </span>
+                </label>
+                {bankDetails && (
+                  <label className="checkout__choice">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="bank_transfer"
+                      checked={form.paymentMethod === "bank_transfer"}
+                      onChange={handleChange}
+                    />
+                    <span className="checkout__choice-text">
+                      <strong>Bank transfer</strong>
+                      <span>We'll send the account details. We start on your order once the money arrives.</span>
+                    </span>
+                  </label>
+                )}
+              </fieldset>
               {error && <p className="checkout__error">{error}</p>}
             </div>
           )}
@@ -217,8 +288,11 @@ export default function Checkout() {
           <h2>Order Summary</h2>
           <ul className="checkout__summary-items">
             {items.map((item) => (
-              <li key={item.id}>
-                <span>{item.quantity} × {item.name}</span>
+              <li key={`${item.id}-${item.variant_id ?? ""}`}>
+                <span>
+                  {item.quantity} × {item.name}
+                  {item.variant_label && <> · {item.variant_label}</>}
+                </span>
                 <span>{formatPrice(item.price_cents * item.quantity)}</span>
               </li>
             ))}
@@ -228,8 +302,8 @@ export default function Checkout() {
             <span>{formatPrice(subtotalCents)}</span>
           </div>
           <div className="checkout__summary-row">
-            <span>Shipping</span>
-            <span>{formatPrice(shippingCents)}</span>
+            <span>Delivery{zone ? ` · ${zone.area}` : ""}</span>
+            <span>{shippingCents === null ? "Choose an area" : formatPrice(shippingCents)}</span>
           </div>
           <div className="checkout__summary-row checkout__summary-total">
             <span>Total</span>

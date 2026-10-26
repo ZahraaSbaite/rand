@@ -83,11 +83,11 @@ export default function Overview({ goTo }) {
                 <section className="admin-panel">
                     <h2 className="admin-panel__title">Low stock</h2>
                     {stats.low_stock.length === 0 ? (
-                        <p className="admin-muted">Every product has 3 or more in stock.</p>
+                        <p className="admin-muted">Every ready-made option has 3 or more in stock.</p>
                     ) : (
                         <ul className="admin-list">
                             {stats.low_stock.map((p) => (
-                                <li key={p.id}>
+                                <li key={p.name}>
                                     <span>
                                         {p.name}
                                         <small>{p.category}</small>

@@ -2,7 +2,17 @@ import "./ProductPage.css";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
+import { useSite } from "../context/SiteContext.jsx";
+import { FLAT_DELIVERY_CENTS, formatPrice, parseDeliveryZones } from "../lib/delivery.js";
 import { useWishlist } from "../context/WishlistContext.jsx";
+import {
+  STATUS_LABELS,
+  buyableVariants,
+  findVariant,
+  isMadeToOrder,
+  maxQuantity,
+  variantInStock,
+} from "../lib/productOptions.js";
 import useRecentlyViewed from "../hooks/useRecentlyViewed.js";
 import { getImageUrl } from "../utils/imageUrl.js";
 import ProductReviews from "../components/ProductReviews.jsx";
@@ -16,13 +26,15 @@ export default function ProductPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { settings } = useSite();
   const { isWishlisted, toggleWishlist } = useWishlist();
   const [product, setProduct] = useState(null);
   const [allProducts, setAllProducts] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
   const [activeImage, setActiveImage] = useState(0);
-  const [selectedColor, setSelectedColor] = useState(null);
+  // The chosen value of each option, e.g. { Color: "Oat", Size: "S" }.
+  const [chosen, setChosen] = useState({});
   const [loading, setLoading] = useState(true);
   const [justAdded, setJustAdded] = useState(false);
   const recentlyViewedIds = useRecentlyViewed(product ? Number(id) : null);
@@ -33,10 +45,12 @@ export default function ProductPage() {
     setActiveImage(0);
     setActiveTab(0);
     fetch(`${API_URL}/api/products/${id}`)
-      .then((res) => res.json())
+      .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         setProduct(data);
-        setSelectedColor(data.colors?.[0] ?? data.yarn_color ?? null);
+        // Start on the first combination that can be bought.
+        const start = data && (buyableVariants(data)[0] || data.variants?.[0]);
+        setChosen({ ...(start?.options || {}) });
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -81,7 +95,23 @@ export default function ProductPage() {
   }
 
   const priceLabel = `$${(product.price_cents / 100).toFixed(2)}`;
-  const inStock = product.stock_quantity > 0;
+  const variant = findVariant(product, chosen);
+  const madeToOrder = isMadeToOrder(product);
+  const published = product.status === "published";
+  const inStock = published && variantInStock(product, variant);
+  const most = maxQuantity(product, variant);
+  const groups = product.option_groups || [];
+
+  // Whether picking this value (keeping the other choices) lands on something buyable.
+  const valueOpen = (group, value) =>
+    buyableVariants(product).some((v) =>
+      groups.every((g) => v.options?.[g.name] === (g.name === group.name ? value : chosen[g.name]))
+    );
+
+  const choose = (group, value) => {
+    setChosen((c) => ({ ...c, [group.name]: value }));
+    setQuantity(1);
+  };
   const wishlisted = isWishlisted(product.id);
   const gallery = product.images?.length
     ? product.images.map(getImageUrl)
@@ -90,18 +120,20 @@ export default function ProductPage() {
 
   const decrement = () => setQuantity((q) => Math.max(1, q - 1));
   const increment = () =>
-    setQuantity((q) => Math.min(product.stock_quantity || 1, q + 1));
+    setQuantity((q) => Math.min(most || 1, q + 1));
 
   const handleAddToCart = () => {
-    addToCart(product.id, quantity);
+    addToCart(product.id, quantity, variant.id);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
   };
 
   const handleBuyNow = () => {
-    addToCart(product.id, quantity);
+    addToCart(product.id, quantity, variant.id);
     navigate("/checkout");
   };
+
+  const zones = parseDeliveryZones(settings.delivery_zones);
 
   const tabContent = {
     Description: product.description || "No description provided yet.",
@@ -109,7 +141,10 @@ export default function ProductPage() {
     Dimensions: product.dimensions || "Dimensions information coming soon.",
     Care: product.care_instructions || "Hand wash cold, lay flat to dry.",
     "Production Time": product.production_time || "2-5 business days.",
-    Shipping: "Flat $5 shipping, calculated at checkout. See our Shipping page for full details.",
+    Shipping:
+      zones.length > 0
+        ? `Delivery from ${formatPrice(Math.min(...zones.map((z) => z.fee_cents)))}, depending on your area. You'll see the fee and estimated delivery time at checkout.`
+        : `Flat ${formatPrice(FLAT_DELIVERY_CENTS)} delivery, added at checkout. See our Shipping page for full details.`,
   };
 
   return (
@@ -195,35 +230,58 @@ export default function ProductPage() {
 
           <p className="product__price">{priceLabel}</p>
 
-          {product.colors?.length > 0 && (
-            <div className="product__colors">
-              <p className="product__colors-label">Color: {selectedColor}</p>
+          {groups.map((group) => (
+            <div className="product__colors" key={group.name}>
+              <p className="product__colors-label">
+                {group.name}: {chosen[group.name]}
+              </p>
               <div className="product__colors-row">
-                {product.colors.map((color) => (
-                  <button
-                    type="button"
-                    key={color}
-                    className={`product__color-swatch${selectedColor === color ? " is-active" : ""}`}
-                    onClick={() => setSelectedColor(color)}
-                    aria-label={color}
-                    aria-pressed={selectedColor === color}
-                  >
-                    {color}
-                  </button>
-                ))}
+                {group.values.map((value) => {
+                  const open = valueOpen(group, value);
+                  return (
+                    <button
+                      type="button"
+                      key={value}
+                      className={`product__color-swatch${chosen[group.name] === value ? " is-active" : ""}${open ? "" : " is-unavailable"}`}
+                      onClick={() => choose(group, value)}
+                      aria-label={open ? value : `${value} (sold out)`}
+                      aria-pressed={chosen[group.name] === value}
+                    >
+                      {value}
+                    </button>
+                  );
+                })}
               </div>
             </div>
-          )}
+          ))}
 
           <div className="product__stock">
-            {inStock ? (
+            {!published ? (
+              <span className="product__stock-badge product__stock-badge--out">
+                {STATUS_LABELS[product.status] || "Unavailable"}
+              </span>
+            ) : !variant ? (
+              <span className="product__stock-badge product__stock-badge--out">
+                This combination isn't made
+              </span>
+            ) : !inStock ? (
+              <span className="product__stock-badge product__stock-badge--out">
+                {groups.length > 0 ? "Sold out in this choice" : "Sold out"}
+              </span>
+            ) : madeToOrder ? (
               <span className="product__stock-badge product__stock-badge--in">
-                In stock — {product.stock_quantity} left
+                Made to order
               </span>
             ) : (
-              <span className="product__stock-badge product__stock-badge--out">
-                Sold out
+              <span className="product__stock-badge product__stock-badge--in">
+                In stock — {variant.stock_quantity} left
               </span>
+            )}
+            {published && madeToOrder && inStock && (
+              <p className="product__made-to-order">
+                Crocheted for you after you order
+                {product.production_time ? `, ready in about ${product.production_time}` : ""}.
+              </p>
             )}
           </div>
 
@@ -252,7 +310,13 @@ export default function ProductPage() {
               disabled={!inStock}
               onClick={handleAddToCart}
             >
-              {!inStock ? "Sold out" : justAdded ? "Added ✓" : "Add to cart"}
+              {!published
+                ? STATUS_LABELS[product.status] || "Unavailable"
+                : !inStock
+                  ? "Sold out"
+                  : justAdded
+                    ? "Added ✓"
+                    : "Add to cart"}
             </button>
             <button
               className="product__cta product__cta--secondary"

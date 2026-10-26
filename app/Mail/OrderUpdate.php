@@ -3,11 +3,15 @@
 namespace App\Mail;
 
 use App\Models\Order;
+use App\Support\CheckoutOptions;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
-/** "We've got your order" on checkout, then one email per fulfilment stage. */
+/**
+ * "We've got your order" on checkout (event "new"), one email per fulfilment
+ * stage ("stage"), and "we've received your payment" for bank transfers ("paid").
+ */
 class OrderUpdate extends Mailable
 {
     public const STAGES = [
@@ -45,7 +49,7 @@ class OrderUpdate extends Mailable
             'label' => 'Shipped',
             'subject' => 'Your order #%d is on its way',
             'heading' => 'Your order is on its way',
-            'body' => 'Your order has been handed over for delivery. Please have the payment ready, since it\'s cash on delivery.',
+            'body' => 'Your order has been handed over for delivery.',
         ],
         'delivered' => [
             'label' => 'Delivered',
@@ -55,15 +59,17 @@ class OrderUpdate extends Mailable
         ],
     ];
 
-    public function __construct(public Order $order, public bool $isNew = false)
+    public function __construct(public Order $order, public string $event = 'stage')
     {
     }
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: $this->isNew
-            ? "Thanks for your order #{$this->order->id}"
-            : sprintf($this->stage()['subject'], $this->order->id));
+        return new Envelope(subject: match ($this->event) {
+            'new' => "Thanks for your order #{$this->order->id}",
+            'paid' => "We've received your payment for order #{$this->order->id}",
+            default => sprintf($this->stage()['subject'], $this->order->id),
+        });
     }
 
     public function content(): Content
@@ -77,25 +83,59 @@ class OrderUpdate extends Mailable
             text: 'emails.order-update-text',
             with: [
                 'order' => $order,
-                'heading' => $this->isNew ? "We've got your order" : $stage['heading'],
-                'body' => $this->isNew
-                    ? "Thank you, {$order->customer_name}! Your order is in, and we'll email you as it moves along. You'll pay cash on delivery."
-                    : $stage['body'],
+                'heading' => match ($this->event) {
+                    'new' => "We've got your order",
+                    'paid' => 'Payment received. Your order is confirmed',
+                    default => $stage['heading'],
+                },
+                'body' => trim(match ($this->event) {
+                    'new' => "Thank you, {$order->customer_name}! Your order is in, and we'll email you as it moves along.",
+                    'paid' => "Thank you, {$order->customer_name}! Your bank transfer has arrived, so your order is confirmed and in our queue.",
+                    default => $stage['body'],
+                }.' '.$this->paymentNote()),
                 'stageLabel' => $stage['label'],
                 'step' => array_search($order->tracking_stage, $keys, true) + 1,
                 'steps' => count($keys),
                 'items' => $order->items->map(fn ($item) => [
-                    'name' => $item->product?->name ?? 'Item',
+                    'name' => ($item->product?->name ?? 'Item').($item->variant_label ? " ({$item->variant_label})" : ''),
                     'quantity' => $item->quantity,
                     'total' => self::money($item->price_cents * $item->quantity),
                 ]),
+                'deliveryLabel' => $order->delivery_area ? "Delivery to {$order->delivery_area}" : 'Delivery',
+                'deliveryFee' => self::money($order->delivery_fee_cents),
+                'deliveryEta' => $order->delivery_eta,
+                'totalLabel' => $order->payment_method === 'bank_transfer' ? 'Total (bank transfer)' : 'Total (cash on delivery)',
                 'total' => self::money($order->total_cents),
+                // Shown until the transfer arrives, so the customer knows where to send it.
+                'bankDetails' => $order->payment_method === 'bank_transfer' && ! $order->paid_at
+                    ? CheckoutOptions::bankTransferDetails()
+                    : '',
                 'trackUrl' => config('shop.site_url').'/order-tracking?'.http_build_query([
                     'order_id' => $order->id,
                     'email' => $order->customer_email,
                 ]),
             ],
         );
+    }
+
+    /** What the customer still has to do about paying, if anything. */
+    private function paymentNote(): string
+    {
+        $total = self::money($this->order->total_cents);
+
+        if ($this->order->paid_at) {
+            return '';
+        }
+        if ($this->order->payment_method === 'bank_transfer') {
+            return "Please transfer {$total} to the account below, with your order number #{$this->order->id} as the reference. We'll start on your order once it arrives.";
+        }
+
+        // Cash on delivery only matters when ordering and when the courier is coming.
+        return match (true) {
+            $this->event === 'new' => "You'll pay {$total} in cash on delivery.",
+            $this->order->tracking_stage === 'shipped' => "Please have {$total} ready in cash for the courier.",
+            default => '',
+        };
     }
 
     private function stage(): array

@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
+import { useSite } from "../context/SiteContext.jsx";
+import { FLAT_DELIVERY_CENTS, parseDeliveryZones } from "../lib/delivery.js";
+import { hasOptions, isMadeToOrder, maxQuantity, variantInStock, variantLabel } from "../lib/productOptions.js";
 import "./cart.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 
 export default function Cart() {
-  const { cartRefs, removeFromCart, updateCartQuantity } = useCart();
+  const { cartRefs, removeFromCart, updateCartQuantity, updateCartVariant } = useCart();
+  const { settings } = useSite();
+  const zones = parseDeliveryZones(settings.delivery_zones);
+  const offersBankTransfer = settings.bank_transfer_details.trim() !== "";
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -25,7 +31,16 @@ export default function Cart() {
         const cartItems = cartRefs
           .map((ref) => {
             const product = allProducts.find((p) => p.id === ref.product_id);
-            return product ? { ...product, quantity: ref.quantity } : null;
+            if (!product) return null;
+            const variant = product.variants?.find((v) => v.id === ref.variant_id);
+            return {
+              ...product,
+              quantity: ref.quantity,
+              variant,
+              variant_id: ref.variant_id ?? null,
+              variant_label: variantLabel(product, variant),
+              buyable: product.status === "published" && variantInStock(product, variant),
+            };
           })
           .filter(Boolean);
         setItems(cartItems);
@@ -41,10 +56,12 @@ export default function Cart() {
     (sum, item) => sum + item.price_cents * item.quantity,
     0
   );
-  const shippingCents = subtotalCents > 0 ? 500 : 0;
+  // With delivery areas, the fee is only known once one is picked at checkout.
+  const shippingCents = subtotalCents > 0 && zones.length === 0 ? FLAT_DELIVERY_CENTS : 0;
   const totalCents = subtotalCents + shippingCents;
 
   const formatPrice = (cents) => `$${(cents / 100).toFixed(2)}`;
+  const blocked = items.some((item) => !item.buyable);
 
   if (loading) {
     return (
@@ -101,8 +118,11 @@ export default function Cart() {
       ) : (
         <div className="cart__layout">
           <div className="cart__items">
-            {items.map((item) => (
-              <div className="cart__item" key={item.id}>
+            {items.map((item) => {
+              const lineKey = `${item.id}-${item.variant_id ?? ""}`;
+              const most = Math.max(item.quantity, Math.min(5, maxQuantity(item, item.variant)));
+              return (
+              <div className="cart__item" key={lineKey}>
                 <img
                   src={item.image_url}
                   alt={item.name}
@@ -115,23 +135,58 @@ export default function Cart() {
                 />
                 <div className="cart__item-details">
                   <p className="cart__item-name">{item.name}</p>
-                  {item.yarn_color && (
-                    <p className="cart__item-meta">Color: {item.yarn_color}</p>
+                  {hasOptions(item) ? (
+                    <label className="cart__item-color">
+                      {item.option_groups.map((g) => g.name).join(" / ")}
+                      <select
+                        value={item.variant_id ?? ""}
+                        onChange={(e) => updateCartVariant(item.id, item.variant_id, Number(e.target.value))}
+                      >
+                        {item.variants.map((v) => (
+                          <option
+                            key={v.id}
+                            value={v.id}
+                            disabled={v.id !== item.variant_id && !variantInStock(item, v)}
+                          >
+                            {variantLabel(item, v)}
+                            {variantInStock(item, v) ? "" : " (sold out)"}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  ) : (
+                    item.yarn_color && (
+                      <p className="cart__item-meta">Color: {item.yarn_color}</p>
+                    )
+                  )}
+                  {isMadeToOrder(item) && (
+                    <p className="cart__item-meta">
+                      Made to order{item.production_time ? `, ready in ${item.production_time}` : ""}
+                    </p>
+                  )}
+                  {!item.buyable && (
+                    <p className="cart__item-warning">
+                      {item.status === "published"
+                        ? hasOptions(item)
+                          ? "These options are sold out. Pick others or remove it."
+                          : "Sold out. Please remove it to check out."
+                        : "No longer available. Please remove it to check out."}
+                    </p>
                   )}
                   <p className="cart__item-price">
                     {formatPrice(item.price_cents)}
                   </p>
                 </div>
                 <div className="cart__item-qty">
-                  <label htmlFor={`qty-${item.id}`}>Qty</label>
+                  <label htmlFor={`qty-${lineKey}`}>Qty</label>
                   <select
-                    id={`qty-${item.id}`}
+                    id={`qty-${lineKey}`}
                     value={item.quantity}
                     onChange={(e) =>
-                      updateCartQuantity(item.id, Number(e.target.value))
+                      updateCartQuantity(item.id, item.variant_id, Number(e.target.value))
                     }
                   >
-                    {[1, 2, 3, 4, 5].map((n) => (
+                    {Array.from({ length: Math.max(1, most) }, (_, i) => i + 1).map((n) => (
                       <option key={n} value={n}>
                         {n}
                       </option>
@@ -140,12 +195,13 @@ export default function Cart() {
                 </div>
                 <button
                   className="cart__item-remove"
-                  onClick={() => removeFromCart(item.id)}
+                  onClick={() => removeFromCart(item.id, item.variant_id)}
                 >
                   Remove
                 </button>
               </div>
-            ))}
+              );
+            })}
 
             <Link to="/shop" className="cart__continue-link">
               ← Continue shopping
@@ -159,11 +215,15 @@ export default function Cart() {
               <span>{formatPrice(subtotalCents)}</span>
             </div>
             <div className="cart__summary-row">
-              <span>Shipping</span>
-              <span>{formatPrice(shippingCents)}</span>
+              <span>Delivery</span>
+              <span>
+                {zones.length > 0
+                  ? `From ${formatPrice(Math.min(...zones.map((z) => z.fee_cents)))}`
+                  : formatPrice(shippingCents)}
+              </span>
             </div>
             <div className="cart__summary-row cart__summary-total">
-              <span>Order total</span>
+              <span>{zones.length > 0 ? "Total before delivery" : "Order total"}</span>
               <span>{formatPrice(totalCents)}</span>
             </div>
 
@@ -171,12 +231,15 @@ export default function Cart() {
               type="button"
               className="cart__checkout-btn"
               onClick={() => navigate("/checkout")}
+              disabled={blocked}
             >
               Proceed to checkout
             </button>
 
             <p className="cart__cod-note">
-              Payment by cash on delivery. No card details needed.
+              {offersBankTransfer
+                ? "Pay by cash on delivery or bank transfer. No card details needed."
+                : "Payment by cash on delivery. No card details needed."}
             </p>
           </div>
         </div>

@@ -193,10 +193,35 @@
   font-size: 0.9rem;
 }
 
+.admin-orders__mto {
+  font-style: italic;
+  opacity: 0.75;
+}
+
 .admin-orders__total {
   margin: 0.25rem 0 0.35rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
+}
+
+.admin-orders__paid {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-orders__paid input {
+  accent-color: var(--charcoal);
+}
+
+.admin-orders__paid-method {
+  margin-left: auto;
+  font-weight: 500;
+  color: var(--charcoal-soft);
 }
 
 .admin-orders__tracking {

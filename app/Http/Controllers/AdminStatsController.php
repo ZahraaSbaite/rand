@@ -30,19 +30,38 @@ class AdminStatsController extends Controller
              FROM orders"
         );
 
+        // Made-to-order pieces have no stock count, so they never sell out on stock.
         $products = DB::selectOne(
-            'SELECT COUNT(*)::int AS total,
-                    COUNT(*) FILTER (WHERE is_visible)::int AS visible,
-                    COUNT(*) FILTER (WHERE stock_quantity <= 0)::int AS sold_out
-             FROM products'
+            "SELECT COUNT(*)::int AS total,
+                    COUNT(*) FILTER (WHERE status = 'published')::int AS visible,
+                    COUNT(*) FILTER (WHERE status = 'sold_out'
+                      OR (status = 'published' AND fulfillment = 'ready' AND stock_quantity <= 0))::int AS sold_out
+             FROM products"
         );
 
-        $lowStock = DB::table('products')
-            ->where('stock_quantity', '<=', self::LOW_STOCK)
-            ->orderBy('stock_quantity')
-            ->orderBy('name')
-            ->limit(8)
-            ->get(['id', 'name', 'stock_quantity', 'category']);
+        // Per option, so "Plum / Large" running out shows even when other colors are fine.
+        $lowStock = collect(DB::select(
+            "SELECT p.id, p.name, p.category, p.option_groups, v.options, v.stock_quantity
+             FROM product_variants v JOIN products p ON p.id = v.product_id
+             WHERE p.status = 'published' AND p.fulfillment = 'ready' AND v.is_available
+               AND v.stock_quantity <= ?
+             ORDER BY v.stock_quantity, p.name, v.sort_order
+             LIMIT 8",
+            [self::LOW_STOCK],
+        ))->map(function ($row) {
+            $options = json_decode($row->options, true) ?: [];
+            $label = implode(' / ', array_filter(array_map(
+                fn ($group) => $options[$group['name']] ?? null,
+                json_decode($row->option_groups, true) ?: [],
+            )));
+
+            return [
+                'id' => $row->id,
+                'name' => $label === '' ? $row->name : "{$row->name} ({$label})",
+                'category' => $row->category,
+                'stock_quantity' => $row->stock_quantity,
+            ];
+        });
 
         $recentOrders = Order::orderByDesc('created_at')
             ->limit(6)
@@ -74,7 +93,8 @@ class AdminStatsController extends Controller
             ],
             'low_stock' => $lowStock,
             'pending' => [
-                'custom_orders' => $count('custom_order_requests', "status = 'new'"),
+                // New requests to quote, and approved quotes waiting to be started.
+                'custom_orders' => $count('custom_order_requests', "status IN ('new', 'approved')"),
                 'messages' => $count('contact_messages', 'is_read = false'),
             ],
             'recent_orders' => $recentOrders,

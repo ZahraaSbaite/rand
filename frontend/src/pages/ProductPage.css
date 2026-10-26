@@ -232,6 +232,13 @@
   border-color: var(--lavender);
 }
 
+/* Sold out with the other choices as they are; still clickable to see why. */
+.product__color-swatch.is-unavailable {
+  color: var(--charcoal-soft);
+  text-decoration: line-through;
+  border-style: dashed;
+}
+
 .product__color-swatch.is-active {
   background: var(--lavender-light);
   border-color: var(--lavender-deep);
@@ -277,6 +284,12 @@
 .product__stock-badge--out {
   background: var(--coral-light);
   color: var(--coral);
+}
+
+.product__made-to-order {
+  margin: 0.6rem 0 0;
+  font-size: 0.88rem;
+  color: var(--charcoal-soft);
 }
 
 .product__purchase-row {

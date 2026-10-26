@@ -13,6 +13,7 @@ import { useContentList, useSite } from "../context/SiteContext.jsx";
 import slugify from "../lib/slug.js";
 import heroHands from "../assets/hero-crochet-hands.jpg";
 import heroGranny from "../assets/hero-granny-square.jpg";
+import { availability, buyableVariants } from "../lib/productOptions.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 const RACK_SIZE = 8;
@@ -49,7 +50,7 @@ function pickCoverPiece(products, chosenId) {
   const chosen = chosenId && products.find((p) => String(p.id) === String(chosenId));
   if (chosen) return chosen;
 
-  const available = products.filter((p) => Number(p.stock_quantity ?? 1) > 0);
+  const available = products.filter((p) => availability(p).buyable);
   const pool = available.length ? available : products;
   return (
     pool.find((p) => p.featured) ||
@@ -89,7 +90,9 @@ function CoverPiece({ piece, photo, loading }) {
 
   const price = (piece.price_cents / 100).toFixed(2);
   const handleAdd = (e) => {
-    addToCart(piece.id);
+    const variant = buyableVariants(piece)[0];
+    if (!variant) return;
+    addToCart(piece.id, 1, variant.id);
     flyToCart(e.currentTarget);
     setAdded(true);
     setTimeout(() => setAdded(false), 1600);
@@ -120,8 +123,9 @@ function CoverPiece({ piece, photo, loading }) {
           type="button"
           className={`cover__add${added ? " is-added" : ""}`}
           onClick={handleAdd}
+          disabled={!availability(piece).buyable}
         >
-          {added ? "Added to cart" : "Add to cart"}
+          {availability(piece).label || (added ? "Added to cart" : "Add to cart")}
         </button>
       </figcaption>
     </figure>

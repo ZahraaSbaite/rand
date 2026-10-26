@@ -114,6 +114,28 @@ export default function OrderTracking() {
               <span>Total</span>
               <strong>{formatPrice(order.total_cents)}</strong>
             </div>
+            {order.payment_method && (
+              <div>
+                <span>Payment</span>
+                <strong>
+                  {order.paid_at
+                    ? "Paid"
+                    : order.payment_method === "bank_transfer"
+                      ? "Awaiting bank transfer"
+                      : "Cash on delivery"}
+                </strong>
+              </div>
+            )}
+            {(order.delivery_area || order.delivery_eta) && (
+              <div>
+                <span>Delivery</span>
+                <strong>
+                  {[order.delivery_area, order.delivery_eta && `usually ${order.delivery_eta}`]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </strong>
+              </div>
+            )}
           </div>
 
           <ol className="order-tracking__timeline">
@@ -132,6 +154,7 @@ export default function OrderTracking() {
             {order.items.map((item, i) => (
               <li key={i}>
                 {item.quantity} × {item.product_name}
+                {item.variant_label && <> · {item.variant_label}</>}
               </li>
             ))}
           </ul>

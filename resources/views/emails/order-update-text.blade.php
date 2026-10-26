@@ -7,8 +7,15 @@ Order #{!! $order->id !!} · Step {!! $step !!} of {!! $steps !!}: {!! $stageLab
 @foreach ($items as $item)
 - {!! $item['name'] !!} × {!! $item['quantity'] !!}: {!! $item['total'] !!}
 @endforeach
+- {!! $deliveryLabel !!}{!! $deliveryEta ? " (usually {$deliveryEta})" : '' !!}: {!! $deliveryFee !!}
 
-Total (cash on delivery): {!! $total !!}
+{!! $totalLabel !!}: {!! $total !!}
+@if ($bankDetails !== '')
+
+Bank transfer details:
+{!! $bankDetails !!}
+Reference: Order #{!! $order->id !!}
+@endif
 
 Track your order: {!! $trackUrl !!}
 

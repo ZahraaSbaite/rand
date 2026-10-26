@@ -14,6 +14,7 @@ import OrderConfirmation from "./pages/OrderConfirmation.jsx";
 import OrderTracking from "./pages/OrderTracking.jsx";
 import Wishlist from "./pages/Wishlist.jsx";
 import CustomOrders from "./pages/CustomOrders.jsx";
+import CustomOrderStatus from "./pages/CustomOrderStatus.jsx";
 import Lookbook from "./pages/Lookbook.jsx";
 import FAQ from "./pages/FAQ.jsx";
 import Contact from "./pages/Contact.jsx";
@@ -53,6 +54,7 @@ export default function App() {
             <Route path="/wishlist" element={<Wishlist />} />
 
             <Route path="/custom-orders" element={<CustomOrders />} />
+            <Route path="/custom-order/:token" element={<CustomOrderStatus />} />
             <Route path="/lookbook" element={<Lookbook />} />
             <Route path="/our-story" element={<Navigate to="/" replace />} />
             <Route path="/the-process" element={<Navigate to="/#process" replace />} />

@@ -1,4 +1,5 @@
 import "./DesignChat.css";
+import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { api } from "../lib/api.js";
 
@@ -133,8 +134,8 @@ export default function DesignChat({ onUseForm }) {
     );
 
     try {
-      await api("/api/custom-orders", { method: "POST", body: form });
-      setSent(true);
+      const saved = await api("/api/custom-orders", { method: "POST", body: form });
+      setSent(saved);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -157,8 +158,14 @@ export default function DesignChat({ onUseForm }) {
         <h2>Your design is on its way</h2>
         <p>
           Thanks, {contact.name.split(" ")[0] || "friend"}! We'll look over your {design?.title || "design"} and reply
-          to {contact.email} within 2–3 business days with the details and a price.
+          to {contact.email} within 2–3 business days with a quote: the price and the date it will be ready.
         </p>
+        {sent.access_token && (
+          <p>
+            <Link to={`/custom-order/${sent.access_token}`}>Follow your request</Link> and approve the quote when it
+            arrives.
+          </p>
+        )}
         <button type="button" className="design-chat__ghost" onClick={restart}>
           Design another piece
         </button>

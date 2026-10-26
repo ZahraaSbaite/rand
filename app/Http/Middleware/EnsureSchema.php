@@ -46,6 +46,28 @@ class EnsureSchema
                 Cache::forever('upgrade:reviews-recounted', true);
             }
 
+            // Changes made after launch. Keyed on the file's contents, so
+            // editing upgrades.sql runs it again on the next request.
+            $upgrades = database_path('upgrades.sql');
+            $key = 'upgrade:schema-'.md5_file($upgrades);
+            if (! Cache::has($key)) {
+                DB::unprepared(file_get_contents($upgrades));
+                Cache::forever($key, true);
+                Log::info('Database upgrades applied');
+            }
+
+            // Orders gained delivery areas and payment methods after launch.
+            if (! Cache::has('upgrade:order-delivery-payment')) {
+                DB::unprepared(<<<'SQL'
+                    ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_area TEXT;
+                    ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_fee_cents INTEGER NOT NULL DEFAULT 0;
+                    ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_eta TEXT;
+                    ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method TEXT NOT NULL DEFAULT 'cash_on_delivery';
+                    ALTER TABLE orders ADD COLUMN IF NOT EXISTS paid_at TIMESTAMP;
+                    SQL);
+                Cache::forever('upgrade:order-delivery-payment', true);
+            }
+
             self::$ready = true;
         }
 

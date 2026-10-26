@@ -1,6 +1,6 @@
 import "./CustomOrders.css";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useSite } from "../context/SiteContext.jsx";
 import DesignChat from "../components/DesignChat.jsx";
 import heroHands from "../assets/hero-crochet-hands.jpg";
@@ -8,21 +8,25 @@ import heroHands from "../assets/hero-crochet-hands.jpg";
 const API_URL = import.meta.env.VITE_API_URL || "";
 
 const PROCESS_STEPS = [
-  { title: "Tell Us Your Idea", copy: "Share the piece you're picturing — item, colors, inspiration.", tone: "lavender" },
-  { title: "Choose Your Details", copy: "We'll confirm size, colorway, and quantity together.", tone: "butter" },
-  { title: "We Create It", copy: "Your piece is worked by hand, start to finish.", tone: "mint" },
-  { title: "You Receive It", copy: "Packaged with care and shipped to your door.", tone: "coral" },
+  { title: "Tell Us Your Idea", copy: "Pick the type of piece, colors, size and yarn, and add a photo if you have one.", tone: "lavender" },
+  { title: "Get Your Quote", copy: "We send a price and a finish date. Approve it or decline it, no strings attached.", tone: "butter" },
+  { title: "We Create It", copy: "Once you approve, your piece is worked by hand. Follow each step from your link.", tone: "mint" },
+  { title: "You Receive It", copy: "Packaged with care and delivered to your door.", tone: "coral" },
 ];
 
 const EXPECTATIONS = [
-  "A reply within 2–3 business days to confirm details and price.",
-  "Most pieces are worked within 2–4 weeks, depending on the queue.",
+  "A quote within 2–3 business days, with the price and the date it will be ready.",
+  "Nothing is started until you approve the quote.",
+  "A private link to follow your piece, from quote to delivery.",
   "Payment is cash on delivery, same as the rest of the shop.",
-  "We'll send a photo before it ships, so you know exactly what's coming.",
 ];
 
+const YARN_TYPES = ["Cotton", "Milk cotton", "Acrylic", "Wool blend", "Chenille / velvet", "Not sure, help me choose"];
+
 export default function CustomOrders() {
-  const [submitted, setSubmitted] = useState(false);
+  // The saved request, whose secret link lets the customer follow it.
+  const [submitted, setSubmitted] = useState(null);
+  const [capacity, setCapacity] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [imageFile, setImageFile] = useState(null);
@@ -38,7 +42,13 @@ export default function CustomOrders() {
       .then((res) => (res.ok ? res.json() : { enabled: false }))
       .then((data) => setAiEnabled(Boolean(data.enabled)))
       .catch(() => setAiEnabled(false));
+    fetch(`${API_URL}/api/custom-orders/capacity`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then(setCapacity)
+      .catch(() => setCapacity(null));
   }, []);
+
+  const bookFull = capacity?.limited && !capacity.open;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,12 +64,12 @@ export default function CustomOrders() {
         body: formData,
       });
 
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
         throw new Error(data.error || "Something went wrong");
       }
 
-      setSubmitted(true);
+      setSubmitted(data);
       e.target.reset();
       setImageFile(null);
     } catch (err) {
@@ -104,12 +114,41 @@ export default function CustomOrders() {
       </section>
 
       <section className="custom-orders__form-section" id="request-form">
-        {aiEnabled && mode === "ai" ? (
+        {bookFull ? (
+          <div className="custom-orders__full" role="status">
+            <h2>Our custom order book is full</h2>
+            <p>
+              We only take on as many pieces as we can make well, and right now the queue is full. Please check back
+              soon, or browse the <Link to="/shop">pieces that are ready now</Link>.
+            </p>
+          </div>
+        ) : submitted ? (
+          <div className="custom-orders__full" role="status">
+            <h2>Thanks, your request is in</h2>
+            <p>
+              We'll email {submitted.email} a quote with the price and finish date within 2–3 business days. You can
+              follow your request, and approve the quote when it arrives, from your private page.
+            </p>
+            <p className="custom-orders__full-actions">
+              <Link to={`/custom-order/${submitted.access_token}`} className="custom-orders__hero-cta">
+                Follow your request
+              </Link>
+              <button type="button" className="custom-orders__again" onClick={() => setSubmitted(null)}>
+                Send another request
+              </button>
+            </p>
+          </div>
+        ) : aiEnabled && mode === "ai" ? (
           <DesignChat onUseForm={() => setMode("form")} />
         ) : (
         <div className="custom-orders__form-layout">
           <form className="custom-orders__form" onSubmit={handleSubmit}>
             <h2>Request a piece</h2>
+            {capacity?.limited && capacity.weeks_out > 0 && (
+              <p className="custom-orders__queue">
+                We're currently booked about {capacity.weeks_out} week{capacity.weeks_out === 1 ? "" : "s"} ahead.
+              </p>
+            )}
 
             <fieldset>
               <legend>Your details</legend>
@@ -151,7 +190,7 @@ export default function CustomOrders() {
               </div>
               <label>
                 Describe your idea
-                <textarea name="description" placeholder="Item, size, colors, inspiration…" required />
+                <textarea name="description" placeholder="The piece, its shape, any details like a strap, lining or pattern…" required />
               </label>
               <div className="custom-orders__row">
                 <label>
@@ -159,17 +198,28 @@ export default function CustomOrders() {
                   <input type="text" name="preferred_colors" placeholder="e.g. sage green, cream" defaultValue={presetColors} />
                 </label>
                 <label>
-                  Preferred size
+                  Size / dimensions
                   <input type="text" name="preferred_size" placeholder="e.g. small, 12in tall" />
                 </label>
               </div>
+              <label>
+                Yarn type
+                <select name="yarn_type" defaultValue="">
+                  <option value="">No preference</option>
+                  {YARN_TYPES.map((yarn) => (
+                    <option key={yarn} value={yarn}>
+                      {yarn}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </fieldset>
 
             <fieldset>
               <legend>Timeline &amp; budget</legend>
               <div className="custom-orders__row">
                 <label>
-                  Deadline <span className="custom-orders__optional">(optional)</span>
+                  Preferred delivery date <span className="custom-orders__optional">(optional)</span>
                   <input type="date" name="deadline" />
                 </label>
                 <label>
@@ -206,11 +256,6 @@ export default function CustomOrders() {
             <button type="submit" disabled={submitting}>
               {submitting ? "Sending…" : "Submit Custom Request"}
             </button>
-            {submitted && (
-              <p className="custom-orders__status">
-                Thanks! We'll follow up by email within 2–3 business days.
-              </p>
-            )}
             {aiEnabled && (
               <p className="custom-orders__switch">
                 Not sure yet?{" "}

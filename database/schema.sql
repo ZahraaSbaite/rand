@@ -53,6 +53,14 @@ CREATE TABLE IF NOT EXISTS orders (
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS tracking_stage TEXT NOT NULL DEFAULT 'received';
 -- received, preparing, crocheting, quality_check, ready, shipped, delivered
 
+-- The delivery area and fee the customer chose (the fee is part of total_cents),
+-- how they pay (cash_on_delivery or bank_transfer), and when the money arrived.
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_area TEXT;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_fee_cents INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_eta TEXT;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method TEXT NOT NULL DEFAULT 'cash_on_delivery';
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS paid_at TIMESTAMP;
+
 CREATE TABLE IF NOT EXISTS order_items (
   id SERIAL PRIMARY KEY,
   order_id INTEGER REFERENCES orders(id),
@@ -254,5 +262,7 @@ INSERT INTO site_settings (key, value) VALUES
   ('shipping_text', ''),
   ('returns_text', ''),
   ('privacy_text', ''),
-  ('terms_text', '')
+  ('terms_text', ''),
+  ('delivery_zones', ''),
+  ('bank_transfer_details', '')
 ON CONFLICT (key) DO NOTHING;

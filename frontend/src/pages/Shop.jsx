@@ -6,6 +6,7 @@ import CategoryStrip from "../components/CategoryStrip.jsx";
 import Pagination from "../components/Pagination.jsx";
 import useReveal from "../hooks/useReveal.js";
 import slugify from "../lib/slug.js";
+import { availability } from "../lib/productOptions.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 const PAGE_SIZE = 10;
@@ -98,7 +99,7 @@ export default function Shop() {
     }
 
     if (inStockOnly) {
-      result = result.filter((p) => p.stock_quantity > 0);
+      result = result.filter((p) => availability(p).buyable);
     }
 
     return [...result].sort(SORT_COMPARATORS[sort]);

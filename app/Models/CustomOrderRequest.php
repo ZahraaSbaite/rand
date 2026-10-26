@@ -13,11 +13,19 @@ class CustomOrderRequest extends Model
 
     protected $guarded = ['id'];
 
+    // The token is the customer's key to their status page; only they and the admin see it.
+    protected $hidden = ['access_token'];
+
     protected function casts(): array
     {
         return [
             'quantity' => 'integer',
             'deadline' => 'date',
+            'quote_cents' => 'integer',
+            'quote_ready_by' => 'date',
+            'quote_hours' => 'float',
+            'quoted_at' => 'datetime',
+            'responded_at' => 'datetime',
             'created_at' => 'datetime',
         ];
     }

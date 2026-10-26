@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 // the admin session cookie; the rest are public.
 
 Route::pattern('id', '[0-9]+');
+Route::pattern('token', '[0-9a-f]{32}');
 
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
@@ -39,6 +40,11 @@ Route::post('/orders', [OrderController::class, 'store'])->middleware('throttle:
 Route::get('/categories', [CategoryController::class, 'index']);
 
 Route::post('/custom-orders', [CustomOrderController::class, 'store'])->middleware('throttle:public-forms');
+Route::get('/custom-orders/capacity', [CustomOrderController::class, 'capacity']);
+// The customer's own request, reached through the secret link in their emails.
+Route::get('/custom-orders/track/{token}', [CustomOrderController::class, 'track'])->middleware('throttle:order-lookup');
+Route::post('/custom-orders/track/{token}/approve', [CustomOrderController::class, 'approve'])->middleware('throttle:public-forms');
+Route::post('/custom-orders/track/{token}/decline', [CustomOrderController::class, 'decline'])->middleware('throttle:public-forms');
 
 // The AI designer on the Custom Orders page (each reply is a paid API call, hence the limit).
 Route::get('/design-chat', [DesignChatController::class, 'status']);
@@ -72,6 +78,7 @@ Route::middleware('admin')->group(function () use ($content) {
     Route::get('/orders', [OrderController::class, 'index']);
     Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus']);
     Route::patch('/orders/{id}/tracking', [OrderController::class, 'updateTracking']);
+    Route::patch('/orders/{id}/payment', [OrderController::class, 'updatePayment']);
     Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
 
     Route::post('/categories', [CategoryController::class, 'store']);
@@ -80,6 +87,7 @@ Route::middleware('admin')->group(function () use ($content) {
 
     Route::get('/custom-orders', [CustomOrderController::class, 'index']);
     Route::patch('/custom-orders/{id}', [CustomOrderController::class, 'update']);
+    Route::post('/custom-orders/{id}/quote', [CustomOrderController::class, 'quote']);
     Route::delete('/custom-orders/{id}', [CustomOrderController::class, 'destroy']);
 
     Route::get('/contact', [ContactController::class, 'index']);

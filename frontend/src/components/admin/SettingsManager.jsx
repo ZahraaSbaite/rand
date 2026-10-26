@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../lib/api.js";
 import { DEFAULT_SETTINGS, useSite } from "../../context/SiteContext.jsx";
 import { ImageField, SectionHeader, useAdmin } from "./AdminUI.jsx";
+import { availability } from "../../lib/productOptions.js";
 
 const GROUPS = [
     {
@@ -137,9 +138,9 @@ export default function SettingsManager() {
                                     >
                                         <option value="">Automatic</option>
                                         {products.map((p) => (
-                                            <option key={p.id} value={String(p.id)} disabled={!p.is_visible}>
+                                            <option key={p.id} value={String(p.id)} disabled={["draft", "discontinued"].includes(p.status)}>
                                                 {p.name}
-                                                {!p.is_visible ? " (hidden)" : p.stock_quantity <= 0 ? " (sold out)" : ""}
+                                                {availability(p).label ? ` (${availability(p).label.toLowerCase()})` : ""}
                                             </option>
                                         ))}
                                     </select>

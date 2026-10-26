@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductVariant;
+use App\Support\CheckoutOptions;
 use App\Support\CustomerMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +21,7 @@ class OrderController extends Controller
     // GET /api/orders - every order with its line items
     public function index()
     {
-        return Order::with('items.product:id,name')
+        return Order::with('items.product:id,name,fulfillment')
             ->orderByDesc('created_at')
             ->get()
             ->map(fn (Order $order) => $this->withItems($order));
@@ -36,10 +38,13 @@ class OrderController extends Controller
             return $this->error('order_id and email are required', 400);
         }
 
-        $order = Order::with('items.product:id,name')
+        $order = Order::with('items.product:id,name,fulfillment')
             ->whereKey($orderId)
             ->whereRaw('lower(customer_email) = lower(?)', [$email])
-            ->first(['id', 'customer_name', 'status', 'tracking_stage', 'total_cents', 'created_at']);
+            ->first([
+                'id', 'customer_name', 'status', 'tracking_stage', 'total_cents', 'created_at',
+                'delivery_area', 'delivery_fee_cents', 'delivery_eta', 'payment_method', 'paid_at',
+            ]);
 
         if (! $order) {
             return $this->error('No order found with that ID and email', 404);
@@ -82,6 +87,30 @@ class OrderController extends Controller
         ];
     }
 
+    // PATCH /api/orders/{id}/payment - admin marks the money as received (or not)
+    public function updatePayment(Request $request, int $id)
+    {
+        $paid = $request->input('paid');
+        if (! is_bool($paid)) {
+            return $this->error('paid must be true or false', 400);
+        }
+
+        $order = Order::find($id);
+        if (! $order) {
+            return $this->error('Order not found', 404);
+        }
+
+        // Email the customer only when a bank transfer first arrives; cash is
+        // paid to the courier, so there's nothing to tell them.
+        $notify = $paid && $order->paid_at === null && $order->payment_method === 'bank_transfer';
+        $order->update(['paid_at' => $paid ? ($order->paid_at ?? now()) : null]);
+
+        return [
+            ...$order->toArray(),
+            'customer_notified' => $notify ? CustomerMail::orderUpdate($order, 'paid') : 'skipped',
+        ];
+    }
+
     // DELETE /api/orders/{id}
     public function destroy(int $id)
     {
@@ -100,7 +129,7 @@ class OrderController extends Controller
         return $deleted ? ['success' => true] : $this->error('Order not found', 404);
     }
 
-    // POST /api/orders - cash-on-delivery checkout
+    // POST /api/orders - checkout, paid by cash on delivery or bank transfer
     public function store(Request $request)
     {
         foreach (['customer_name', 'customer_email', 'customer_phone', 'customer_address'] as $field) {
@@ -112,6 +141,23 @@ class OrderController extends Controller
             'customer_name' => 100, 'customer_email' => 254, 'customer_phone' => 40, 'customer_address' => 500,
         ], ['customer_email'])) {
             return $invalid;
+        }
+
+        $paymentMethod = $request->input('payment_method', 'cash_on_delivery');
+        if (! in_array($paymentMethod, CheckoutOptions::paymentMethods(), true)) {
+            return $this->error('Please choose one of the payment methods offered.', 400);
+        }
+
+        // With no areas set up, every order pays the flat fee.
+        $zones = CheckoutOptions::zones();
+        $zone = ['area' => null, 'fee_cents' => CheckoutOptions::FLAT_DELIVERY_CENTS, 'eta' => null];
+        if ($zones !== []) {
+            $area = $request->input('delivery_area');
+            $matches = array_filter($zones, fn ($z) => $z['area'] === $area);
+            if ($matches === []) {
+                return $this->error('Please choose a delivery area.', 400);
+            }
+            $zone = array_values($matches)[0];
         }
 
         $items = $request->input('items');
@@ -127,25 +173,57 @@ class OrderController extends Controller
             if (! is_int($item['product_id'] ?? null) || $quantity === false || $quantity <= 0) {
                 return $this->error('Each item needs a valid product_id and a positive integer quantity', 400);
             }
-            $items[$i] = ['product_id' => $item['product_id'], 'quantity' => $quantity];
+            $variantId = $item['variant_id'] ?? null;
+            if ($variantId !== null && ! is_int($variantId)) {
+                return $this->error('Each item variant_id must be a number', 400);
+            }
+            // Carts saved before options existed send the color they picked instead.
+            $color = is_string($item['color'] ?? null) ? $item['color'] : null;
+            $items[$i] = ['product_id' => $item['product_id'], 'variant_id' => $variantId, 'color' => $color, 'quantity' => $quantity];
         }
 
-        $result = DB::transaction(function () use ($request, $items) {
-            // Lock the rows so two checkouts can't oversell the same stock.
+        $result = DB::transaction(function () use ($request, $items, $paymentMethod, $zone) {
             $products = Product::whereIn('id', array_column($items, 'product_id'))
-                ->lockForUpdate()
-                ->get(['id', 'price_cents', 'stock_quantity', 'name'])
+                ->get(['id', 'name', 'price_cents', 'status', 'fulfillment', 'option_groups'])
                 ->keyBy('id');
+            // Lock the variant rows so two checkouts can't oversell the same stock.
+            $variants = ProductVariant::whereIn('product_id', $products->keys())
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get()
+                ->groupBy('product_id');
 
-            foreach ($items as $item) {
+            // The same option can't be on two lines, but count it as if it could.
+            $wanted = [];
+            foreach ($items as $i => $item) {
                 $product = $products->get($item['product_id']);
 
                 if (! $product) {
                     return $this->error("Product {$item['product_id']} does not exist", 400);
                 }
-                if ($product->stock_quantity < $item['quantity']) {
+                if ($product->status !== 'published') {
+                    return $this->error("\"{$product->name}\" can't be ordered right now. Please remove it from your cart.", 409);
+                }
+
+                $variant = self::pickVariant($variants->get($product->id, collect()), $item);
+                if (! $variant) {
+                    return $this->error("Please choose the options for \"{$product->name}\" again.", 400);
+                }
+                $label = $product->variantLabel($variant);
+                if (! $variant->is_available) {
+                    return $this->error("\"{$product->name}\"".($label ? " in {$label}" : '').' is sold out.', 409);
+                }
+
+                $items[$i]['variant'] = $variant;
+                $items[$i]['variant_label'] = $label;
+                $wanted[$variant->id] = ($wanted[$variant->id] ?? 0) + $item['quantity'];
+
+                // Made-to-order pieces are crocheted after ordering, so there's no stock to run out of.
+                if (! $product->isMadeToOrder() && $variant->stock_quantity < $wanted[$variant->id]) {
                     return $this->error(
-                        "Not enough stock for \"{$product->name}\" — only {$product->stock_quantity} left",
+                        "Not enough stock for \"{$product->name}\"".($label ? " ({$label})" : '')
+                            ." — only {$variant->stock_quantity} left",
                         409,
                     );
                 }
@@ -155,20 +233,30 @@ class OrderController extends Controller
                 ...$request->only(['customer_name', 'customer_email', 'customer_phone', 'customer_address']),
                 'status' => 'not_started',
                 'tracking_stage' => 'received',
-                'total_cents' => array_sum(array_map(
+                'payment_method' => $paymentMethod,
+                'delivery_area' => $zone['area'],
+                'delivery_fee_cents' => $zone['fee_cents'],
+                'delivery_eta' => $zone['eta'] ?: null,
+                'total_cents' => $zone['fee_cents'] + array_sum(array_map(
                     fn ($item) => $products[$item['product_id']]->price_cents * $item['quantity'],
                     $items,
                 )),
             ]);
 
             foreach ($items as $item) {
+                $product = $products[$item['product_id']];
                 $order->items()->create([
-                    'product_id' => $item['product_id'],
+                    'product_id' => $product->id,
+                    'variant_id' => $item['variant']->id,
+                    'variant_label' => $item['variant_label'],
                     'quantity' => $item['quantity'],
-                    'price_cents' => $products[$item['product_id']]->price_cents,
+                    'price_cents' => $product->price_cents,
                 ]);
-                Product::whereKey($item['product_id'])->decrement('stock_quantity', $item['quantity']);
+                if (! $product->isMadeToOrder()) {
+                    $item['variant']->decrement('stock_quantity', $item['quantity']);
+                }
             }
+            $products->each->refreshStock();
 
             return $order->refresh();
         });
@@ -178,9 +266,28 @@ class OrderController extends Controller
         }
 
         // Sent after the order is committed, so a mail problem can't undo a sale.
-        CustomerMail::orderUpdate($result, isNew: true);
+        CustomerMail::orderUpdate($result, 'new');
 
         return response()->json($result->withoutRelations(), 201);
+    }
+
+    /**
+     * The variant a cart line asks for: by id, else by the color an older cart
+     * saved, else the only variant of a product without options.
+     */
+    private static function pickVariant($variants, array $item): ?ProductVariant
+    {
+        if ($item['variant_id'] !== null) {
+            return $variants->firstWhere('id', $item['variant_id']);
+        }
+        if ($item['color'] !== null) {
+            $match = $variants->first(fn ($v) => in_array($item['color'], $v->options, true));
+            if ($match) {
+                return $match;
+            }
+        }
+
+        return $variants->count() === 1 ? $variants->first() : null;
     }
 
     /** The admin board column an order's status belongs in. */
@@ -211,6 +318,9 @@ class OrderController extends Controller
         $items = $order->items->map(fn ($item) => [
             'product_id' => $item->product_id,
             'product_name' => $item->product?->name,
+            'variant_id' => $item->variant_id,
+            'variant_label' => $item->variant_label,
+            'made_to_order' => $item->product?->fulfillment === 'made_to_order',
             'quantity' => $item->quantity,
             'price_cents' => $item->price_cents,
         ]);

@@ -18,7 +18,9 @@ class Order extends Model
     {
         return [
             'total_cents' => 'integer',
+            'delivery_fee_cents' => 'integer',
             'created_at' => 'datetime',
+            'paid_at' => 'datetime',
         ];
     }
 

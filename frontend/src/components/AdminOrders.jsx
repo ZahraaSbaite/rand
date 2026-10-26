@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { StatusPill, useAdmin } from "./admin/AdminUI.jsx";
+import { PAYMENT_LABELS, formatPrice } from "../lib/delivery.js";
 import "./AdminOrders.css";
 
 const API_URL =
@@ -157,6 +158,35 @@ export default function AdminOrders() {
         } catch (err) {
             console.error(err);
             alert("Couldn't update what the customer sees. Try again.");
+            setOrders(previous);
+        }
+    };
+
+    // Marking a bank transfer as paid emails the customer that it's confirmed.
+    const handlePaidChange = async (orderId, paid) => {
+        const previous = orders;
+        setOrders((prev) =>
+            prev.map((o) => (o.id === orderId ? { ...o, paid_at: paid ? new Date().toISOString() : null } : o))
+        );
+
+        try {
+            const res = await fetch(`${API_URL}/api/orders/${orderId}/payment`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ paid }),
+            });
+            if (!res.ok) throw new Error("Update failed");
+            const saved = await res.json().catch(() => ({}));
+            setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, paid_at: saved.paid_at ?? null } : o)));
+            if (saved.customer_notified === "sent") {
+                notify?.(`Emailed ${saved.customer_email} that their payment arrived.`);
+            } else if (saved.customer_notified === "failed") {
+                notify?.("Payment saved, but the email to the customer couldn't be sent.", "bad");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Couldn't update the payment. Try again.");
             setOrders(previous);
         }
     };
@@ -366,6 +396,13 @@ export default function AdminOrders() {
                                         }
                                     </p>
 
+                                    {order.delivery_area && (
+                                        <p className="admin-orders__meta">
+                                            Delivery: {order.delivery_area} ·{" "}
+                                            {formatPrice(order.delivery_fee_cents)}
+                                        </p>
+                                    )}
+
                                     <ul className="admin-orders__items">
                                         {order.items.map(
                                             (item, i) => (
@@ -377,6 +414,15 @@ export default function AdminOrders() {
                                                     {
                                                         item.product_name
                                                     }
+                                                    {item.variant_label && (
+                                                        <> · {item.variant_label}</>
+                                                    )}
+                                                    {item.made_to_order && (
+                                                        <span className="admin-orders__mto">
+                                                            {" "}
+                                                            · made to order
+                                                        </span>
+                                                    )}
                                                 </li>
                                             )
                                         )}
@@ -389,6 +435,21 @@ export default function AdminOrders() {
                                             100
                                         ).toFixed(2)}
                                     </p>
+
+                                    <label className="admin-orders__paid">
+                                        <input
+                                            type="checkbox"
+                                            checked={Boolean(order.paid_at)}
+                                            onChange={(e) =>
+                                                handlePaidChange(order.id, e.target.checked)
+                                            }
+                                        />
+                                        Payment received
+                                        <span className="admin-orders__paid-method">
+                                            {PAYMENT_LABELS[order.payment_method] ??
+                                                PAYMENT_LABELS.cash_on_delivery}
+                                        </span>
+                                    </label>
 
                                     <label className="admin-orders__tracking">
                                         Status · emails the customer

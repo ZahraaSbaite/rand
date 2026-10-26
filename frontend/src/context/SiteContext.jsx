@@ -20,6 +20,10 @@ export const DEFAULT_SETTINGS = {
     returns_text: "",
     privacy_text: "",
     terms_text: "",
+    // JSON list of { area, fee_cents, eta }; empty means a flat delivery fee.
+    delivery_zones: "",
+    // Empty means bank transfer isn't offered at checkout.
+    bank_transfer_details: "",
 };
 
 export const DEFAULT_CATEGORIES = [

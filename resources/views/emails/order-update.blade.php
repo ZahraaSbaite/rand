@@ -41,10 +41,29 @@
                                 </tr>
                             @endforeach
                             <tr>
-                                <td style="padding:12px 0 0; font-weight:bold;">Total (cash on delivery)</td>
+                                <td style="padding:8px 0; border-bottom:1px solid #E5D3A3;">
+                                    {{ $deliveryLabel }}
+                                    @if ($deliveryEta)
+                                        <span style="color:#3D4766;">&middot; usually {{ $deliveryEta }}</span>
+                                    @endif
+                                </td>
+                                <td align="right" style="padding:8px 0; border-bottom:1px solid #E5D3A3; white-space:nowrap;">
+                                    {{ $deliveryFee }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:12px 0 0; font-weight:bold;">{{ $totalLabel }}</td>
                                 <td align="right" style="padding:12px 0 0; font-weight:bold; white-space:nowrap;">{{ $total }}</td>
                             </tr>
                         </table>
+
+                        @if ($bankDetails !== '')
+                            <div style="margin:22px 0 0; padding:14px 16px; border:1px solid #E5D3A3; border-radius:12px; background:#F3E3B5; font-size:15px; line-height:1.5;">
+                                <p style="margin:0 0 6px; font-weight:bold;">Bank transfer details</p>
+                                {!! nl2br(e($bankDetails)) !!}
+                                <p style="margin:8px 0 0;">Reference: <strong>Order #{{ $order->id }}</strong></p>
+                            </div>
+                        @endif
 
                         <table role="presentation" cellpadding="0" cellspacing="0" style="margin:26px 0 4px;">
                             <tr>

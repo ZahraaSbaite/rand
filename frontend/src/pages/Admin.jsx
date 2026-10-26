@@ -13,6 +13,7 @@ import MessagesInbox from "../components/admin/MessagesInbox.jsx";
 import ReviewsManager from "../components/admin/ReviewsManager.jsx";
 import ContentManager from "../components/admin/ContentManager.jsx";
 import SettingsManager from "../components/admin/SettingsManager.jsx";
+import DeliveryPaymentSettings from "../components/admin/DeliveryPaymentSettings.jsx";
 import AdminOrders from "../components/AdminOrders.jsx";
 import "./Admin.css";
 
@@ -23,6 +24,7 @@ const NAV = [
             { key: "overview", label: "Overview" },
             { key: "analytics", label: "Analytics" },
             { key: "orders", label: "Orders", count: "orders" },
+            { key: "delivery-payment", label: "Delivery & payment" },
             { key: "products", label: "Products" },
             { key: "categories", label: "Categories" },
         ],
@@ -101,6 +103,8 @@ export default function Admin() {
                         <AdminOrders />
                     </>
                 );
+            case "delivery-payment":
+                return <DeliveryPaymentSettings />;
             case "products":
                 return <ProductsManager />;
             case "categories":

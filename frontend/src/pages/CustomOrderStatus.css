@@ -1,0 +1,131 @@
+/* The custom request status page; layout and timeline come from OrderTracking.css. */
+
+.custom-status__loading {
+  text-align: center;
+  color: var(--charcoal-soft);
+}
+
+.custom-status__quote,
+.custom-status__details {
+  margin-top: 1.75rem;
+}
+
+.custom-status__quote h2,
+.custom-status__details h2 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  margin: 0 0 0.85rem;
+}
+
+.custom-status__message {
+  margin: 1rem 0 0;
+  padding: 1rem 1.1rem;
+  border-radius: 12px;
+  background: var(--lavender-light);
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+.custom-status__decide {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 1.25rem;
+}
+
+.custom-status__decide label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.custom-status__decide textarea {
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  border: 1.5px solid color-mix(in srgb, var(--charcoal) 18%, transparent);
+  background: var(--cream);
+  color: var(--charcoal);
+  font: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+.custom-status__optional {
+  font-weight: 400;
+  color: var(--charcoal-soft);
+}
+
+.custom-status__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.custom-status__actions button[type="submit"] {
+  padding: 0.8rem 1.6rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--charcoal);
+  color: var(--cream);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.custom-status__actions button[type="submit"].custom-status__secondary {
+  background: var(--coral);
+}
+
+.custom-status__actions button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.custom-status__link {
+  border: 0;
+  background: none;
+  color: var(--charcoal);
+  font: inherit;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.custom-status__details p {
+  margin: 0 0 0.85rem;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.custom-status__details dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+  margin: 0 0 0.85rem;
+}
+
+.custom-status__details dt {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--charcoal-soft);
+}
+
+.custom-status__details dd {
+  margin: 0;
+}
+
+.custom-status__image {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.custom-status__note {
+  margin: 1rem 0 0;
+  font-size: 0.88rem;
+  color: var(--charcoal-soft);
+}

@@ -4,6 +4,7 @@ import { useCart } from "../context/CartContext.jsx";
 import { useWishlist } from "../context/WishlistContext.jsx";
 import { getImageUrl } from "../utils/imageUrl.js";
 import flyToCart from "../utils/flyToCart.js";
+import { availability, buyableVariants } from "../lib/productOptions.js";
 import "./ProductCard.css";
 
 // Card grounds rotate through the inks so a grid reads like a rack of
@@ -14,7 +15,8 @@ export default function ProductCard({ product, colorIndex = 0 }) {
   const price = (product.price_cents / 100).toFixed(2);
   const fallback = "https://placehold.co/600x800/f4e2b8/34201a?text=strand";
   const tone = CARD_TONES[colorIndex % CARD_TONES.length];
-  const soldOut = product.stock_quantity !== undefined && Number(product.stock_quantity) <= 0;
+  const { buyable, label: unavailableLabel } = availability(product);
+  const soldOut = !buyable;
   const { addToCart } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(product.id);
@@ -24,7 +26,8 @@ export default function ProductCard({ product, colorIndex = 0 }) {
     e.preventDefault();
     e.stopPropagation();
     if (soldOut) return;
-    addToCart(product.id);
+    // Quick add takes the first option in stock; it can be changed in the cart.
+    addToCart(product.id, 1, buyableVariants(product)[0].id);
     flyToCart(e.currentTarget);
     setAdded(true);
     setTimeout(() => setAdded(false), 1400);
@@ -81,7 +84,9 @@ export default function ProductCard({ product, colorIndex = 0 }) {
         <h3 className="product-card__name">{product.name}</h3>
         <div className="product-card__row">
           {soldOut ? (
-            <p className="product-card__sold">Sold out, back when it's made</p>
+            <p className="product-card__sold">
+              {product.status === "published" ? "Sold out, back when it's made" : unavailableLabel}
+            </p>
           ) : (
             <>
               <p className="product-card__price">

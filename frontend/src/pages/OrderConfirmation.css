@@ -76,6 +76,32 @@
   border-top: 1px solid color-mix(in srgb, var(--charcoal) 12%, transparent);
 }
 
+.order-confirmation__delivery {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0 0.75rem;
+  font-size: 0.92rem;
+  color: var(--charcoal-soft);
+}
+
+.order-confirmation__bank {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.order-confirmation__bank p {
+  margin: 0 0 0.6rem;
+  line-height: 1.5;
+}
+
+.order-confirmation__bank-details {
+  white-space: pre-line;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background: var(--cream);
+  font-family: var(--font-body);
+}
+
 .order-confirmation__eta {
   margin: 1rem 0 0;
   font-size: 0.85rem;

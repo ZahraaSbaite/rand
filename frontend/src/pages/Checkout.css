@@ -139,6 +139,76 @@
   line-height: 1.5;
 }
 
+/* Delivery area and payment method: one card per option. */
+.checkout__choices {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.checkout__choices legend {
+  padding: 0;
+  margin-bottom: 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.checkout__choices .checkout__choice {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in srgb, var(--charcoal) 15%, transparent);
+  background: var(--cream);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+}
+
+.checkout__choice:has(input:checked) {
+  border-color: var(--charcoal);
+  box-shadow: 0 0 0 1px var(--charcoal);
+}
+
+.checkout__choice:has(input:focus-visible) {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--lavender) 35%, transparent);
+}
+
+.checkout__choice input[type="radio"] {
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--charcoal);
+}
+
+.checkout__choice-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+  font-size: 0.92rem;
+}
+
+.checkout__choice-text span {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--charcoal-soft);
+}
+
+.checkout__choice-price {
+  font-size: 0.92rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .checkout__error {
   color: var(--coral);
   font-weight: 600;
