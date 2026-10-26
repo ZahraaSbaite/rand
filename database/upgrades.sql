@@ -129,3 +129,9 @@ INSERT INTO site_settings (key, value) VALUES
   ('custom_booking_weeks', '6'),
   ('custom_default_hours', '6')
 ON CONFLICT (key) DO NOTHING;
+
+-- Which colors customers can pick for a piece, chosen by the studio; an
+-- empty list means every color in the shop's palette. Whether they can also
+-- type in a color that isn't listed.
+ALTER TABLE products ADD COLUMN IF NOT EXISTS available_colors JSONB NOT NULL DEFAULT '[]';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS allow_other_colors BOOLEAN NOT NULL DEFAULT true;

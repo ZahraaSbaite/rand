@@ -199,7 +199,7 @@ class OrderController extends Controller
 
         $result = DB::transaction(function () use ($request, $items, $paymentMethod, $zone) {
             $products = Product::whereIn('id', array_column($items, 'product_id'))
-                ->get(['id', 'name', 'price_cents', 'status', 'fulfillment', 'option_groups', 'custom_colors'])
+                ->get(['id', 'name', 'price_cents', 'status', 'fulfillment', 'option_groups', 'custom_colors', 'available_colors', 'allow_other_colors'])
                 ->keyBy('id');
             // Lock the variant rows so two checkouts can't oversell the same stock.
             $variants = ProductVariant::whereIn('product_id', $products->keys())
@@ -236,6 +236,15 @@ class OrderController extends Controller
                     }
                     if (count($item['colors']) > $product->custom_colors) {
                         return $this->error("\"{$product->name}\" can be made in up to {$product->custom_colors} colors.", 400);
+                    }
+                    // Only the listed colors, unless the studio takes requests for others too.
+                    $listed = array_map('mb_strtolower', $product->available_colors ?? []);
+                    if ($listed !== [] && ! $product->allow_other_colors) {
+                        foreach ($item['colors'] as $name) {
+                            if (! in_array(mb_strtolower($name), $listed, true)) {
+                                return $this->error("\"{$product->name}\" isn't made in {$name}. Please pick one of its colors.", 400);
+                            }
+                        }
                     }
                 } else {
                     $items[$i]['colors'] = [];

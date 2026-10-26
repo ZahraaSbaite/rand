@@ -39,6 +39,8 @@ class Product extends Model
             'is_visible' => 'boolean',
             'option_groups' => 'array',
             'custom_colors' => 'integer',
+            'available_colors' => 'array',
+            'allow_other_colors' => 'boolean',
             'created_at' => 'datetime',
         ];
     }

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../../lib/api.js";
 import { variantLabel } from "../../lib/productOptions.js";
+import { YARN_PALETTE, swatchFor } from "../../lib/yarnPalette.js";
 import { getImageUrl } from "../../utils/imageUrl.js";
 import {
     EmptyState,
@@ -22,7 +23,9 @@ const STATUSES = [
 const STATUS_BY_KEY = Object.fromEntries(STATUSES.map((s) => [s.key, s]));
 const STATUS_TONES = { published: "ok", draft: "neutral", sold_out: "bad", unavailable: "warn", discontinued: "neutral" };
 
-const OPTION_PRESETS = ["Color", "Size", "Strap type"];
+// Colors have their own section (ColorsEditor), so they aren't offered here.
+const OPTION_PRESETS = ["Size", "Strap type"];
+const SIZE_PRESETS = ["Mini", "Regular", "Medium", "Large", "Big", "One size"];
 const MAX_GROUPS = 3;
 const MAX_COMBINATIONS = 200;
 
@@ -43,6 +46,8 @@ const EMPTY = {
     status: "published",
     fulfillment: "ready",
     custom_colors: "0",
+    available_colors: [],
+    allow_other_colors: true,
     groups: [],
     stock: {},
 };
@@ -84,6 +89,8 @@ function toForm(p) {
         status: p.status || "published",
         fulfillment: p.fulfillment || "ready",
         custom_colors: String(p.custom_colors ?? 0),
+        available_colors: p.available_colors || [],
+        allow_other_colors: p.allow_other_colors !== false,
         groups,
         stock,
     };
@@ -108,6 +115,8 @@ function toPayload(f) {
         status: f.status,
         fulfillment: f.fulfillment,
         custom_colors: Number(f.custom_colors),
+        available_colors: f.available_colors,
+        allow_other_colors: f.allow_other_colors,
         option_groups: groups.map((g) => ({ name: g.name.trim(), values: parseValues(g.valuesText) })),
         variants: combinations(groups).map((options) => {
             const row = f.stock[comboKey(groups, options)];
@@ -118,6 +127,116 @@ function toPayload(f) {
             };
         }),
     };
+}
+
+/** Size values in a sensible order: the usual sizes smallest first, then any others as typed. */
+function sortSizes(values) {
+    const usual = SIZE_PRESETS.filter((size) => values.some((v) => v.toLowerCase() === size.toLowerCase()));
+    return [...usual, ...values.filter((v) => !SIZE_PRESETS.some((size) => size.toLowerCase() === v.toLowerCase()))];
+}
+
+function ColorsEditor({ form, setForm }) {
+    const [extra, setExtra] = useState("");
+    const chosen = form.available_colors;
+    const on = (name) => chosen.some((c) => c.toLowerCase() === name.toLowerCase());
+    const setChosen = (list) => setForm((f) => ({ ...f, available_colors: list }));
+    const toggle = (name) => setChosen(on(name) ? chosen.filter((c) => c.toLowerCase() !== name.toLowerCase()) : [...chosen, name]);
+    const addExtra = () => {
+        const name = extra.trim().slice(0, 40);
+        if (name && !on(name)) setChosen([...chosen, name]);
+        setExtra("");
+    };
+    // Colors the studio typed in itself, shown alongside the palette.
+    const ownColors = chosen.filter((c) => !swatchFor(c));
+    const picks = Number(form.custom_colors);
+
+    return (
+        <section className="admin-options">
+            <div className="admin-options__head">
+                <h3>Colors</h3>
+                <p className="admin-field__hint">
+                    Choose which yarn colors this piece comes in. Customers pick from these on the product page, and their
+                    choice shows on the order.
+                </p>
+            </div>
+
+            <label className="admin-field admin-colors__count">
+                <span className="admin-field__label">Customers choose</span>
+                <select value={form.custom_colors} onChange={(e) => setForm((f) => ({ ...f, custom_colors: e.target.value }))}>
+                    <option value="0">No color choice (comes as shown)</option>
+                    <option value="1">1 color</option>
+                    <option value="2">Up to 2 colors</option>
+                    <option value="3">Up to 3 colors</option>
+                    <option value="4">Up to 4 colors</option>
+                </select>
+            </label>
+
+            {picks > 0 && (
+                <>
+                    <div className="admin-row admin-colors__bar">
+                        <span className="admin-muted">
+                            {chosen.length
+                                ? `${chosen.length} color${chosen.length === 1 ? "" : "s"} available`
+                                : "None ticked, so customers see every color below"}
+                        </span>
+                        <button type="button" className="admin-link-btn" onClick={() => setChosen([...YARN_PALETTE.map((c) => c.name), ...ownColors])}>
+                            Select all
+                        </button>
+                        <button type="button" className="admin-link-btn" onClick={() => setChosen([])}>
+                            Clear
+                        </button>
+                    </div>
+
+                    <div className="admin-colors">
+                        {[...YARN_PALETTE, ...ownColors.map((name) => ({ name, hex: null }))].map((c) => (
+                            <button
+                                type="button"
+                                key={c.name}
+                                className={`admin-colors__swatch${on(c.name) ? " is-on" : ""}`}
+                                onClick={() => toggle(c.name)}
+                                aria-pressed={on(c.name)}
+                            >
+                                <span
+                                    className="admin-colors__dot"
+                                    style={{ background: c.hex || undefined }}
+                                    data-custom={!c.hex || undefined}
+                                />
+                                {c.name}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="admin-inline-form">
+                        <input
+                            value={extra}
+                            onChange={(e) => setExtra(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    addExtra();
+                                }
+                            }}
+                            placeholder="Add a color that isn't listed, e.g. Metallic rose"
+                            maxLength={40}
+                            aria-label="Add a color"
+                        />
+                        <button type="button" className="admin-btn admin-btn--small admin-btn--ghost" onClick={addExtra} disabled={!extra.trim()}>
+                            Add
+                        </button>
+                    </div>
+
+                    <label className="admin-checks admin-colors__other">
+                        <input
+                            type="checkbox"
+                            checked={form.allow_other_colors}
+                            onChange={(e) => setForm((f) => ({ ...f, allow_other_colors: e.target.checked }))}
+                        />
+                        Customers can also type in a color that isn't listed
+                    </label>
+                </>
+            )}
+        </section>
+    );
 }
 
 function OptionsEditor({ form, setForm }) {
@@ -131,6 +250,17 @@ function OptionsEditor({ form, setForm }) {
     const addGroup = (name = "") =>
         setForm((f) => ({ ...f, groups: [...f.groups, { name, valuesText: "" }] }));
     const removeGroup = (i) => setForm((f) => ({ ...f, groups: f.groups.filter((_, j) => j !== i) }));
+    const toggleSize = (i, size) =>
+        setForm((f) => ({
+            ...f,
+            groups: f.groups.map((g, j) => {
+                if (j !== i) return g;
+                const values = parseValues(g.valuesText);
+                const has = values.some((v) => v.toLowerCase() === size.toLowerCase());
+                const next = has ? values.filter((v) => v.toLowerCase() !== size.toLowerCase()) : [...values, size];
+                return { ...g, valuesText: sortSizes(next).join(", ") };
+            }),
+        }));
     const setStock = (key, patch) =>
         setForm((f) => ({
             ...f,
@@ -144,20 +274,24 @@ function OptionsEditor({ form, setForm }) {
             <div className="admin-options__head">
                 <h3>Options and stock</h3>
                 <p className="admin-field__hint">
-                    What customers choose, like color, size or strap type. Each combination gets its own stock and sells
-                    out on its own.
+                    Other choices, like size or strap type. Each combination gets its own stock and sells out on its own.
                 </p>
             </div>
 
             {groups.map((g, i) => (
-                <div className="admin-options__group" key={i}>
+                <div key={i}>
+                <div className="admin-options__group">
                     <label className="admin-field">
                         <span className="admin-field__label">Option</span>
                         <input value={g.name} onChange={setGroup(i, "name")} placeholder="e.g. Color" maxLength={40} />
                     </label>
                     <label className="admin-field">
                         <span className="admin-field__label">Choices (comma separated)</span>
-                        <input value={g.valuesText} onChange={setGroup(i, "valuesText")} placeholder="Oat, Avocado, Tomato" />
+                        <input
+                            value={g.valuesText}
+                            onChange={setGroup(i, "valuesText")}
+                            placeholder={g.name.trim().toLowerCase() === "size" ? "Tick sizes below, or type your own" : "e.g. Short, Long"}
+                        />
                     </label>
                     <button
                         type="button"
@@ -167,6 +301,20 @@ function OptionsEditor({ form, setForm }) {
                     >
                         Remove
                     </button>
+                </div>
+                {g.name.trim().toLowerCase() === "size" && (
+                    <div className="admin-sizes" role="group" aria-label="Sizes">
+                        {SIZE_PRESETS.map((size) => {
+                            const has = parseValues(g.valuesText).some((v) => v.toLowerCase() === size.toLowerCase());
+                            return (
+                                <label key={size} className={`admin-sizes__chip${has ? " is-on" : ""}`}>
+                                    <input type="checkbox" checked={has} onChange={() => toggleSize(i, size)} />
+                                    {size}
+                                </label>
+                            );
+                        })}
+                    </div>
+                )}
                 </div>
             ))}
 
@@ -362,20 +510,6 @@ function ProductEditor({ product, categories, onSaved, onCancel }) {
                             Made to order: crocheted after it's ordered
                         </label>
                     </fieldset>
-                    <label className="admin-field">
-                        <span className="admin-field__label">Customers choose the colors</span>
-                        <select value={form.custom_colors} onChange={set("custom_colors")}>
-                            <option value="0">No, it comes as listed</option>
-                            <option value="1">Yes, 1 color</option>
-                            <option value="2">Yes, up to 2 colors</option>
-                            <option value="3">Yes, up to 3 colors</option>
-                            <option value="4">Yes, up to 4 colors</option>
-                        </select>
-                        <span className="admin-field__hint">
-                            For pieces you make in any color. Customers pick from the yarn palette or type their own color,
-                            and it shows on the order.
-                        </span>
-                    </label>
                     <ImageField
                         label="Cover photo"
                         value={form.image_url}
@@ -400,6 +534,7 @@ function ProductEditor({ product, categories, onSaved, onCancel }) {
                 </div>
             </div>
 
+            <ColorsEditor form={form} setForm={setForm} />
             <OptionsEditor form={form} setForm={setForm} />
 
             {error && <p className="admin-error">{error}</p>}

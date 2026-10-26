@@ -18,6 +18,7 @@ import useRecentlyViewed from "../hooks/useRecentlyViewed.js";
 import { getImageUrl } from "../utils/imageUrl.js";
 import ProductReviews from "../components/ProductReviews.jsx";
 import ColorPicker from "../components/ColorPicker.jsx";
+import { colorChoices } from "../lib/yarnPalette.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 const FALLBACK_IMAGE = "https://placehold.co/700x700/e8e2f8/2a2420?text=strand";
@@ -240,7 +241,13 @@ export default function ProductPage() {
           {maxColors > 0 && inStock && (
             <>
               {product.yarn_color && <p className="product__shown-in">Shown in {product.yarn_color}</p>}
-              <ColorPicker max={maxColors} value={colors} onChange={setColors} />
+              <ColorPicker
+                max={maxColors}
+                value={colors}
+                onChange={setColors}
+                choices={colorChoices(product)}
+                allowOther={product.allow_other_colors !== false}
+              />
             </>
           )}
 

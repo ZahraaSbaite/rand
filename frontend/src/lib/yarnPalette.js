@@ -36,3 +36,9 @@ const BY_NAME = new Map(YARN_PALETTE.map((c) => [c.name.toLowerCase(), c.hex]));
 
 /** The swatch color for a picked color name, or null for one the customer typed. */
 export const swatchFor = (name) => BY_NAME.get(String(name).toLowerCase()) ?? null;
+
+/** The colors a product offers: the studio's list, or the whole palette when it hasn't chosen. */
+export function colorChoices(product) {
+    const listed = product?.available_colors || [];
+    return listed.length ? listed.map((name) => ({ name, hex: swatchFor(name) })) : YARN_PALETTE;
+}

@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { YARN_PALETTE, swatchFor } from "../lib/yarnPalette.js";
+import { swatchFor } from "../lib/yarnPalette.js";
 import "./ColorPicker.css";
 
 /**
  * Lets a customer pick up to `max` yarn colors, in order (the first is the
- * main color), from the palette or by typing one in.
+ * main color), from `choices` ({ name, hex }), or by typing one in when
+ * `allowOther` is set.
  */
-export default function ColorPicker({ max, value, onChange }) {
+export default function ColorPicker({ max, value, onChange, choices, allowOther = true }) {
   const [other, setOther] = useState("");
   const full = value.length >= max;
   const has = (name) => value.some((v) => v.toLowerCase() === name.toLowerCase());
@@ -48,7 +49,7 @@ export default function ColorPicker({ max, value, onChange }) {
       </div>
 
       <div className="color-picker__grid">
-        {YARN_PALETTE.map((c) => {
+        {choices.map((c) => {
           const on = has(c.name);
           return (
             <button
@@ -60,13 +61,14 @@ export default function ColorPicker({ max, value, onChange }) {
               aria-pressed={on}
               title={c.name}
             >
-              <span className="color-picker__dot" style={{ background: c.hex }} />
+              <span className="color-picker__dot" style={{ background: c.hex || undefined }} data-custom={!c.hex || undefined} />
               <span className="color-picker__name">{c.name}</span>
             </button>
           );
         })}
       </div>
 
+      {allowOther && (
       <div className="color-picker__other">
         <input
           value={other}
@@ -86,6 +88,7 @@ export default function ColorPicker({ max, value, onChange }) {
           Add
         </button>
       </div>
+      )}
     </fieldset>
   );
 }

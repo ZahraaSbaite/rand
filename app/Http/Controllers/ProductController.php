@@ -24,6 +24,7 @@ class ProductController extends Controller
         'name', 'description', 'price_cents', 'image_url', 'images', 'yarn_color',
         'category', 'materials', 'dimensions', 'care_instructions',
         'production_time', 'featured', 'bestseller', 'status', 'fulfillment', 'custom_colors',
+        'available_colors', 'allow_other_colors',
     ];
 
     // Drafts are unfinished and discontinued pieces are retired: neither is listed.
@@ -189,6 +190,20 @@ class ProductController extends Controller
         $colors = $request->input('custom_colors');
         if ($colors !== null && (! is_int($colors) || $colors < 0 || $colors > Product::MAX_CUSTOM_COLORS)) {
             return $this->error('custom_colors must be a whole number from 0 to '.Product::MAX_CUSTOM_COLORS, 400);
+        }
+        $available = $request->input('available_colors');
+        if ($available !== null) {
+            if (! is_array($available) || ! array_is_list($available) || count($available) > 60) {
+                return $this->error('available_colors must be a list of up to 60 colors', 400);
+            }
+            foreach ($available as $name) {
+                if (! is_string($name) || trim($name) === '' || mb_strlen($name) > 40) {
+                    return $this->error('Each available color needs a name of up to 40 characters', 400);
+                }
+            }
+        }
+        if ($request->input('allow_other_colors') !== null && ! is_bool($request->input('allow_other_colors'))) {
+            return $this->error('allow_other_colors must be true or false', 400);
         }
 
         return null;
