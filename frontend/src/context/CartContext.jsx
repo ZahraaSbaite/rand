@@ -43,7 +43,7 @@ export function CartProvider({ children }) {
                         if (variantId !== ref.variant_id || "color" in ref || colors.length !== (ref.colors || []).length) {
                             changed = true;
                         }
-                        mergeLine(next, { product_id: ref.product_id, variant_id: variantId, colors, quantity: ref.quantity });
+                        mergeLine(next, { product_id: ref.product_id, variant_id: variantId, colors, note: ref.note || "", quantity: ref.quantity });
                     }
                     return changed ? next : prev;
                 });
@@ -55,10 +55,10 @@ export function CartProvider({ children }) {
 
     // A cart line is one product in one variant (its chosen options), plus the
     // colors the customer picked for a piece made in any color.
-    const addToCart = (productId, quantity = 1, variantId = null, colors = []) => {
+    const addToCart = (productId, quantity = 1, variantId = null, colors = [], note = "") => {
         setCartRefs((prev) => {
             const next = [...prev];
-            mergeLine(next, { product_id: productId, variant_id: variantId, colors, quantity });
+            mergeLine(next, { product_id: productId, variant_id: variantId, colors, note: note.trim(), quantity });
             return next;
         });
     };
@@ -82,20 +82,31 @@ export function CartProvider({ children }) {
         });
     };
 
+    // Editing the message can make two lines the same, so they fold together.
+    const updateCartNote = (key, note) => {
+        setCartRefs((prev) => {
+            const next = [];
+            for (const r of prev) {
+                mergeLine(next, lineKey(r) === key ? { ...r, note: note.trim() } : r);
+            }
+            return next;
+        });
+    };
+
     const clearCart = () => setCartRefs([]);
 
     return (
         <CartContext.Provider
-            value={{ cartRefs, addToCart, removeFromCart, updateCartQuantity, updateCartVariant, clearCart }}
+            value={{ cartRefs, addToCart, removeFromCart, updateCartQuantity, updateCartVariant, updateCartNote, clearCart }}
         >
             {children}
         </CartContext.Provider>
     );
 }
 
-/** Identifies a cart line: same product, options and colors. */
+/** Identifies a cart line: same product, options, colors and message. */
 export function lineKey(ref) {
-    return `${ref.product_id}:${ref.variant_id ?? ""}:${(ref.colors || []).join("|")}`;
+    return `${ref.product_id}:${ref.variant_id ?? ""}:${(ref.colors || []).join("|")}:${ref.note || ""}`;
 }
 
 // The line's variant if the product still has it; otherwise the one matching

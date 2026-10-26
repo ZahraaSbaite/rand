@@ -155,6 +155,7 @@ export default function OrderTracking() {
               <li key={i}>
                 {item.quantity} × {item.product_name}
                 {item.variant_label && <> · {item.variant_label}</>}
+                {item.note && <span className="order-note">“{item.note}”</span>}
               </li>
             ))}
           </ul>

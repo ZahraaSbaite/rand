@@ -34,6 +34,9 @@
                                 <tr>
                                     <td style="padding:8px 0; border-bottom:1px solid #E5D3A3;">
                                         {{ $item['name'] }} &times; {{ $item['quantity'] }}
+                                        @if ($item['note'])
+                                            <br><span style="font-size:13px; font-style:italic; color:#3D4766;">Your message: {{ $item['note'] }}</span>
+                                        @endif
                                     </td>
                                     <td align="right" style="padding:8px 0; border-bottom:1px solid #E5D3A3; white-space:nowrap;">
                                         {{ $item['total'] }}

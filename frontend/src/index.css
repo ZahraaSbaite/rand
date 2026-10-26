@@ -62,6 +62,16 @@ body {
   scrollbar-color: color-mix(in srgb, var(--ink-navy) 45%, transparent) var(--stock);
 }
 
+/* A customer's message about an item, under its name in order summaries. */
+.order-note {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.85em;
+  font-style: italic;
+  color: var(--charcoal-soft);
+  white-space: pre-line;
+}
+
 :focus-visible {
   outline: 2.5px dashed var(--ink-burgundy);
   outline-offset: 3px;

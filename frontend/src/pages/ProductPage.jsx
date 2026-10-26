@@ -40,6 +40,8 @@ export default function ProductPage() {
   const [chosen, setChosen] = useState({});
   // Colors the customer picked, for pieces made in any color.
   const [colors, setColors] = useState([]);
+  // The customer's own message about the piece, sent with the order.
+  const [note, setNote] = useState("");
   const [loading, setLoading] = useState(true);
   const [justAdded, setJustAdded] = useState(false);
   const recentlyViewedIds = useRecentlyViewed(product ? Number(id) : null);
@@ -57,6 +59,7 @@ export default function ProductPage() {
         const start = data && (buyableVariants(data)[0] || data.variants?.[0]);
         setChosen({ ...(start?.options || {}) });
         setColors([]);
+        setNote("");
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -131,13 +134,13 @@ export default function ProductPage() {
     setQuantity((q) => Math.min(most || 1, q + 1));
 
   const handleAddToCart = () => {
-    addToCart(product.id, quantity, variant.id, colors);
+    addToCart(product.id, quantity, variant.id, colors, note);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
   };
 
   const handleBuyNow = () => {
-    addToCart(product.id, quantity, variant.id, colors);
+    addToCart(product.id, quantity, variant.id, colors, note);
     navigate("/checkout");
   };
 
@@ -305,6 +308,21 @@ export default function ProductPage() {
               </p>
             )}
           </div>
+
+          {inStock && (
+            <label className="product__note">
+              <span>
+                Add a message <small>(optional)</small>
+              </span>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                maxLength={500}
+                rows={2}
+                placeholder="A name or initials to add, a gift note, or anything we should know"
+              />
+            </label>
+          )}
 
           <div className="product__purchase-row">
             <div className="product__qty">

@@ -135,3 +135,6 @@ ON CONFLICT (key) DO NOTHING;
 -- type in a color that isn't listed.
 ALTER TABLE products ADD COLUMN IF NOT EXISTS available_colors JSONB NOT NULL DEFAULT '[]';
 ALTER TABLE products ADD COLUMN IF NOT EXISTS allow_other_colors BOOLEAN NOT NULL DEFAULT true;
+
+-- The customer's own message about a piece, e.g. a name to stitch on.
+ALTER TABLE order_items ADD COLUMN IF NOT EXISTS note TEXT;

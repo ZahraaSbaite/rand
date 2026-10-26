@@ -423,6 +423,11 @@ export default function AdminOrders() {
                                                             · made to order
                                                         </span>
                                                     )}
+                                                    {item.note && (
+                                                        <span className="admin-orders__note">
+                                                            Message: “{item.note}”
+                                                        </span>
+                                                    )}
                                                 </li>
                                             )
                                         )}

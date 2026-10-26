@@ -14,6 +14,8 @@ class OrderController extends Controller
 {
     private const STATUSES = ['not_started', 'in_progress', 'done'];
 
+    private const MAX_NOTE = 500;
+
     private const TRACKING_STAGES = [
         'received', 'preparing', 'crocheting', 'quality_check', 'ready', 'shipped', 'delivered',
     ];
@@ -191,9 +193,15 @@ class OrderController extends Controller
                 }
                 $colors[$c] = $name;
             }
+            // The customer's message about this piece.
+            $note = $item['note'] ?? null;
+            if ($note !== null && (! is_string($note) || mb_strlen($note) > self::MAX_NOTE)) {
+                return $this->error('A message about an item can be at most '.self::MAX_NOTE.' characters', 400);
+            }
             $items[$i] = [
                 'product_id' => $item['product_id'], 'variant_id' => $variantId, 'color' => $color,
-                'colors' => array_values(array_unique($colors)), 'quantity' => $quantity,
+                'colors' => array_values(array_unique($colors)), 'note' => trim((string) $note) ?: null,
+                'quantity' => $quantity,
             ];
         }
 
@@ -286,6 +294,7 @@ class OrderController extends Controller
                     'variant_id' => $item['variant']->id,
                     'variant_label' => $item['variant_label'],
                     'colors' => $item['colors'] === [] ? null : implode(', ', $item['colors']),
+                    'note' => $item['note'],
                     'quantity' => $item['quantity'],
                     'price_cents' => $product->price_cents,
                 ]);
@@ -357,6 +366,7 @@ class OrderController extends Controller
             'product_name' => $item->product?->name,
             'variant_id' => $item->variant_id,
             'variant_label' => $item->variant_label,
+            'note' => $item->note,
             'made_to_order' => $item->product?->fulfillment === 'made_to_order',
             'quantity' => $item->quantity,
             'price_cents' => $item->price_cents,

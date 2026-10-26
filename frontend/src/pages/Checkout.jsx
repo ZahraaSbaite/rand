@@ -53,6 +53,7 @@ export default function Checkout() {
               quantity: ref.quantity,
               variant_id: ref.variant_id ?? null,
               colors: ref.colors || [],
+              note: ref.note || "",
               variant_label: [variantLabel(product, variant), (ref.colors || []).join(", ")].filter(Boolean).join(" · "),
               key: lineKey(ref),
             };
@@ -104,6 +105,7 @@ export default function Checkout() {
             quantity: item.quantity,
             variant_id: item.variant_id,
             colors: item.colors,
+            note: item.note || null,
             price_cents: item.price_cents,
           })),
         }),
@@ -295,6 +297,7 @@ export default function Checkout() {
                 <span>
                   {item.quantity} × {item.name}
                   {item.variant_label && <> · {item.variant_label}</>}
+                  {item.note && <span className="order-note">“{item.note}”</span>}
                 </span>
                 <span>{formatPrice(item.price_cents * item.quantity)}</span>
               </li>

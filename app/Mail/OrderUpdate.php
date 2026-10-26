@@ -98,6 +98,7 @@ class OrderUpdate extends Mailable
                 'steps' => count($keys),
                 'items' => $order->items->map(fn ($item) => [
                     'name' => ($item->product?->name ?? 'Item').($item->variant_label ? " ({$item->variant_label})" : ''),
+                    'note' => $item->note,
                     'quantity' => $item->quantity,
                     'total' => self::money($item->price_cents * $item->quantity),
                 ]),

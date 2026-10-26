@@ -60,6 +60,7 @@ export default function OrderConfirmation() {
                 <span>
                   {item.quantity} × {item.name}
                   {item.variant_label && <> · {item.variant_label}</>}
+                  {item.note && <span className="order-note">“{item.note}”</span>}
                 </span>
                 <span>{formatPrice(item.price_cents * item.quantity)}</span>
               </li>

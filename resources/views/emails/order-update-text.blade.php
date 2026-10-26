@@ -6,6 +6,9 @@ Order #{!! $order->id !!} · Step {!! $step !!} of {!! $steps !!}: {!! $stageLab
 
 @foreach ($items as $item)
 - {!! $item['name'] !!} × {!! $item['quantity'] !!}: {!! $item['total'] !!}
+@if ($item['note'])
+  Your message: {!! $item['note'] !!}
+@endif
 @endforeach
 - {!! $deliveryLabel !!}{!! $deliveryEta ? " (usually {$deliveryEta})" : '' !!}: {!! $deliveryFee !!}
 

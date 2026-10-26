@@ -198,6 +198,17 @@
   opacity: 0.75;
 }
 
+.admin-orders__note {
+  display: block;
+  margin: 0.15rem 0 0.3rem;
+  padding: 0.35rem 0.55rem;
+  border-left: 3px solid var(--ink-marigold, currentColor);
+  background: color-mix(in srgb, currentColor 6%, transparent);
+  font-size: 0.85rem;
+  font-style: italic;
+  white-space: pre-line;
+}
+
 .admin-orders__total {
   margin: 0.25rem 0 0.35rem;
   font-weight: 800;

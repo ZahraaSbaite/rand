@@ -10,7 +10,7 @@ import "./cart.css";
 const API_URL = import.meta.env.VITE_API_URL || "";
 
 export default function Cart() {
-  const { cartRefs, removeFromCart, updateCartQuantity, updateCartVariant } = useCart();
+  const { cartRefs, removeFromCart, updateCartQuantity, updateCartVariant, updateCartNote } = useCart();
   const { settings } = useSite();
   const zones = parseDeliveryZones(settings.delivery_zones);
   const offersBankTransfer = settings.bank_transfer_details.trim() !== "";
@@ -41,6 +41,7 @@ export default function Cart() {
               variant_id: ref.variant_id ?? null,
               variant_label: variantLabel(product, variant),
               colors: ref.colors || [],
+              note: ref.note || "",
               key: lineKey(ref),
               needsColors: missingColors(product, ref.colors),
               buyable: product.status === "published" && variantInStock(product, variant),
@@ -172,6 +173,16 @@ export default function Cart() {
                       ))}
                     </p>
                   )}
+                  <label className="cart__item-note">
+                    Message
+                    <textarea
+                      defaultValue={item.note}
+                      onBlur={(e) => e.target.value.trim() !== item.note && updateCartNote(item.key, e.target.value)}
+                      maxLength={500}
+                      rows={2}
+                      placeholder="Optional: a name to add, a gift note…"
+                    />
+                  </label>
                   {item.needsColors && (
                     <p className="cart__item-warning">
                       This piece needs its colors. <Link to={`/product/${item.id}`}>Pick them on its page</Link> and add
