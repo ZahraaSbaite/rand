@@ -26,9 +26,11 @@ import AdminLogin from "./pages/AdminLogin.jsx";
 import Admin from "./pages/Admin.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
+import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
 export default function App() {
-  const isAdmin = useLocation().pathname.startsWith("/admin");
+  const { pathname } = useLocation();
+  const isAdmin = pathname.startsWith("/admin");
 
   return (
     <ThemeProvider>
@@ -38,6 +40,7 @@ export default function App() {
           <ScrollToTop />
           {!isAdmin && <Navbar />}
 
+          <ErrorBoundary key={pathname}>
           <Routes>
             <Route path="/" element={<Home />} />
 
@@ -79,6 +82,7 @@ export default function App() {
               }
             />
           </Routes>
+          </ErrorBoundary>
 
           {!isAdmin && <Footer />}
         </WishlistProvider>
