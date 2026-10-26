@@ -288,7 +288,7 @@ export default function ProductPage() {
               </span>
             ) : (
               <span className="product__stock-badge product__stock-badge--in">
-                In stock — {variant.stock_quantity} left
+                In stock
               </span>
             )}
             {published && madeToOrder && inStock && (
