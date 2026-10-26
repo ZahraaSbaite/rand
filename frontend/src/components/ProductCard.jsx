@@ -4,7 +4,7 @@ import { useCart } from "../context/CartContext.jsx";
 import { useWishlist } from "../context/WishlistContext.jsx";
 import { getImageUrl } from "../utils/imageUrl.js";
 import flyToCart from "../utils/flyToCart.js";
-import { availability, buyableVariants } from "../lib/productOptions.js";
+import { availability, buyableVariants, colorsToPick } from "../lib/productOptions.js";
 import "./ProductCard.css";
 
 // Card grounds rotate through the inks so a grid reads like a rack of
@@ -22,7 +22,12 @@ export default function ProductCard({ product, colorIndex = 0 }) {
   const wishlisted = isWishlisted(product.id);
   const [added, setAdded] = useState(false);
 
+  // Pieces made in any color need their colors picked on the product page,
+  // so the button just lets the card's link open it.
+  const picksColors = colorsToPick(product) > 0;
+
   const handleAdd = (e) => {
+    if (picksColors) return;
     e.preventDefault();
     e.stopPropagation();
     if (soldOut) return;
@@ -97,9 +102,9 @@ export default function ProductCard({ product, colorIndex = 0 }) {
                 type="button"
                 className={`product-card__add${added ? " is-added" : ""}`}
                 onClick={handleAdd}
-                aria-label={`Add ${product.name} to cart`}
+                aria-label={picksColors ? `Choose colors for ${product.name}` : `Add ${product.name} to cart`}
               >
-                {added ? "Added" : "Add"}
+                {picksColors ? "Colors" : added ? "Added" : "Add"}
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   {added ? (
                     <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />

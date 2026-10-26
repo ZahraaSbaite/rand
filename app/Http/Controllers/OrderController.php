@@ -179,12 +179,27 @@ class OrderController extends Controller
             }
             // Carts saved before options existed send the color they picked instead.
             $color = is_string($item['color'] ?? null) ? $item['color'] : null;
-            $items[$i] = ['product_id' => $item['product_id'], 'variant_id' => $variantId, 'color' => $color, 'quantity' => $quantity];
+            // Colors the customer picked for a piece made in any color.
+            $colors = $item['colors'] ?? [];
+            if (! is_array($colors) || ! array_is_list($colors) || count($colors) > Product::MAX_CUSTOM_COLORS) {
+                return $this->error('Each item can have at most '.Product::MAX_CUSTOM_COLORS.' colors', 400);
+            }
+            foreach ($colors as $c => $name) {
+                $name = is_string($name) ? trim($name) : '';
+                if ($name === '' || mb_strlen($name) > 40) {
+                    return $this->error('Each color name must be 1 to 40 characters', 400);
+                }
+                $colors[$c] = $name;
+            }
+            $items[$i] = [
+                'product_id' => $item['product_id'], 'variant_id' => $variantId, 'color' => $color,
+                'colors' => array_values(array_unique($colors)), 'quantity' => $quantity,
+            ];
         }
 
         $result = DB::transaction(function () use ($request, $items, $paymentMethod, $zone) {
             $products = Product::whereIn('id', array_column($items, 'product_id'))
-                ->get(['id', 'name', 'price_cents', 'status', 'fulfillment', 'option_groups'])
+                ->get(['id', 'name', 'price_cents', 'status', 'fulfillment', 'option_groups', 'custom_colors'])
                 ->keyBy('id');
             // Lock the variant rows so two checkouts can't oversell the same stock.
             $variants = ProductVariant::whereIn('product_id', $products->keys())
@@ -215,8 +230,20 @@ class OrderController extends Controller
                     return $this->error("\"{$product->name}\"".($label ? " in {$label}" : '').' is sold out.', 409);
                 }
 
+                if ($product->custom_colors > 0) {
+                    if ($item['colors'] === []) {
+                        return $this->error("Please choose the colors for \"{$product->name}\".", 400);
+                    }
+                    if (count($item['colors']) > $product->custom_colors) {
+                        return $this->error("\"{$product->name}\" can be made in up to {$product->custom_colors} colors.", 400);
+                    }
+                } else {
+                    $items[$i]['colors'] = [];
+                }
+
                 $items[$i]['variant'] = $variant;
-                $items[$i]['variant_label'] = $label;
+                // The picked colors go in the label too, so every view of the order shows them.
+                $items[$i]['variant_label'] = implode(' · ', array_filter([$label, implode(', ', $items[$i]['colors'])])) ?: null;
                 $wanted[$variant->id] = ($wanted[$variant->id] ?? 0) + $item['quantity'];
 
                 // Made-to-order pieces are crocheted after ordering, so there's no stock to run out of.
@@ -249,6 +276,7 @@ class OrderController extends Controller
                     'product_id' => $product->id,
                     'variant_id' => $item['variant']->id,
                     'variant_label' => $item['variant_label'],
+                    'colors' => $item['colors'] === [] ? null : implode(', ', $item['colors']),
                     'quantity' => $item['quantity'],
                     'price_cents' => $product->price_cents,
                 ]);

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useCart } from "../context/CartContext.jsx";
+import { lineKey, useCart } from "../context/CartContext.jsx";
 import { useSite } from "../context/SiteContext.jsx";
 import { FLAT_DELIVERY_CENTS, parseDeliveryZones } from "../lib/delivery.js";
-import { hasOptions, isMadeToOrder, maxQuantity, variantInStock, variantLabel } from "../lib/productOptions.js";
+import { hasOptions, isMadeToOrder, maxQuantity, missingColors, variantInStock, variantLabel } from "../lib/productOptions.js";
+import { swatchFor } from "../lib/yarnPalette.js";
 import "./cart.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
@@ -39,6 +40,9 @@ export default function Cart() {
               variant,
               variant_id: ref.variant_id ?? null,
               variant_label: variantLabel(product, variant),
+              colors: ref.colors || [],
+              key: lineKey(ref),
+              needsColors: missingColors(product, ref.colors),
               buyable: product.status === "published" && variantInStock(product, variant),
             };
           })
@@ -61,7 +65,7 @@ export default function Cart() {
   const totalCents = subtotalCents + shippingCents;
 
   const formatPrice = (cents) => `$${(cents / 100).toFixed(2)}`;
-  const blocked = items.some((item) => !item.buyable);
+  const blocked = items.some((item) => !item.buyable || item.needsColors);
 
   if (loading) {
     return (
@@ -119,10 +123,9 @@ export default function Cart() {
         <div className="cart__layout">
           <div className="cart__items">
             {items.map((item) => {
-              const lineKey = `${item.id}-${item.variant_id ?? ""}`;
               const most = Math.max(item.quantity, Math.min(5, maxQuantity(item, item.variant)));
               return (
-              <div className="cart__item" key={lineKey}>
+              <div className="cart__item" key={item.key}>
                 <img
                   src={item.image_url}
                   alt={item.name}
@@ -140,7 +143,7 @@ export default function Cart() {
                       {item.option_groups.map((g) => g.name).join(" / ")}
                       <select
                         value={item.variant_id ?? ""}
-                        onChange={(e) => updateCartVariant(item.id, item.variant_id, Number(e.target.value))}
+                        onChange={(e) => updateCartVariant(item.key, Number(e.target.value))}
                       >
                         {item.variants.map((v) => (
                           <option
@@ -158,6 +161,22 @@ export default function Cart() {
                     item.yarn_color && (
                       <p className="cart__item-meta">Color: {item.yarn_color}</p>
                     )
+                  )}
+                  {item.colors.length > 0 && (
+                    <p className="cart__item-colors">
+                      {item.colors.map((c) => (
+                        <span key={c}>
+                          <span className="cart__item-dot" style={{ background: swatchFor(c) || undefined }} aria-hidden="true" />
+                          {c}
+                        </span>
+                      ))}
+                    </p>
+                  )}
+                  {item.needsColors && (
+                    <p className="cart__item-warning">
+                      This piece needs its colors. <Link to={`/product/${item.id}`}>Pick them on its page</Link> and add
+                      it again, then remove this line.
+                    </p>
                   )}
                   {isMadeToOrder(item) && (
                     <p className="cart__item-meta">
@@ -178,12 +197,12 @@ export default function Cart() {
                   </p>
                 </div>
                 <div className="cart__item-qty">
-                  <label htmlFor={`qty-${lineKey}`}>Qty</label>
+                  <label htmlFor={`qty-${item.key}`}>Qty</label>
                   <select
-                    id={`qty-${lineKey}`}
+                    id={`qty-${item.key}`}
                     value={item.quantity}
                     onChange={(e) =>
-                      updateCartQuantity(item.id, item.variant_id, Number(e.target.value))
+                      updateCartQuantity(item.key, Number(e.target.value))
                     }
                   >
                     {Array.from({ length: Math.max(1, most) }, (_, i) => i + 1).map((n) => (
@@ -195,7 +214,7 @@ export default function Cart() {
                 </div>
                 <button
                   className="cart__item-remove"
-                  onClick={() => removeFromCart(item.id, item.variant_id)}
+                  onClick={() => removeFromCart(item.key)}
                 >
                   Remove
                 </button>

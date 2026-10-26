@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useCart } from "../context/CartContext.jsx";
+import { lineKey, useCart } from "../context/CartContext.jsx";
 import { useSite } from "../context/SiteContext.jsx";
 import { FLAT_DELIVERY_CENTS, formatPrice, parseDeliveryZones } from "../lib/delivery.js";
 import "./Checkout.css";
@@ -52,7 +52,9 @@ export default function Checkout() {
               ...product,
               quantity: ref.quantity,
               variant_id: ref.variant_id ?? null,
-              variant_label: variantLabel(product, variant),
+              colors: ref.colors || [],
+              variant_label: [variantLabel(product, variant), (ref.colors || []).join(", ")].filter(Boolean).join(" · "),
+              key: lineKey(ref),
             };
           })
           .filter(Boolean);
@@ -101,6 +103,7 @@ export default function Checkout() {
             product_id: item.id,
             quantity: item.quantity,
             variant_id: item.variant_id,
+            colors: item.colors,
             price_cents: item.price_cents,
           })),
         }),
@@ -288,7 +291,7 @@ export default function Checkout() {
           <h2>Order Summary</h2>
           <ul className="checkout__summary-items">
             {items.map((item) => (
-              <li key={`${item.id}-${item.variant_id ?? ""}`}>
+              <li key={item.key}>
                 <span>
                   {item.quantity} × {item.name}
                   {item.variant_label && <> · {item.variant_label}</>}

@@ -13,6 +13,9 @@ class Product extends Model
 
     public const FULFILLMENTS = ['ready', 'made_to_order'];
 
+    // The most colors a customer can pick for one piece.
+    public const MAX_CUSTOM_COLORS = 4;
+
     protected $table = 'products';
 
     // Rows only have a created_at, which the database fills in.
@@ -35,6 +38,7 @@ class Product extends Model
             'bestseller' => 'boolean',
             'is_visible' => 'boolean',
             'option_groups' => 'array',
+            'custom_colors' => 'integer',
             'created_at' => 'datetime',
         ];
     }

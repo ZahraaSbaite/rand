@@ -63,6 +63,43 @@ WHERE NOT EXISTS (SELECT 1 FROM product_variants v WHERE v.product_id = p.id);
 ALTER TABLE order_items ADD COLUMN IF NOT EXISTS variant_id INTEGER REFERENCES product_variants(id) ON DELETE SET NULL;
 ALTER TABLE order_items ADD COLUMN IF NOT EXISTS variant_label TEXT;
 
+-- How many colors the customer picks themselves for a piece made in any
+-- color (0 = they don't). Added once; on that first run, products whose
+-- "colors" were really a note like "all colors available." are switched to
+-- customer-picked colors and their placeholder option is removed.
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns WHERE table_name = 'products' AND column_name = 'custom_colors'
+  ) THEN
+    ALTER TABLE products ADD COLUMN custom_colors SMALLINT NOT NULL DEFAULT 0;
+
+    CREATE TEMP TABLE placeholder_colors ON COMMIT DROP AS
+    SELECT p.id FROM products p
+    WHERE jsonb_array_length(p.option_groups) = 1
+      AND p.option_groups->0->>'name' = 'Color'
+      AND NOT EXISTS (
+        SELECT 1 FROM jsonb_array_elements_text(p.option_groups->0->'values') AS v(value)
+        WHERE v.value !~* '(all|any).*colou?rs?|colou?rs?.*available|custom|other designs'
+      );
+
+    -- One variant per product again, holding all of its stock.
+    UPDATE product_variants v
+    SET options = '{}',
+        is_available = true,
+        stock_quantity = (SELECT COALESCE(SUM(stock_quantity), 0) FROM product_variants w WHERE w.product_id = v.product_id)
+    WHERE v.id IN (SELECT MIN(id) FROM product_variants WHERE product_id IN (SELECT id FROM placeholder_colors) GROUP BY product_id);
+    DELETE FROM product_variants
+    WHERE product_id IN (SELECT id FROM placeholder_colors) AND options <> '{}'::jsonb;
+
+    UPDATE products SET option_groups = '[]', custom_colors = 3
+    WHERE id IN (SELECT id FROM placeholder_colors);
+  END IF;
+END $$;
+
+-- The colors the customer picked, e.g. "Sage, Cream" (also in variant_label).
+ALTER TABLE order_items ADD COLUMN IF NOT EXISTS colors TEXT;
+
 -- ---------------------------------------------------------------------------
 -- Custom orders: quotes, customer approval, production tracking
 -- ---------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { api } from "../lib/api.js";
-import { buyableVariants } from "../lib/productOptions.js";
+import { buyableVariants, colorsToPick } from "../lib/productOptions.js";
 
 const CartContext = createContext(null);
 const STORAGE_KEY = "rrand_cart";
@@ -38,8 +38,12 @@ export function CartProvider({ children }) {
                             changed = true;
                             continue;
                         }
-                        if (variantId !== ref.variant_id || "color" in ref) changed = true;
-                        mergeLine(next, { product_id: ref.product_id, variant_id: variantId, quantity: ref.quantity });
+                        // Colors only stay on pieces the customer picks colors for.
+                        const colors = colorsToPick(product) > 0 ? ref.colors || [] : [];
+                        if (variantId !== ref.variant_id || "color" in ref || colors.length !== (ref.colors || []).length) {
+                            changed = true;
+                        }
+                        mergeLine(next, { product_id: ref.product_id, variant_id: variantId, colors, quantity: ref.quantity });
                     }
                     return changed ? next : prev;
                 });
@@ -49,31 +53,30 @@ export function CartProvider({ children }) {
             });
     }, []);
 
-    // A cart line is one product in one variant (its chosen options).
-    const addToCart = (productId, quantity = 1, variantId = null) => {
+    // A cart line is one product in one variant (its chosen options), plus the
+    // colors the customer picked for a piece made in any color.
+    const addToCart = (productId, quantity = 1, variantId = null, colors = []) => {
         setCartRefs((prev) => {
             const next = [...prev];
-            mergeLine(next, { product_id: productId, variant_id: variantId, quantity });
+            mergeLine(next, { product_id: productId, variant_id: variantId, colors, quantity });
             return next;
         });
     };
 
-    const removeFromCart = (productId, variantId = null) => {
-        setCartRefs((prev) => prev.filter((r) => !isLine(r, productId, variantId)));
+    const removeFromCart = (key) => {
+        setCartRefs((prev) => prev.filter((r) => lineKey(r) !== key));
     };
 
-    const updateCartQuantity = (productId, variantId, quantity) => {
-        setCartRefs((prev) =>
-            prev.map((r) => (isLine(r, productId, variantId) ? { ...r, quantity } : r))
-        );
+    const updateCartQuantity = (key, quantity) => {
+        setCartRefs((prev) => prev.map((r) => (lineKey(r) === key ? { ...r, quantity } : r)));
     };
 
     // Switching to options already in the cart folds the two lines together.
-    const updateCartVariant = (productId, fromId, toId) => {
+    const updateCartVariant = (key, variantId) => {
         setCartRefs((prev) => {
             const next = [];
             for (const r of prev) {
-                mergeLine(next, isLine(r, productId, fromId) ? { ...r, variant_id: toId } : r);
+                mergeLine(next, lineKey(r) === key ? { ...r, variant_id: variantId } : r);
             }
             return next;
         });
@@ -90,8 +93,9 @@ export function CartProvider({ children }) {
     );
 }
 
-function isLine(ref, productId, variantId) {
-    return ref.product_id === productId && (ref.variant_id ?? null) === (variantId ?? null);
+/** Identifies a cart line: same product, options and colors. */
+export function lineKey(ref) {
+    return `${ref.product_id}:${ref.variant_id ?? ""}:${(ref.colors || []).join("|")}`;
 }
 
 // The line's variant if the product still has it; otherwise the one matching
@@ -105,7 +109,7 @@ function currentVariantId(product, ref) {
 
 // Adds a line to the list, or adds its quantity to a matching line already there.
 function mergeLine(lines, line) {
-    const existing = lines.findIndex((r) => isLine(r, line.product_id, line.variant_id));
+    const existing = lines.findIndex((r) => lineKey(r) === lineKey(line));
     if (existing === -1) {
         lines.push(line);
     } else {

@@ -8,6 +8,7 @@ import { useWishlist } from "../context/WishlistContext.jsx";
 import {
   STATUS_LABELS,
   buyableVariants,
+  colorsToPick,
   findVariant,
   isMadeToOrder,
   maxQuantity,
@@ -16,6 +17,7 @@ import {
 import useRecentlyViewed from "../hooks/useRecentlyViewed.js";
 import { getImageUrl } from "../utils/imageUrl.js";
 import ProductReviews from "../components/ProductReviews.jsx";
+import ColorPicker from "../components/ColorPicker.jsx";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 const FALLBACK_IMAGE = "https://placehold.co/700x700/e8e2f8/2a2420?text=strand";
@@ -35,6 +37,8 @@ export default function ProductPage() {
   const [activeImage, setActiveImage] = useState(0);
   // The chosen value of each option, e.g. { Color: "Oat", Size: "S" }.
   const [chosen, setChosen] = useState({});
+  // Colors the customer picked, for pieces made in any color.
+  const [colors, setColors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [justAdded, setJustAdded] = useState(false);
   const recentlyViewedIds = useRecentlyViewed(product ? Number(id) : null);
@@ -51,6 +55,7 @@ export default function ProductPage() {
         // Start on the first combination that can be bought.
         const start = data && (buyableVariants(data)[0] || data.variants?.[0]);
         setChosen({ ...(start?.options || {}) });
+        setColors([]);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -101,6 +106,8 @@ export default function ProductPage() {
   const inStock = published && variantInStock(product, variant);
   const most = maxQuantity(product, variant);
   const groups = product.option_groups || [];
+  const maxColors = colorsToPick(product);
+  const needsColors = inStock && maxColors > 0 && colors.length === 0;
 
   // Whether picking this value (keeping the other choices) lands on something buyable.
   const valueOpen = (group, value) =>
@@ -123,13 +130,13 @@ export default function ProductPage() {
     setQuantity((q) => Math.min(most || 1, q + 1));
 
   const handleAddToCart = () => {
-    addToCart(product.id, quantity, variant.id);
+    addToCart(product.id, quantity, variant.id, colors);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
   };
 
   const handleBuyNow = () => {
-    addToCart(product.id, quantity, variant.id);
+    addToCart(product.id, quantity, variant.id, colors);
     navigate("/checkout");
   };
 
@@ -230,6 +237,13 @@ export default function ProductPage() {
 
           <p className="product__price">{priceLabel}</p>
 
+          {maxColors > 0 && inStock && (
+            <>
+              {product.yarn_color && <p className="product__shown-in">Shown in {product.yarn_color}</p>}
+              <ColorPicker max={maxColors} value={colors} onChange={setColors} />
+            </>
+          )}
+
           {groups.map((group) => (
             <div className="product__colors" key={group.name}>
               <p className="product__colors-label">
@@ -307,20 +321,22 @@ export default function ProductPage() {
             </div>
             <button
               className="product__cta"
-              disabled={!inStock}
+              disabled={!inStock || needsColors}
               onClick={handleAddToCart}
             >
               {!published
                 ? STATUS_LABELS[product.status] || "Unavailable"
                 : !inStock
                   ? "Sold out"
-                  : justAdded
+                  : needsColors
+                    ? "Choose your colors"
+                    : justAdded
                     ? "Added ✓"
                     : "Add to cart"}
             </button>
             <button
               className="product__cta product__cta--secondary"
-              disabled={!inStock}
+              disabled={!inStock || needsColors}
               onClick={handleBuyNow}
             >
               Buy Now

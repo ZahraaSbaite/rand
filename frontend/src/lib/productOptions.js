@@ -50,6 +50,12 @@ export function findVariant(product, chosen) {
     );
 }
 
+/** How many colors the customer picks for this piece; 0 when it isn't made in any color. */
+export const colorsToPick = (product) => Number(product?.custom_colors) || 0;
+
+/** Whether a cart line still needs its colors picked before checkout. */
+export const missingColors = (product, colors) => colorsToPick(product) > 0 && !(colors || []).length;
+
 /** How many of a variant one cart line may hold. */
 export function maxQuantity(product, variant) {
     return isMadeToOrder(product) ? 10 : Math.max(0, variant?.stock_quantity ?? 0);

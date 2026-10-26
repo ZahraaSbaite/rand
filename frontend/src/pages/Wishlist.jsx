@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useWishlist } from "../context/WishlistContext.jsx";
 import { useCart } from "../context/CartContext.jsx";
-import { availability, buyableVariants } from "../lib/productOptions.js";
+import { availability, buyableVariants, colorsToPick } from "../lib/productOptions.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 
@@ -77,7 +77,11 @@ export default function Wishlist() {
                 </Link>
                 <p className="wishlist-card__price">{formatPrice(item.price_cents)}</p>
                 <div className="wishlist-card__actions">
-                  {availability(item).buyable ? (
+                  {availability(item).buyable && colorsToPick(item) > 0 ? (
+                    <Link to={`/product/${item.id}`} className="wishlist-card__choose">
+                      Choose colors
+                    </Link>
+                  ) : availability(item).buyable ? (
                     <button onClick={() => addToCart(item.id, 1, buyableVariants(item)[0].id)}>Add to Cart</button>
                   ) : (
                     <button disabled>{availability(item).label}</button>

@@ -334,6 +334,13 @@ a.cover__caption-name:hover {
     background var(--duration-fast) var(--ease-out);
 }
 
+a.cover__add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .cover__add:hover {
   background: var(--ink-burgundy-deep);
   transform: translateY(-2px);

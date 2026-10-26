@@ -13,7 +13,7 @@ import { useContentList, useSite } from "../context/SiteContext.jsx";
 import slugify from "../lib/slug.js";
 import heroHands from "../assets/hero-crochet-hands.jpg";
 import heroGranny from "../assets/hero-granny-square.jpg";
-import { availability, buyableVariants } from "../lib/productOptions.js";
+import { availability, buyableVariants, colorsToPick } from "../lib/productOptions.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 const RACK_SIZE = 8;
@@ -119,14 +119,20 @@ function CoverPiece({ piece, photo, loading }) {
           {piece.name}
         </Link>
         <span className="cover__caption-price">${price}</span>
-        <button
-          type="button"
-          className={`cover__add${added ? " is-added" : ""}`}
-          onClick={handleAdd}
-          disabled={!availability(piece).buyable}
-        >
-          {availability(piece).label || (added ? "Added to cart" : "Add to cart")}
-        </button>
+        {colorsToPick(piece) > 0 && availability(piece).buyable ? (
+          <Link to={`/product/${piece.id}`} className="cover__add">
+            Choose your colors
+          </Link>
+        ) : (
+          <button
+            type="button"
+            className={`cover__add${added ? " is-added" : ""}`}
+            onClick={handleAdd}
+            disabled={!availability(piece).buyable}
+          >
+            {availability(piece).label || (added ? "Added to cart" : "Add to cart")}
+          </button>
+        )}
       </figcaption>
     </figure>
   );

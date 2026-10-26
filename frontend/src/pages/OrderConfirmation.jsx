@@ -56,7 +56,7 @@ export default function OrderConfirmation() {
           <h2>Order details</h2>
           <ul className="order-confirmation__items">
             {items.map((item) => (
-              <li key={`${item.id}-${item.variant_id ?? ""}`}>
+              <li key={item.key ?? item.id}>
                 <span>
                   {item.quantity} × {item.name}
                   {item.variant_label && <> · {item.variant_label}</>}

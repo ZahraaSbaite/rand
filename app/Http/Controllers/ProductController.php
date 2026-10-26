@@ -23,7 +23,7 @@ class ProductController extends Controller
     private const FIELDS = [
         'name', 'description', 'price_cents', 'image_url', 'images', 'yarn_color',
         'category', 'materials', 'dimensions', 'care_instructions',
-        'production_time', 'featured', 'bestseller', 'status', 'fulfillment',
+        'production_time', 'featured', 'bestseller', 'status', 'fulfillment', 'custom_colors',
     ];
 
     // Drafts are unfinished and discontinued pieces are retired: neither is listed.
@@ -185,6 +185,10 @@ class ProductController extends Controller
         $fulfillment = $request->input('fulfillment');
         if ($fulfillment !== null && ! in_array($fulfillment, Product::FULFILLMENTS, true)) {
             return $this->error('Invalid fulfillment', 400);
+        }
+        $colors = $request->input('custom_colors');
+        if ($colors !== null && (! is_int($colors) || $colors < 0 || $colors > Product::MAX_CUSTOM_COLORS)) {
+            return $this->error('custom_colors must be a whole number from 0 to '.Product::MAX_CUSTOM_COLORS, 400);
         }
 
         return null;

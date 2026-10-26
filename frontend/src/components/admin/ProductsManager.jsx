@@ -42,6 +42,7 @@ const EMPTY = {
     bestseller: false,
     status: "published",
     fulfillment: "ready",
+    custom_colors: "0",
     groups: [],
     stock: {},
 };
@@ -82,6 +83,7 @@ function toForm(p) {
         bestseller: !!p.bestseller,
         status: p.status || "published",
         fulfillment: p.fulfillment || "ready",
+        custom_colors: String(p.custom_colors ?? 0),
         groups,
         stock,
     };
@@ -105,6 +107,7 @@ function toPayload(f) {
         bestseller: f.bestseller,
         status: f.status,
         fulfillment: f.fulfillment,
+        custom_colors: Number(f.custom_colors),
         option_groups: groups.map((g) => ({ name: g.name.trim(), values: parseValues(g.valuesText) })),
         variants: combinations(groups).map((options) => {
             const row = f.stock[comboKey(groups, options)];
@@ -359,6 +362,20 @@ function ProductEditor({ product, categories, onSaved, onCancel }) {
                             Made to order: crocheted after it's ordered
                         </label>
                     </fieldset>
+                    <label className="admin-field">
+                        <span className="admin-field__label">Customers choose the colors</span>
+                        <select value={form.custom_colors} onChange={set("custom_colors")}>
+                            <option value="0">No, it comes as listed</option>
+                            <option value="1">Yes, 1 color</option>
+                            <option value="2">Yes, up to 2 colors</option>
+                            <option value="3">Yes, up to 3 colors</option>
+                            <option value="4">Yes, up to 4 colors</option>
+                        </select>
+                        <span className="admin-field__hint">
+                            For pieces you make in any color. Customers pick from the yarn palette or type their own color,
+                            and it shows on the order.
+                        </span>
+                    </label>
                     <ImageField
                         label="Cover photo"
                         value={form.image_url}

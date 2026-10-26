@@ -1,0 +1,149 @@
+.color-picker {
+  margin: 0 0 1.5rem;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.color-picker__label {
+  padding: 0;
+  margin: 0 0 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.color-picker__chosen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-height: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.color-picker__hint {
+  align-self: center;
+  font-size: 0.85rem;
+  color: var(--charcoal-soft);
+}
+
+.color-picker__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem 0.3rem 0.35rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--lavender-deep);
+  background: var(--lavender-light);
+  color: var(--charcoal);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.color-picker__chip small {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--charcoal-soft);
+}
+
+.color-picker__dot {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--charcoal) 22%, transparent);
+}
+
+/* A color the customer typed has no swatch: show a yarn-ball outline instead. */
+.color-picker__dot[data-custom] {
+  background: repeating-linear-gradient(45deg, transparent 0 3px, color-mix(in srgb, var(--charcoal) 25%, transparent) 3px 4px);
+}
+
+.color-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 0.35rem;
+}
+
+.color-picker__swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.45rem 0.2rem;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  background: none;
+  color: var(--charcoal);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) ease, background var(--duration-fast) ease;
+}
+
+.color-picker__swatch .color-picker__dot {
+  width: 30px;
+  height: 30px;
+}
+
+.color-picker__swatch:hover:not(:disabled) {
+  border-color: var(--lavender);
+}
+
+.color-picker__swatch.is-on {
+  border-color: var(--lavender-deep);
+  background: var(--lavender-light);
+}
+
+.color-picker__swatch.is-on .color-picker__dot {
+  box-shadow: 0 0 0 2px var(--cream), 0 0 0 4px var(--lavender-deep);
+}
+
+.color-picker__swatch:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.color-picker__name {
+  font-size: 0.7rem;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.color-picker__other {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.color-picker__other input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.8rem;
+  border-radius: 10px;
+  border: 1.5px solid color-mix(in srgb, var(--charcoal) 18%, transparent);
+  background: var(--cream);
+  color: var(--charcoal);
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.color-picker__other button {
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--charcoal);
+  background: none;
+  color: var(--charcoal);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.color-picker__other button:disabled,
+.color-picker__other input:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
