@@ -23,7 +23,8 @@ export default function Wishlist() {
     setLoading(true);
     fetch(`${API_URL}/api/products`)
       .then((res) => res.json())
-      .then((allProducts) => {
+            .then((data) => {
+        const allProducts = Array.isArray(data) ? data : [];
         setItems(allProducts.filter((p) => wishlistIds.includes(p.id)));
         setLoading(false);
       })

@@ -69,7 +69,7 @@ export default function ProductPage() {
   useEffect(() => {
     fetch(`${API_URL}/api/products`)
       .then((res) => res.json())
-      .then(setAllProducts)
+            .then((data) => setAllProducts(Array.isArray(data) ? data : []))
       .catch(console.error);
   }, []);
 

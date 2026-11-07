@@ -28,7 +28,8 @@ export default function Cart() {
     setLoading(true);
     fetch(`${API_URL}/api/products`)
       .then((res) => res.json())
-      .then((allProducts) => {
+            .then((data) => {
+        const allProducts = Array.isArray(data) ? data : [];
         const cartItems = cartRefs
           .map((ref) => {
             const product = allProducts.find((p) => p.id === ref.product_id);
